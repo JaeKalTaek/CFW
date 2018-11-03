@@ -47,10 +47,10 @@ namespace Prototype.NetworkLobby
 
             base.OnClientEnterLobby();
 
-            if (LobbyManager.s_Singleton != null) LobbyManager.s_Singleton.OnPlayersNumberModified(1);
+            LobbyManager.s_Singleton?.OnPlayersNumberModified(1);
 
             LobbyPlayerList._instance.AddPlayer(this);
-            LobbyPlayerList._instance.DisplayDirectServerWarning(isServer && LobbyManager.s_Singleton.matchMaker == null);
+            LobbyPlayerList._instance.DisplayDirectServerWarning(isServer && !LobbyManager.s_Singleton.matchMaker);
 
             if (isLocalPlayer)
                 SetupLocalPlayer();            
@@ -71,7 +71,7 @@ namespace Prototype.NetworkLobby
             //if we return from a game, color of text can still be the one for "Ready"
             readyButton.transform.GetChild(0).GetComponent<Text>().color = Color.white;
 
-           SetupLocalPlayer();
+            SetupLocalPlayer();
 
         }
 
@@ -88,8 +88,6 @@ namespace Prototype.NetworkLobby
 
         void SetupOtherPlayer() {
 
-            Destroy(deckChoice.gameObject);
-
             nameInput.interactable = false;
             removePlayerButton.interactable = NetworkServer.active;
 
@@ -103,6 +101,11 @@ namespace Prototype.NetworkLobby
         }
 
         void SetupLocalPlayer() {
+
+            deckChoice.gameObject.SetActive(true);
+
+            foreach (SC_Deck deck in Resources.LoadAll<SC_Deck>("Decks"))
+                deckChoice.options.Add(new Dropdown.OptionData(deck.name));        
 
             nameInput.interactable = true;
             remoteIcone.gameObject.SetActive(false);
@@ -191,7 +194,6 @@ namespace Prototype.NetworkLobby
         }
 
         ///===== callback from sync var
-
         public void OnMyName(string newName) {
 
             playerName = newName;
