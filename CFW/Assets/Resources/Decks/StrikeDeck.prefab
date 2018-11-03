@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1199056873832732}
+  m_IsPrefabAsset: 1
+--- !u!1 &1199056873832732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4854681505174660}
+  - component: {fileID: 114135189088531254}
+  m_Layer: 0
+  m_Name: StrikeDeck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4854681505174660
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1199056873832732}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 301.5199, y: 155.4845, z: -14.515154}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114135189088531254
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1199056873832732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7605b093f5580ff498b388189bcc86ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cards:
+  - {fileID: 114847427825739746, guid: 8dd3428a6adc6e74fb954198ef407e73, type: 2}
+  - {fileID: 114089202929220000, guid: 13c59af96eb91704299159a4847ca640, type: 2}
+  - {fileID: 114173415797338436, guid: 91dfb9288eb1c1d45bb94b6162bc1da4, type: 2}
+  - {fileID: 114065839435132106, guid: d3014575ba2b83545a0effb5ecbd8200, type: 2}
+  - {fileID: 114668146155286892, guid: 8d6ff233d6321ba4e98d5e7bbb026515, type: 2}
+  - {fileID: 114948634211766938, guid: 01059bc5339beee428a89be8fc25d194, type: 2}
+  - {fileID: 114022939298528622, guid: 284ba6423b999a4428b66f31e5fb5483, type: 2}
+  - {fileID: 114997752938446136, guid: 91563ccdf461b7245934004928e41d26, type: 2}
+  - {fileID: 114696447599910334, guid: 883bc4e89acd4184ea1127d300536b3f, type: 2}
+  - {fileID: 114818120003428642, guid: 54e1d200b768ce244aba38b365fbd1af, type: 2}
+  - {fileID: 114000910370380806, guid: 5556f50659f38a9418e086cc4ec9c31f, type: 2}
+  - {fileID: 114207963965817562, guid: 8470dafc142506142881b828b531de83, type: 2}
+  - {fileID: 114439826336506078, guid: b195e31398185fe4bb342612b8613396, type: 2}
+  - {fileID: 114370890279344232, guid: 25a3d55054fb8654fbabc74cbc2a87dd, type: 2}
+  - {fileID: 114469490836081776, guid: a62c231b650bcb843a61b23155274dc7, type: 2}
