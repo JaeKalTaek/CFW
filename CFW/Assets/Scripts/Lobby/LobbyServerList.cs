@@ -53,7 +53,7 @@ namespace Prototype.NetworkLobby {
 
 			for (int i = 0; i < matches.Count; ++i)	{
 
-                GameObject o = Instantiate(Resources.Load<GameObject>("Lobby/ServerInfoEntry"));
+                GameObject o = Instantiate(Resources.Load<GameObject>("Network/ServerInfoEntry"));
 
 				o.GetComponent<LobbyServerEntry>().Populate(matches[i], lobbyManager, (i % 2 == 0) ? OddServerColor : EvenServerColor);
 

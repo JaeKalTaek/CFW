@@ -1,16 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Prototype.NetworkLobby
 {
     //Player entry in the lobby. Handle selecting color/setting name & getting ready for the game
     //Any LobbyHook can then grab it and pass those value to the game player prefab (see the Pong Example in the Samples Scenes)
-    public class LobbyPlayer : NetworkLobbyPlayer
-    {
+    public class LobbyPlayer : NetworkLobbyPlayer {
+
         static Color[] Colors = new Color[] { Color.magenta, Color.red, Color.cyan, Color.blue, Color.green, Color.yellow };
         //used on server to avoid assigning the same color to two player
         static List<int> _colorInUse = new List<int>();
@@ -42,6 +40,10 @@ namespace Prototype.NetworkLobby
         //static Color EvenRowColor = new Color(180.0f / 255.0f, 180.0f / 255.0f, 180.0f / 255.0f, 1.0f);
 
         public Dropdown deckChoice;
+
+        [HideInInspector]
+        [SyncVar]
+        public string deck = "";
 
         public override void OnClientEnterLobby() {
 
@@ -105,7 +107,9 @@ namespace Prototype.NetworkLobby
             deckChoice.gameObject.SetActive(true);
 
             foreach (SC_Deck deck in Resources.LoadAll<SC_Deck>("Decks"))
-                deckChoice.options.Add(new Dropdown.OptionData(deck.name));        
+                deckChoice.options.Add(new Dropdown.OptionData(deck.name));
+
+            CmdSetDeck(deckChoice.options[deckChoice.value].text);
 
             nameInput.interactable = true;
             remoteIcone.gameObject.SetActive(false);
@@ -140,7 +144,7 @@ namespace Prototype.NetworkLobby
 
             //when OnClientEnterLobby is called, the loval PlayerController is not yet created, so we need to redo that here to disable
             //the add button if we reach maxLocalPlayer. We pass 0, as it was already counted on OnClientEnterLobby
-            if (LobbyManager.s_Singleton != null) LobbyManager.s_Singleton.OnPlayersNumberModified(0);
+            LobbyManager.s_Singleton?.OnPlayersNumberModified(0);
 
         }
 
@@ -227,6 +231,19 @@ namespace Prototype.NetworkLobby
         public void OnNameChanged(string str) {
 
             CmdNameChanged(str);
+
+        }
+
+        public void OnDeckChanged() {
+
+            CmdSetDeck(deckChoice.options[deckChoice.value].text);
+
+        }
+
+        [Command]
+        void CmdSetDeck (string d) {
+
+            deck = d;
 
         }
 

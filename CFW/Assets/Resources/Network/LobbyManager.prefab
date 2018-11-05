@@ -2139,7 +2139,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a0312403f252434c912587ebde8fb96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lobbyManager: {fileID: 11475086}
   lobbyServerList: {fileID: 22488586}
   lobbyPanel: {fileID: 22443498}
   ipInput: {fileID: 11447752}
@@ -3243,7 +3242,7 @@ MonoBehaviour:
   m_MatchHost: mm.unet.unity3d.com
   m_MatchPort: 443
   matchName: default
-  matchSize: 4
+  matchSize: 2
   isNetworkActive: 0
   matchMaker: {fileID: 0}
   m_ShowLobbyGUI: 0
