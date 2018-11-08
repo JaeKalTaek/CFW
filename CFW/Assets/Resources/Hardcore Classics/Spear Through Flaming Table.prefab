@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchHeat: 19
+  types: 0200000001000000
   matchHeatGain: 0
   finisher: 1
   effectOnYou:

@@ -11,9 +11,15 @@ public class SC_GameManager : NetworkBehaviour {
 
     public TextMeshProUGUI matchHeatText;
 
-    [Header("Deck Sizes")]
-    public TextMeshProUGUI localDeckSize;
-    public TextMeshProUGUI otherDeckSize;
+    [Header("Start hand size")]
+    public int startHandSize;
+
+    [Header("UI")]
+    public float cardWidth;
+
+    public TextMeshProUGUI localDeckSize, otherDeckSize;
+
+    public RectTransform localHand, otherHand;
 
     public static SC_GameManager Instance;
 

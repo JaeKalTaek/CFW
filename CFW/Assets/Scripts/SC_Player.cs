@@ -10,12 +10,13 @@ public class SC_Player : NetworkBehaviour {
 
 	public SC_Deck Deck { get; set; }
 
-    SC_GameManager GM;
+    SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
-    static List<SC_Player> players;
+    public static List<SC_Player> players;
 
-    static SC_Player localPlayer, otherPlayer;
+    public static SC_Player localPlayer, otherPlayer;
 
+    #region Setup
     void Awake () {
 
         if ((players == null) || (players.Count >= 2))
@@ -25,21 +26,20 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
+    [SyncVar]
     bool setup;
+        
+    bool setupDeck;
 
     void Update () {
         
         if((players.Count == 2) && !setup && isLocalPlayer) {
 
-            setup = true;
+            CmdSetup();
 
             localPlayer = this;
 
-            Deck = Resources.Load<SC_Deck>("Decks/" + deckName);
-
-            Deck.Shuffle();
-
-            GM = SC_GameManager.Instance;
+            Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), transform);
 
             GM.localDeckSize.text = Deck.Size.ToString();
 
@@ -47,12 +47,60 @@ public class SC_Player : NetworkBehaviour {
                 if (p != this)
                     otherPlayer = p;
 
-            otherPlayer.Deck = Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName);
+            otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), transform);
 
             GM.otherDeckSize.text = otherPlayer.Deck.Size.ToString();
 
         }
 
+        if(isLocalPlayer && setup && otherPlayer.setup && !setupDeck) {
+
+            setupDeck = true;
+
+            Deck.Shuffle();
+
+            CmdSetupDeck();
+
+        }
+
     }
+    #endregion
+
+    #region Commands
+    [Command]
+    void CmdSetup() {
+
+        setup = true;
+
+    }
+
+    [Command]
+    void CmdSetupDeck() {
+
+        RpcSetupDeck();
+
+    }
+
+    [ClientRpc]
+    void RpcSetupDeck() {
+
+        Deck.Setup(isLocalPlayer);
+
+    }
+
+    [Command]
+    public void CmdShuffleDeck(int[] newOrder) {
+
+        RpcShuffleDeck(newOrder);
+
+    }
+
+    [ClientRpc]
+    void RpcShuffleDeck(int[] newOrder) {
+
+        Deck.Shuffle(newOrder);
+
+    }
+    #endregion
 
 }

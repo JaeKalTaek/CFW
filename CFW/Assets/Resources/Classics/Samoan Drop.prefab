@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchHeat: 11
+  types: 01000000
   matchHeatGain: 2
   finisher: 0
   effectOnYou:
@@ -66,4 +67,5 @@ MonoBehaviour:
     bodyPartDamage:
       bodyPart: 3
       otherBodyPart: 0
+      both: 0
       damage: 1
