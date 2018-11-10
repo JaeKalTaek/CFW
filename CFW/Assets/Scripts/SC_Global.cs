@@ -29,10 +29,24 @@ public class SC_Global {
         None, Legs, Ribs, Back, Arms, Neck
 
     }
-	
+
     public enum CardType {
 
         Aerial, Classic, Hardcore, Mytho, Special, Strike, Submission
+
+    }
+
+    public enum ShiFuMi {
+
+        None, Rock, Paper, Scissors
+
+    }
+
+    public static bool Win (ShiFuMi a, ShiFuMi b) {
+
+        return ((a == ShiFuMi.Paper) && (b == ShiFuMi.Rock)) ||
+            ((a == ShiFuMi.Rock) && (b == ShiFuMi.Scissors)) ||
+            ((a == ShiFuMi.Scissors) && (b == ShiFuMi.Paper));
 
     }
 

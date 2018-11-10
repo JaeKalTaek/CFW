@@ -3256,7 +3256,7 @@ MonoBehaviour:
   m_LobbyScene: Main_Menu
   m_PlayScene: Play_Scene
   lobbySlots: []
-  prematchCountdown: 3
+  prematchCountdown: 0
   topPanel: {fileID: 11424994}
   mainMenuPanel: {fileID: 22442386}
   lobbyPanel: {fileID: 22443498}
@@ -4399,7 +4399,7 @@ Canvas:
   m_GameObject: {fileID: 155310}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0

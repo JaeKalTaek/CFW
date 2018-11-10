@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using static SC_Global;
 
 public class SC_Player : NetworkBehaviour {
 
@@ -16,6 +17,10 @@ public class SC_Player : NetworkBehaviour {
 
     public static SC_Player localPlayer, otherPlayer;
 
+    public ShiFuMi ShifumiChoice { get; set; }
+
+    public bool Turn { get; set; }
+
     #region Setup
     void Awake () {
 
@@ -29,37 +34,51 @@ public class SC_Player : NetworkBehaviour {
     [SyncVar]
     bool setup;
         
-    bool setupDeck;
+    bool setupDeck, finishSetup;
 
     void Update () {
-        
-        if((players.Count == 2) && !setup && isLocalPlayer) {
 
-            CmdSetup();
+        if (isLocalPlayer) {
 
-            localPlayer = this;
+            if ((players.Count == 2) && !setup) {
 
-            Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), transform);
+                setup = true;
 
-            GM.localDeckSize.text = Deck.Size.ToString();
+                CmdSetup();
 
-            foreach (SC_Player p in players)
-                if (p != this)
-                    otherPlayer = p;
+                localPlayer = this;
 
-            otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), transform);
+                Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), transform);
 
-            GM.otherDeckSize.text = otherPlayer.Deck.Size.ToString();
+                GM.localDeckSize.text = Deck.Size.ToString();
 
-        }
+                foreach (SC_Player p in players)
+                    if (p != this)
+                        otherPlayer = p;
 
-        if(isLocalPlayer && setup && otherPlayer.setup && !setupDeck) {
+                otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), otherPlayer.transform);
 
-            setupDeck = true;
+                GM.otherDeckSize.text = otherPlayer.Deck.Size.ToString();
 
-            Deck.Shuffle();
+            }
 
-            CmdSetupDeck();
+            if (setup && otherPlayer.setup && !setupDeck) {
+
+                setupDeck = true;
+
+                Deck.Shuffle();
+
+                CmdSetupDeck();
+
+            }
+
+            if (setupDeck && otherPlayer.setupDeck && !finishSetup) {
+
+                finishSetup = true;
+
+                GM.connectingPanel.SetActive(false);
+
+            }
 
         }
 
@@ -67,6 +86,8 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Commands
+
+    #region Setup
     [Command]
     void CmdSetup() {
 
@@ -84,10 +105,14 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void RpcSetupDeck() {
 
+        setupDeck = true;
+
         Deck.Setup(isLocalPlayer);
 
     }
+    #endregion
 
+    #region Deck
     [Command]
     public void CmdShuffleDeck(int[] newOrder) {
 
@@ -101,6 +126,127 @@ public class SC_Player : NetworkBehaviour {
         Deck.Shuffle(newOrder);
 
     }
+
+    [Command]
+    public void CmdDraw(int nbr) {
+
+        RpcDraw(nbr);
+
+    }
+
+    [ClientRpc]
+    void RpcDraw(int nbr) {
+
+        Deck.Draw(nbr, isLocalPlayer);
+
+    }
     #endregion
 
+    #region ShiFuMi
+    [Command]
+    public void CmdShiFuMiChoice(int s) {
+
+        RpcShiFuMiChoice(s);
+
+    }
+
+    [ClientRpc]
+    void RpcShiFuMiChoice(int s) {
+
+        ShifumiChoice = (ShiFuMi)s;
+
+        if (isLocalPlayer) {
+
+            if (otherPlayer.ShifumiChoice != ShiFuMi.None) {
+
+                if (Win(ShifumiChoice, otherPlayer.ShifumiChoice)) {
+
+                    CmdStartTurn(true);
+
+                } else if (ShifumiChoice == otherPlayer.ShifumiChoice) {
+
+                    CmdResetShiFuMi();                        
+
+                } else {
+
+                    CmdStartTurn(false);
+
+                }
+
+            } else {
+
+                GM.shifumiText.text = "Waiting for other player to choose...";
+
+            }
+
+        }
+
+    }
+
+    [Command]
+    void CmdResetShiFuMi () {
+
+        RpcResetShiFuMi();
+
+    }
+
+    [ClientRpc]
+    void RpcResetShiFuMi () {
+
+        ShifumiChoice = ShiFuMi.None;
+
+        otherPlayer.ShifumiChoice = ShiFuMi.None;
+
+        SC_ShiFuMiChoice.Draw();
+
+    }
+
+    /*void ShiFuMiResult(bool won) {
+
+        GM.shifumiPanel.SetActive(false);
+
+        GM.ShowTurnPanel(won);
+
+        CmdStartTurn(!won);
+
+    }*/
+    #endregion
+
+    #region Start Turn
+    [Command]
+    void CmdStartTurn (bool won) {        
+
+        RpcStartTurn(won);
+
+    }
+
+    [ClientRpc]
+    void RpcStartTurn (bool won) {
+
+        GM.shifumiPanel.SetActive(false);
+
+        GM.ShowTurnPanel(isLocalPlayer ? won : !won);
+
+    }    
+
+    [Command]
+    public void CmdSetStartTurn(bool start) {
+
+        RpcSetStartTurn(start);
+
+    }
+
+    [ClientRpc]
+    void RpcSetStartTurn(bool start) {
+
+        GM.StartGame();
+
+        (isLocalPlayer ? this : otherPlayer).Turn = start;
+
+        (isLocalPlayer ? otherPlayer : this).Turn = !start;
+
+    }
+    #endregion
+
+    #endregion
 }

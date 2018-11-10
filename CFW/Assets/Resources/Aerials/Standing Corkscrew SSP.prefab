@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4443122381930500}
   - component: {fileID: 114711307624668190}
   m_Layer: 0
-  m_Name: Standing Corkscrew S.S.P.
+  m_Name: Standing Corkscrew SSP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -42,7 +42,7 @@ public class SC_Deck : MonoBehaviour {
         c.sprite = Resources.Load<Sprite>(local ? cards[0].Path : "Sprites/CardBack");
 
         for (int i = 0; i < rT.childCount; i++)
-            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (rT.childCount % 2 == 0 ? 1 : -1) * (GM.cardWidth / 2), 0, 0);              
+            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (rT.childCount % 2 == 0 ? 1 : -1) * (GM.cardWidth / 2), 130 * (local ? -1 : 1), 0);              
 
         cards.RemoveAt(0);
 
