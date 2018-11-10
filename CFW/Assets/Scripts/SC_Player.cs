@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using static SC_Global;
@@ -21,8 +22,24 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Turn { get; set; }
 
+    public int Health { get; set; }
+
+    public int Stamina { get; set; }
+
+    public Dictionary<BodyPart, int> BodyPartsHealth;
+
     #region Setup
-    void Awake () {
+    void Start () {
+
+        Health = GM.baseHealth;
+
+        Stamina = GM.baseStamina;
+
+        BodyPartsHealth = new Dictionary<BodyPart, int>();
+
+        foreach(BodyPart bP in Enum.GetValues(typeof(BodyPart)))
+            if(bP != BodyPart.None)
+                BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
         if ((players == null) || (players.Count >= 2))
             players = new List<SC_Player>();

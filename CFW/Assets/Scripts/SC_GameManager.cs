@@ -1,6 +1,8 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using static SC_Global;
 
 public class SC_GameManager : NetworkBehaviour {
 
@@ -28,6 +30,13 @@ public class SC_GameManager : NetworkBehaviour {
 
     public float enlargeCardFactor;
 
+    [Header("Values")]
+    public int baseHealth;
+
+    public int baseStamina, baseBodyPartHealth;
+
+    public Transform localValues, otherValues;
+
     [Header("ShiFuMi")]
     public TextMeshProUGUI shifumiText;
 
@@ -47,6 +56,16 @@ public class SC_GameManager : NetworkBehaviour {
 
         SetMatchHeat(startMatchHeat);
 
+        SetAllValues(true);
+        SetAllValues(false);
+
+    }
+
+    void Update () {
+
+        if (Input.GetButtonDown("Draw"))
+            TryDraw();
+
     }
 
     public void SetMatchHeat(int nMH) {
@@ -54,6 +73,24 @@ public class SC_GameManager : NetworkBehaviour {
         MatchHeat = nMH;
 
         matchHeatText.text = MatchHeat.ToString();
+
+    }
+
+    public void SetValue(bool local, string id, int value) {
+
+        (local ? localValues : otherValues).Find(id).GetChild(1).GetComponent<TextMeshProUGUI>().text = value.ToString();
+
+    }
+
+    void SetAllValues(bool local) {
+
+        SetValue(local, "Health", baseHealth);
+
+        SetValue(local, "Stamina", baseStamina);
+
+        foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
+            if (bP != BodyPart.None)
+                SetValue(local, bP.ToString(), baseBodyPartHealth);
 
     }
 
