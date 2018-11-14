@@ -3,6 +3,10 @@ using UnityEngine.EventSystems;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
+    public SC_BaseCard Card { get; set; }
+
+    public bool Moving { get; set; }
+
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
     RectTransform RecT { get { return transform as RectTransform; } }
@@ -11,11 +15,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        prevSiblingIndex = RecT.GetSiblingIndex();
+        if (!Moving) {
 
-        RecT.SetAsLastSibling();
+            prevSiblingIndex = RecT.GetSiblingIndex();
 
-        RecT.sizeDelta *= GM.enlargeCardFactor;        
+            RecT.SetAsLastSibling();
+
+            RecT.sizeDelta *= GM.enlargeCardFactor;
+
+        }
 
     }
 

@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using static SC_Global;
+using DG.Tweening;
 
 public class SC_GameManager : NetworkBehaviour {
 
@@ -23,12 +24,14 @@ public class SC_GameManager : NetworkBehaviour {
 
     public TextMeshProUGUI localDeckSize, otherDeckSize;
 
-    public RectTransform localHand, otherHand;
+    public RectTransform localDeck, otherDeck, localHand, otherHand;
 
     [Header("Cards")]
     public float cardWidth;    
 
     public float enlargeCardFactor;
+
+    public float drawSpeed;
 
     [Header("Values")]
     public int baseHealth;
@@ -46,7 +49,7 @@ public class SC_GameManager : NetworkBehaviour {
 
     public bool GameOn { get; set; }
 
-    public bool AlreadyDrew { get; set; }
+    public bool FinishedDrawing { get; set; }
 
     void Awake () {
 
@@ -59,12 +62,7 @@ public class SC_GameManager : NetworkBehaviour {
         SetAllValues(true);
         SetAllValues(false);
 
-    }
-
-    void Update () {
-
-        if (Input.GetButtonDown("Draw"))
-            TryDraw();
+        DOTween.Init(false, true, LogBehaviour.Verbose);
 
     }
 
@@ -88,6 +86,8 @@ public class SC_GameManager : NetworkBehaviour {
 
         SetValue(local, "Stamina", baseStamina);
 
+        SetValue(local, "Alignment", 0);
+
         foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
             if (bP != BodyPart.None)
                 SetValue(local, bP.ToString(), baseBodyPartHealth);
@@ -102,27 +102,19 @@ public class SC_GameManager : NetworkBehaviour {
 
     public void ChooseStartTurn(bool yes) {
 
-        SC_Player.localPlayer.CmdSetStartTurn(yes);
+        SC_Player.localPlayer.CmdStartGame(yes);
 
     }
 
-    public void StartGame() {
+    public void StartGame() {        
 
-        GameOn = true;
         chooseTurnPanel.SetActive(false);
         waitPanel.SetActive(false);
 
-    }
+        GameOn = true;
 
-    public void TryDraw() {
-
-        if(SC_Player.localPlayer.Turn && !AlreadyDrew) {
-
-            AlreadyDrew = true;
-
+        if (SC_Player.localPlayer.Turn)
             SC_Player.localPlayer.CmdDraw(1);
-
-        }
 
     }
 

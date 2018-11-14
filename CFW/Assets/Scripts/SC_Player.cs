@@ -26,6 +26,8 @@ public class SC_Player : NetworkBehaviour {
 
     public int Stamina { get; set; }
 
+    public int Alignment { get; set; }
+
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
     #region Setup
@@ -154,7 +156,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void RpcDraw(int nbr) {
 
-        Deck.Draw(nbr, isLocalPlayer);
+        Deck.Draw(nbr, isLocalPlayer, true);
 
     }
     #endregion
@@ -178,7 +180,7 @@ public class SC_Player : NetworkBehaviour {
 
                 if (Win(ShifumiChoice, otherPlayer.ShifumiChoice)) {
 
-                    CmdStartTurn(true);
+                    CmdChooseStartingPlayer(true);
 
                 } else if (ShifumiChoice == otherPlayer.ShifumiChoice) {
 
@@ -186,7 +188,7 @@ public class SC_Player : NetworkBehaviour {
 
                 } else {
 
-                    CmdStartTurn(false);
+                    CmdChooseStartingPlayer(false);
 
                 }
 
@@ -231,14 +233,14 @@ public class SC_Player : NetworkBehaviour {
 
     #region Start Turn
     [Command]
-    void CmdStartTurn (bool won) {        
+    void CmdChooseStartingPlayer (bool won) {        
 
-        RpcStartTurn(won);
+        RpcChooseStartingPlayer(won);
 
     }
 
     [ClientRpc]
-    void RpcStartTurn (bool won) {
+    void RpcChooseStartingPlayer (bool won) {
 
         GM.shifumiPanel.SetActive(false);
 
@@ -247,20 +249,20 @@ public class SC_Player : NetworkBehaviour {
     }    
 
     [Command]
-    public void CmdSetStartTurn(bool start) {
+    public void CmdStartGame(bool start) {
 
-        RpcSetStartTurn(start);
+        RpcStartGame(start);
 
     }
 
     [ClientRpc]
-    void RpcSetStartTurn(bool start) {
-
-        GM.StartGame();
+    void RpcStartGame(bool start) {        
 
         (isLocalPlayer ? this : otherPlayer).Turn = start;
 
         (isLocalPlayer ? otherPlayer : this).Turn = !start;
+
+        GM.StartGame();
 
     }
     #endregion
