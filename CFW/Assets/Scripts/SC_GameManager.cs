@@ -18,13 +18,11 @@ public class SC_GameManager : NetworkBehaviour {
     public int startHandSize;
 
     [Header("UI")]
-    public GameObject connectingPanel;
-        
-    public GameObject shifumiPanel, chooseTurnPanel, waitPanel;
+    public RectTransform background;
 
-    public TextMeshProUGUI localDeckSize, otherDeckSize;
+    public GameObject connectingPanel, shifumiPanel, chooseTurnPanel, waitPanel;
 
-    public RectTransform localDeck, otherDeck, localHand, otherHand;
+    public RectTransform localHand, otherHand;
 
     [Header("Cards")]
     public float cardWidth;    

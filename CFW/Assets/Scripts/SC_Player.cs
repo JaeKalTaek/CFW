@@ -31,17 +31,7 @@ public class SC_Player : NetworkBehaviour {
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
     #region Setup
-    void Start () {
-
-        Health = GM.baseHealth;
-
-        Stamina = GM.baseStamina;
-
-        BodyPartsHealth = new Dictionary<BodyPart, int>();
-
-        foreach(BodyPart bP in Enum.GetValues(typeof(BodyPart)))
-            if(bP != BodyPart.None)
-                BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
+    void Start () {      
 
         if ((players == null) || (players.Count >= 2))
             players = new List<SC_Player>();
@@ -59,25 +49,33 @@ public class SC_Player : NetworkBehaviour {
 
         if (isLocalPlayer) {
 
-            if ((players.Count == 2) && !setup) {
+            if ((players.Count == 2) && !setup && GM) {
 
                 setup = true;
+
+                Health = GM.baseHealth;
+
+                Stamina = GM.baseStamina;
+
+                BodyPartsHealth = new Dictionary<BodyPart, int>();
+
+                foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
+                    if (bP != BodyPart.None)
+                        BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
                 CmdSetup();
 
                 localPlayer = this;
 
-                Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), transform);
-
-                GM.localDeckSize.text = Deck.Size.ToString();
+                Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), GM.background);
 
                 foreach (SC_Player p in players)
                     if (p != this)
                         otherPlayer = p;
 
-                otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), otherPlayer.transform);
+                otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), GM.background);
 
-                GM.otherDeckSize.text = otherPlayer.Deck.Size.ToString();
+                return;
 
             }
 
@@ -88,6 +86,8 @@ public class SC_Player : NetworkBehaviour {
                 Deck.Shuffle();
 
                 CmdSetupDeck();
+
+                return;
 
             }
 
@@ -156,7 +156,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void RpcDraw(int nbr) {
 
-        Deck.Draw(nbr, isLocalPlayer, true);
+        Deck.Draw(nbr, true);
 
     }
     #endregion

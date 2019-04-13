@@ -2,45 +2,67 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.EventSystems;
 
-public class SC_Deck : MonoBehaviour {
+public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
 	public List<SC_BaseCard> cards;
 
     public int Size { get { return cards.Count; } }
 
-    SC_GameManager GM { get { return SC_GameManager.Instance; } }
+    public TextMeshProUGUI TSize;
+
+    SC_GameManager GM { get { return SC_GameManager.Instance; } }        
+
+    bool Local { get; set; }    
+
+    RectTransform RectT { get { return transform as RectTransform; } }
 
     public void Setup(bool local) {
 
-        Draw(GM.startHandSize, local);
+        Local = local;
+
+        Draw(GM.startHandSize);
+
+        if (!local) {
+
+            RectT.anchorMin = Vector2.up;
+            RectT.anchorMax = Vector2.up;
+            RectT.anchoredPosition = new Vector2(-RectT.anchoredPosition.x, RectT.anchoredPosition.y);
+            RectT.localRotation = Quaternion.Euler(0, 0, 180);
+            TSize.rectTransform.localRotation = Quaternion.Euler(0, 0, -180);
+
+        }
+
+        TSize.gameObject.SetActive(false);
 
     }
 
-    public void Draw(int nbr, bool local, bool tween = false) {
+    public void Draw(int nbr, bool tween = false) {
 
         for (int i = 0; i < nbr; i++)
-            Draw(local, tween);
+            Draw(tween);
 
     }
 
-    void Draw (bool local, bool tween = false) {
+    void Draw (bool tween = false) {
 
-        RectTransform rT = local ? GM.localHand : GM.otherHand;
+        RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-        SC_UI_Card c = Instantiate(Resources.Load<SC_UI_Card>("Prefabs/Card"), Vector3.zero, local ? Quaternion.identity : Quaternion.Euler(0, 0, 180), rT);
+        SC_UI_Card c = Instantiate(Resources.Load<SC_UI_Card>("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler(0, 0, 180), rT);
 
         c.name = cards[0].Path;
 
         c.Card = Resources.Load<SC_BaseCard>(cards[0].Path);
 
-        if (local && !tween)
-            c.GetComponent<Image>().sprite = Resources.Load<Sprite>(c.Card.Path);
+        if (Local && !tween)
+            c.SetImages();
 
         cards.RemoveAt(0);
 
         for (int i = 0; i < rT.childCount; i++)
-            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (rT.childCount % 2 == 0 ? 1 : -1) * (GM.cardWidth / 2), 130 * (local ? -1 : 1), 0);
+            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 130.I(!Local), 0);
 
         if (tween) {
 
@@ -48,15 +70,15 @@ public class SC_Deck : MonoBehaviour {
 
             Vector3 target = c.transform.localPosition;
 
-            c.transform.position = (local ? GM.localDeck : GM.otherDeck).position;
+            c.transform.position = transform.position;
 
             c.transform.DOLocalMove(target, GM.drawSpeed, true).OnComplete(() => { FinishDrawing(c); });
-            c.transform.DORotate(Vector3.up * 90, GM.drawSpeed / 2).OnComplete(() => { if(local) c.GetComponent<Image>().sprite = Resources.Load<Sprite>(c.Card.Path); });
+            c.transform.DORotate(Vector3.up * 90, GM.drawSpeed / 2).OnComplete(() => { if(Local) c.SetImages(); });
             c.transform.DORotate(Vector3.zero, GM.drawSpeed / 2).SetDelay(GM.drawSpeed / 2);
 
         }
 
-        (local ? GM.localDeckSize : GM.otherDeckSize).text = Size.ToString();
+        TSize.text = Size.ToString();
 
     }
 
@@ -64,7 +86,7 @@ public class SC_Deck : MonoBehaviour {
 
         GM.FinishedDrawing = true;
 
-        c.Moving = false;
+        c.Moving = false;        
 
     }
 
@@ -87,6 +109,18 @@ public class SC_Deck : MonoBehaviour {
 
         for (int i = 0; i < newOrder.Length; i++)
             cards[i] = oldCards[newOrder[i]];
+
+    }
+
+    public void OnPointerEnter (PointerEventData eventData) {
+
+        TSize.gameObject.SetActive(true);
+
+    }
+
+    public void OnPointerExit (PointerEventData eventData) {
+
+        TSize.gameObject.SetActive(false);
 
     }
 

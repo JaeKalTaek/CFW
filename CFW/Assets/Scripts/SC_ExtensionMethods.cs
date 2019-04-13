@@ -30,4 +30,16 @@ public static class SC_ExtensionMethods {
 
     }
 
+    public static int I (this int i, bool b) {
+
+        return (b ? 1 : -1) * i;
+
+    }
+
+    public static float F (this float f, bool b) {
+
+        return (b ? 1 : -1) * f;
+
+    }
+
 }
