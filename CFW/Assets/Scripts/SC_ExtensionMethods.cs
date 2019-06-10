@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using UnityEngine;
 
 public static class SC_ExtensionMethods {
 
@@ -39,6 +40,12 @@ public static class SC_ExtensionMethods {
     public static float F (this float f, bool b) {
 
         return (b ? 1 : -1) * f;
+
+    }
+
+    public static int ReduceWithMin (this int value, int reduction) {
+
+        return Mathf.Max(0, value - reduction);
 
     }
 

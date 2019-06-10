@@ -1,25 +1,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
+using Card;
 
 public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
-	public List<SC_BaseCard> cards;
+    public List<SC_BaseCard> cards;
 
     public int Size { get { return cards.Count; } }
 
     public TextMeshProUGUI TSize;
 
-    SC_GameManager GM { get { return SC_GameManager.Instance; } }        
+    static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
-    bool Local { get; set; }    
+    static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
+
+    bool Local { get; set; }
 
     RectTransform RectT { get { return transform as RectTransform; } }
 
-    public void Setup(bool local) {
+    public void Setup (bool local) {
 
         Local = local;
 
@@ -39,10 +41,17 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    public void Draw(int nbr, bool tween = false) {
+    public void Draw (int nbr, bool tween = false) {
 
         for (int i = 0; i < nbr; i++)
             Draw(tween);
+
+    }
+
+    public static void OrganizeHand (RectTransform rT) {
+
+        for (int i = 0; i < rT.childCount; i++)
+            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 108.I(rT == GM.otherHand), 0);
 
     }
 
@@ -61,8 +70,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         cards.RemoveAt(0);
 
-        for (int i = 0; i < rT.childCount; i++)
-            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 130.I(!Local), 0);
+        OrganizeHand(rT);
 
         if (tween) {
 
@@ -73,8 +81,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
             c.transform.position = transform.position;
 
             c.transform.DOLocalMove(target, GM.drawSpeed, true).OnComplete(() => { FinishDrawing(c); });
-            c.transform.DORotate(Vector3.up * 90, GM.drawSpeed / 2).OnComplete(() => { if(Local) c.SetImages(); });
-            c.transform.DORotate(Vector3.zero, GM.drawSpeed / 2).SetDelay(GM.drawSpeed / 2);
+            c.transform.DORotate(Vector3.up * 90.I(Local), GM.drawSpeed / 2).OnComplete(() => { if(Local) c.SetImages(); });
+            c.transform.DORotate(Local ? Vector3.zero : Vector3.forward * 180, GM.drawSpeed / 2).SetDelay(GM.drawSpeed / 2);
 
         }
 
@@ -84,7 +92,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     void FinishDrawing(SC_UI_Card c) {
 
-        GM.FinishedDrawing = true;
+        if (SC_Player.localPlayer.Turn) {
+
+            SC_Player.localPlayer.CanPlay = true;
+
+            UI.skipButton.SetActive(true);
+
+        }
 
         c.Moving = false;        
 

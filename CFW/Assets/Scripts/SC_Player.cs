@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Card;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -21,6 +22,10 @@ public class SC_Player : NetworkBehaviour {
     public ShiFuMi ShifumiChoice { get; set; }
 
     public bool Turn { get; set; }
+
+    public bool CanPlay { get; set; }
+
+    public bool Busy { get; set; }
 
     public int Health { get; set; }
 
@@ -53,15 +58,7 @@ public class SC_Player : NetworkBehaviour {
 
                 setup = true;
 
-                Health = GM.baseHealth;
-
-                Stamina = GM.baseStamina;
-
-                BodyPartsHealth = new Dictionary<BodyPart, int>();
-
-                foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
-                    if (bP != BodyPart.None)
-                        BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
+                SetupPlayerValues(this);
 
                 CmdSetup();
 
@@ -72,6 +69,8 @@ public class SC_Player : NetworkBehaviour {
                 foreach (SC_Player p in players)
                     if (p != this)
                         otherPlayer = p;
+
+                SetupPlayerValues(otherPlayer);
 
                 otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), GM.background);
 
@@ -100,6 +99,20 @@ public class SC_Player : NetworkBehaviour {
             }
 
         }
+
+    }
+
+    void SetupPlayerValues (SC_Player p) {
+
+        p.Health = GM.baseHealth;
+
+        p.Stamina = GM.baseStamina;
+
+        p.BodyPartsHealth = new Dictionary<BodyPart, int>();
+
+        foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
+            if (bP != BodyPart.None)
+                p.BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
     }
     #endregion
@@ -231,7 +244,7 @@ public class SC_Player : NetworkBehaviour {
     }*/
     #endregion
 
-    #region Start Turn
+    #region Start Game
     [Command]
     void CmdChooseStartingPlayer (bool won) {        
 
@@ -263,6 +276,86 @@ public class SC_Player : NetworkBehaviour {
         (isLocalPlayer ? otherPlayer : this).Turn = !start;
 
         GM.StartGame();
+
+    }
+    #endregion
+
+    #region Card usage
+    delegate void CardAction (Transform t);
+
+    void ActionOnCard (string id, CardAction a) {
+
+        foreach (Transform t in isLocalPlayer ? GM.localHand : GM.otherHand)
+            if (t.name == id)
+                a(t);
+
+    }
+
+    #region Base usage
+    [Command]
+    public void CmdUseBaseCard (GameObject player, string id) {
+
+        RpcBaseUseCard(player, id);
+
+    }
+
+    [ClientRpc]
+    void RpcBaseUseCard (GameObject player, string id) {
+
+        ActionOnCard(id, (t) => { t.GetComponent<SC_UI_Card>().Card.Use(player); });
+
+        BaseCardUsage(id);
+
+    }
+
+    void BaseCardUsage (string id) {
+
+        RectTransform h = isLocalPlayer ? GM.localHand : GM.otherHand;
+
+        ActionOnCard(id, (t) => { Destroy(t.gameObject); });
+
+        SC_Deck.OrganizeHand(h);
+
+    }
+    #endregion
+
+    #region Offensive move with body part choice
+    [Command]
+    public void CmdUseOffensiveMoveCard (GameObject player, string id, bool choice) {
+
+        RpcUseOffensiveMoveCard(player, id, choice);
+
+    }
+
+    [ClientRpc]
+    void RpcUseOffensiveMoveCard (GameObject player, string id, bool choice) {
+
+        ActionOnCard(id, (t) => { (t.GetComponent<SC_UI_Card>().Card as SC_OffensiveMove).Use(player, choice); });
+
+        BaseCardUsage(id);
+
+    }
+    #endregion
+    #endregion
+
+    #region Skip turn
+    [Command]
+    public void CmdSkipTurn () {
+
+        RpcSkipTurn();
+
+    }
+
+    [ClientRpc]
+    void RpcSkipTurn () {
+
+        if (!isLocalPlayer) {
+
+            localPlayer.Turn = true;
+
+            localPlayer.CmdDraw(1);
+
+        }
 
     }
     #endregion

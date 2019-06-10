@@ -8,7 +8,7 @@ using DG.Tweening;
 public class SC_GameManager : NetworkBehaviour {
 
     [Header("Match Heat")]
-    public int startMatchHeat;
+    public int startMatchHeat, maxMatchHeat, resetMatchHeat;
 
     public int MatchHeat { get; set; }
 
@@ -45,9 +45,7 @@ public class SC_GameManager : NetworkBehaviour {
 
     public static SC_GameManager Instance;
 
-    public bool GameOn { get; set; }
-
-    public bool FinishedDrawing { get; set; }
+    public string UsingCardID { get; set; }
 
     void Awake () {
 
@@ -55,7 +53,7 @@ public class SC_GameManager : NetworkBehaviour {
 
         Instance = this;
 
-        SetMatchHeat(startMatchHeat);
+        AddMatchHeat(startMatchHeat);
 
         SetAllValues(true);
         SetAllValues(false);
@@ -64,9 +62,9 @@ public class SC_GameManager : NetworkBehaviour {
 
     }
 
-    public void SetMatchHeat(int nMH) {
+    public void AddMatchHeat(int gain) {
 
-        MatchHeat = nMH;
+        MatchHeat = MatchHeat == maxMatchHeat ? resetMatchHeat : Mathf.Min(maxMatchHeat, MatchHeat + gain);
 
         matchHeatText.text = MatchHeat.ToString();
 
@@ -108,8 +106,6 @@ public class SC_GameManager : NetworkBehaviour {
 
         chooseTurnPanel.SetActive(false);
         waitPanel.SetActive(false);
-
-        GameOn = true;
 
         if (SC_Player.localPlayer.Turn)
             SC_Player.localPlayer.CmdDraw(1);

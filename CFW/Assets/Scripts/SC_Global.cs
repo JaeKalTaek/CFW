@@ -48,6 +48,6 @@ public class SC_Global {
             ((a == ShiFuMi.Rock) && (b == ShiFuMi.Scissors)) ||
             ((a == ShiFuMi.Scissors) && (b == ShiFuMi.Paper));
 
-    }
+    }    
 
 }

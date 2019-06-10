@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using Card;
 
 [CustomEditor(typeof(SC_BaseCard), true), CanEditMultipleObjects]
 public class SC_CardEditor : Editor {
