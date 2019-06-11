@@ -39,11 +39,9 @@ namespace Card {
 
             Use(caller);
 
-            SC_Player other = caller == SC_Player.localPlayer ? SC_Player.otherPlayer : SC_Player.localPlayer;
+            SC_Player other = caller == SC_Player.localPlayer.gameObject ? SC_Player.otherPlayer : SC_Player.localPlayer;
 
             BodyPart bp = choice ? effectOnOpponent.bodyPartDamage.bodyPart : effectOnOpponent.bodyPartDamage.otherBodyPart;
-
-            print(bp.ToString());
 
             other.BodyPartsHealth[bp] = other.BodyPartsHealth[bp].ReduceWithMin(effectOnOpponent.bodyPartDamage.damage);
 
