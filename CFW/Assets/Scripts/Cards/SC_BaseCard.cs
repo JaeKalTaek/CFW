@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using static SC_Global;
 
 namespace Card {
@@ -10,6 +11,8 @@ namespace Card {
         protected static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
         protected static SC_GameManager GM { get { return SC_GameManager.Instance; } }
+
+        public SC_UI_Card UICard { get; set; }
 
         [Header("Base Card Variables")]
         [Tooltip("The minimum Match Heat required to play this card")]
@@ -27,7 +30,7 @@ namespace Card {
                 for (int i = 1; i < types.Length; i++)
                     s += " " + TypeToString(i);
 
-                return s + "/" + name;
+                return s + "/" + name.Replace("(Clone)", "");                
 
             }
         }
@@ -38,9 +41,40 @@ namespace Card {
 
         }
 
-        public virtual void Use (GameObject caller) {
+        public virtual bool CanUse () {
 
-            Player.Turn ^= true;
+            return GM.MatchHeat >= matchHeat;
+
+        }
+
+        public virtual void Use (SC_Player caller) {
+
+            // UICard.transform.SetParent((caller == Player.gameObject ? GM.localGraveyard : GM.otherGraveyard).RecT);
+
+            UICard.transform.SetParent(UICard.transform.parent.parent);
+
+            float pos = UICard.RecT.sizeDelta.y * 2;
+
+            Vector3 start = UICard.transform.position;
+
+            UICard.RecT.anchoredPosition3D = Vector3.up * (Player.Turn ? pos : (GM.transform as RectTransform).sizeDelta.y - pos);
+
+            Vector3 target = UICard.transform.position;
+
+            UICard.transform.position = start;
+
+            UICard.transform.DOMove(target, 1);
+
+            /*if(!Player.Turn)
+                UICard.transform.DORotate()*/
+
+            // UICard.transform.DOMove(Vector3.up * 500, 1);
+
+            // DOTween.Sequence().Append(UICard.transform.DOLocalMove(Vector3.up * 500, 1f)); //.Append(UICard.transform.DOMove(Vector3.up * 130, 1f));
+
+            // UICard.transform.DOMove(Vector3.up * 500, 1f).OnCO
+
+            /*Player.Turn ^= true;
 
             if(!Player.Turn) {
 
@@ -54,7 +88,7 @@ namespace Card {
 
                 Player.CmdDraw(1);
 
-            }
+            }*/
 
         }
 

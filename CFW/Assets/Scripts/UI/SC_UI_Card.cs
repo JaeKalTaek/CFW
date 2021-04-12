@@ -13,7 +13,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
-    RectTransform RecT { get { return transform as RectTransform; } }
+    public RectTransform RecT { get { return transform as RectTransform; } }
 
     RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
 
@@ -69,7 +69,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (Local && (GM.MatchHeat >= Card.matchHeat) && SC_Player.localPlayer.CanPlay) {
+        if (Local && Card.CanUse() && SC_Player.localPlayer.CanPlay) {
 
             UI.skipButton.SetActive(false);
 
@@ -77,11 +77,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             SC_OffensiveMove om = Card as SC_OffensiveMove;
 
-            if(om && (om.effectOnOpponent.bodyPartDamage.otherBodyPart != SC_Global.BodyPart.None) && !om.effectOnOpponent.bodyPartDamage.both) {
+            OnPointerExit(new PointerEventData(EventSystem.current));
 
-                GM.UsingCardID = name;
+            SC_Player.localPlayer.Busy = true;
 
-                SC_Player.localPlayer.Busy = true;
+            if (om && (om.effectOnOpponent.bodyPartDamage.otherBodyPart != SC_Global.BodyPart.None) && !om.effectOnOpponent.bodyPartDamage.both) {
+
+                GM.UsingCardID = name;              
 
                 UI.bodyPartDamageChoice.firstChoice.text = om.effectOnOpponent.bodyPartDamage.bodyPart.ToString();
 
@@ -90,7 +92,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 UI.bodyPartDamageChoice.panel.SetActive(true);
 
             } else
-                SC_Player.localPlayer.CmdUseBaseCard(SC_Player.localPlayer.gameObject, name);
+                SC_Player.localPlayer.UseBaseCardServerRpc (name);
 
         }
 

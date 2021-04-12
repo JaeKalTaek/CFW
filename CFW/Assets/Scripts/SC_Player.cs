@@ -2,20 +2,18 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using MLAPI;
 using static SC_Global;
+using MLAPI.Messaging;
+using System.Collections;
 
 public class SC_Player : NetworkBehaviour {
 
-    [HideInInspector]
-    [SyncVar]
-    public string deckName;
+    public static string deckName;
 
 	public SC_Deck Deck { get; set; }
 
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
-
-    public static List<SC_Player> players;
 
     public static SC_Player localPlayer, otherPlayer;
 
@@ -36,172 +34,166 @@ public class SC_Player : NetworkBehaviour {
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
     #region Setup
-    void Start () {      
+    public override void NetworkStart () {
 
-        if ((players == null) || (players.Count >= 2))
-            players = new List<SC_Player>();
+        if (IsLocalPlayer) {
 
-        players.Add(this);
+            localPlayer = this;
 
-    }
+            StartCoroutine (SetupCoroutine ());
 
-    [SyncVar]
-    bool setup;
-        
-    bool setupDeck, finishSetup;
-
-    void Update () {
-
-        if (isLocalPlayer) {
-
-            if ((players.Count == 2) && !setup && GM) {
-
-                setup = true;
-
-                SetupPlayerValues(this);
-
-                CmdSetup();
-
-                localPlayer = this;
-
-                Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + deckName), GM.background);
-
-                foreach (SC_Player p in players)
-                    if (p != this)
-                        otherPlayer = p;
-
-                SetupPlayerValues(otherPlayer);
-
-                otherPlayer.Deck = Instantiate(Resources.Load<SC_Deck>("Decks/" + otherPlayer.deckName), GM.background);
-
-                return;
-
-            }
-
-            if (setup && otherPlayer.setup && !setupDeck) {
-
-                setupDeck = true;
-
-                Deck.Shuffle();
-
-                CmdSetupDeck();
-
-                return;
-
-            }
-
-            if (setupDeck && otherPlayer.setupDeck && !finishSetup) {
-
-                finishSetup = true;
-
-                GM.connectingPanel.SetActive(false);
-
-            }
-
-        }
+        } else
+            otherPlayer = this;
 
     }
 
-    void SetupPlayerValues (SC_Player p) {
+    public void SetupPlayerValues () {
 
-        p.Health = GM.baseHealth;
+        Health = GM.baseHealth;
 
-        p.Stamina = GM.baseStamina;
+        Stamina = GM.baseStamina;
 
-        p.BodyPartsHealth = new Dictionary<BodyPart, int>();
+        BodyPartsHealth = new Dictionary<BodyPart, int>();
 
         foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
             if (bP != BodyPart.None)
-                p.BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
+                BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
-    }
-    #endregion
-
-    #region Commands
-
-    #region Setup
-    [Command]
-    void CmdSetup() {
-
-        setup = true;
+        SetDeckServerRpc (deckName);
 
     }
 
-    [Command]
-    void CmdSetupDeck() {
+    [ServerRpc]
+    void SetDeckServerRpc (string deckName) {
 
-        RpcSetupDeck();
+        SetDeckClientRpc (deckName);
 
     }
 
     [ClientRpc]
-    void RpcSetupDeck() {
+    void SetDeckClientRpc (string deckName) {
 
-        setupDeck = true;
+         Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + "Deck"), GM.background);
 
-        Deck.Setup(isLocalPlayer);
+    }
+
+    [ServerRpc]
+    void DecksReadyServerRpc () {
+
+        DecksReadyClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void DecksReadyClientRpc () {
+
+        decksReady = true;
+
+    }
+
+    bool decksReady, decksShuffled;
+
+    IEnumerator SetupCoroutine () {
+
+        while (!otherPlayer || !GM)
+            yield return new WaitForEndOfFrame ();
+
+        SetupPlayerValues ();
+
+        while (!Deck || !otherPlayer.Deck)
+            yield return new WaitForEndOfFrame ();
+
+        DecksReadyServerRpc ();
+
+        while (!decksReady || !otherPlayer.decksReady)
+            yield return new WaitForEndOfFrame ();
+
+        Deck.Shuffle ();
+
+        SetupDeckServerRpc ();
+
+        while (!decksShuffled || !otherPlayer.decksShuffled)
+            yield return new WaitForEndOfFrame ();        
+
+        GM.waitingPanel.SetActive (false);
+
+    }
+
+    [ServerRpc]
+    void SetupDeckServerRpc () {
+
+        SetupDeckClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void SetupDeckClientRpc () {        
+        
+        Deck.Setup (IsLocalPlayer);
+
+        decksShuffled = true;
 
     }
     #endregion
 
     #region Deck
-    [Command]
-    public void CmdShuffleDeck(int[] newOrder) {
+    [ServerRpc]
+    public void ShuffleDeckServerRpc (int[] newOrder) {
 
-        RpcShuffleDeck(newOrder);
-
-    }
-
-    [ClientRpc]
-    void RpcShuffleDeck(int[] newOrder) {
-
-        Deck.Shuffle(newOrder);
-
-    }
-
-    [Command]
-    public void CmdDraw(int nbr) {
-
-        RpcDraw(nbr);
+        ShuffleDeckClientRpc (newOrder);
 
     }
 
     [ClientRpc]
-    void RpcDraw(int nbr) {
+    void ShuffleDeckClientRpc (int[] newOrder) {
 
-        Deck.Draw(nbr, true);
+        Deck.Shuffle (newOrder);
+
+    }
+
+    [ServerRpc]
+    public void DrawServerRpc (int nbr) {
+
+        DrawClientRpc (nbr);
+
+    }
+
+    [ClientRpc]
+    void DrawClientRpc (int nbr) {
+
+        Deck.Draw (nbr, true);
 
     }
     #endregion
 
     #region ShiFuMi
-    [Command]
-    public void CmdShiFuMiChoice(int s) {
+    [ServerRpc]
+    public void ShiFuMiChoiceServerRpc (int s) {
 
-        RpcShiFuMiChoice(s);
+        ShiFuMiChoiceClientRpc (s);
 
     }
 
     [ClientRpc]
-    void RpcShiFuMiChoice(int s) {
+    void ShiFuMiChoiceClientRpc (int s) {
 
         ShifumiChoice = (ShiFuMi)s;
 
-        if (isLocalPlayer) {
+        if (IsLocalPlayer) {
 
             if (otherPlayer.ShifumiChoice != ShiFuMi.None) {
 
                 if (Win(ShifumiChoice, otherPlayer.ShifumiChoice)) {
 
-                    CmdChooseStartingPlayer(true);
+                    ChooseStartingPlayerServerRpc (true);
 
                 } else if (ShifumiChoice == otherPlayer.ShifumiChoice) {
 
-                    CmdResetShiFuMi();                        
+                    ResetShiFuMiServerRpc ();                        
 
                 } else {
 
-                    CmdChooseStartingPlayer(false);
+                    ChooseStartingPlayerServerRpc (false);
 
                 }
 
@@ -215,15 +207,15 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    [Command]
-    void CmdResetShiFuMi () {
+    [ServerRpc]
+    void ResetShiFuMiServerRpc () {
 
-        RpcResetShiFuMi();
+        ResetShiFuMiClientRpc ();
 
     }
 
     [ClientRpc]
-    void RpcResetShiFuMi () {
+    void ResetShiFuMiClientRpc () {
 
         ShifumiChoice = ShiFuMi.None;
 
@@ -232,48 +224,38 @@ public class SC_Player : NetworkBehaviour {
         SC_ShiFuMiChoice.Draw();
 
     }
-
-    /*void ShiFuMiResult(bool won) {
-
-        GM.shifumiPanel.SetActive(false);
-
-        GM.ShowTurnPanel(won);
-
-        CmdStartTurn(!won);
-
-    }*/
     #endregion
 
     #region Start Game
-    [Command]
-    void CmdChooseStartingPlayer (bool won) {        
+    [ServerRpc]
+    void ChooseStartingPlayerServerRpc (bool won) {
 
-        RpcChooseStartingPlayer(won);
+        ChooseStartingPlayerClientRpc (won);
 
     }
 
     [ClientRpc]
-    void RpcChooseStartingPlayer (bool won) {
+    void ChooseStartingPlayerClientRpc (bool won) {
 
         GM.shifumiPanel.SetActive(false);
 
-        GM.ShowTurnPanel(isLocalPlayer ? won : !won);
+        GM.ShowTurnPanel(IsLocalPlayer ? won : !won);
 
     }    
 
-    [Command]
-    public void CmdStartGame(bool start) {
+    [ServerRpc]
+    public void StartGameServerRpc (bool start) {
 
-        RpcStartGame(start);
+        StartGameClientRpc (start);
 
     }
 
     [ClientRpc]
-    void RpcStartGame(bool start) {        
+    void StartGameClientRpc (bool start) {        
 
-        (isLocalPlayer ? this : otherPlayer).Turn = start;
+        (IsLocalPlayer ? this : otherPlayer).Turn = start;
 
-        (isLocalPlayer ? otherPlayer : this).Turn = !start;
+        (IsLocalPlayer ? otherPlayer : this).Turn = !start;
 
         GM.StartGame();
 
@@ -285,24 +267,24 @@ public class SC_Player : NetworkBehaviour {
 
     void ActionOnCard (string id, CardAction a) {
 
-        foreach (Transform t in isLocalPlayer ? GM.localHand : GM.otherHand)
+        foreach (Transform t in IsLocalPlayer ? GM.localHand : GM.otherHand)
             if (t.name == id)
                 a(t);
 
     }
 
     #region Base usage
-    [Command]
-    public void CmdUseBaseCard (GameObject player, string id) {
+    [ServerRpc]
+    public void UseBaseCardServerRpc (string id) {
 
-        RpcBaseUseCard(player, id);
+        BaseUseCardClientRpc (id);
 
     }
 
     [ClientRpc]
-    void RpcBaseUseCard (GameObject player, string id) {
+    void BaseUseCardClientRpc (string id) {
 
-        ActionOnCard(id, (t) => { t.GetComponent<SC_UI_Card>().Card.Use(player); });
+        ActionOnCard(id, (t) => { t.GetComponent<SC_UI_Card>().Card.Use(this); });
 
         BaseCardUsage(id);
 
@@ -310,7 +292,7 @@ public class SC_Player : NetworkBehaviour {
 
     void BaseCardUsage (string id) {
 
-        RectTransform h = isLocalPlayer ? GM.localHand : GM.otherHand;
+        RectTransform h = IsLocalPlayer ? GM.localHand : GM.otherHand;
 
         ActionOnCard(id, (t) => { Destroy(t.gameObject); });
 
@@ -320,17 +302,17 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Offensive move with body part choice
-    [Command]
-    public void CmdUseOffensiveMoveCard (GameObject player, string id, bool choice) {
+    [ServerRpc]
+    public void UseOffensiveMoveCardServerRpc (string id, bool choice) {
 
-        RpcUseOffensiveMoveCard(player, id, choice);
+        UseOffensiveMoveCardClientRpc (id, choice);
 
     }
 
     [ClientRpc]
-    void RpcUseOffensiveMoveCard (GameObject player, string id, bool choice) {
+    void UseOffensiveMoveCardClientRpc (string id, bool choice) {
 
-        ActionOnCard(id, (t) => { (t.GetComponent<SC_UI_Card>().Card as SC_OffensiveMove).Use(player, choice); });
+        ActionOnCard(id, (t) => { (t.GetComponent<SC_UI_Card>().Card as SC_OffensiveMove).Use(this, choice); });
 
         BaseCardUsage(id);
 
@@ -339,26 +321,25 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Skip turn
-    [Command]
-    public void CmdSkipTurn () {
+    [ServerRpc]
+    public void SkipTurnServerRpc () {
 
-        RpcSkipTurn();
+        SkipTurnClientRpc ();
 
     }
 
     [ClientRpc]
-    void RpcSkipTurn () {
+    void SkipTurnClientRpc () {
 
-        if (!isLocalPlayer) {
+        if (!IsLocalPlayer) {
 
             localPlayer.Turn = true;
 
-            localPlayer.CmdDraw(1);
+            localPlayer.DrawServerRpc (1);
 
         }
 
     }
     #endregion
 
-    #endregion
 }

@@ -1,0 +1,38 @@
+using UnityEngine;
+using UnityEngine.UI;
+using MLAPI;
+using MLAPI.SceneManagement;
+using System.Text;
+using TMPro;
+
+public class SC_MainMenu : MonoBehaviour {
+
+    public InputField matchCode;
+    public TMP_Dropdown deckChoice;
+
+    public void Host () {
+
+        SC_Player.deckName = deckChoice.options[deckChoice.value].text;
+
+        NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
+        NetworkManager.Singleton.StartHost ();        
+        NetworkSceneManager.SwitchScene ("Play_Scene");      
+
+    }
+
+    private void ApprovalCheck (byte[] connectionData, ulong clientId, NetworkManager.ConnectionApprovedDelegate callback) {
+
+        callback (true, null, matchCode.text == Encoding.ASCII.GetString (connectionData), null, null);
+
+    }
+
+    public void Join () {
+
+        SC_Player.deckName = deckChoice.options[deckChoice.value].text;
+
+        NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes (matchCode.text);
+        NetworkManager.Singleton.StartClient ();
+
+    }
+    
+}

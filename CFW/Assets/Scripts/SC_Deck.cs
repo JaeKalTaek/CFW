@@ -31,9 +31,9 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             RectT.anchorMin = Vector2.up;
             RectT.anchorMax = Vector2.up;
-            RectT.anchoredPosition = new Vector2(-RectT.anchoredPosition.x, RectT.anchoredPosition.y);
-            RectT.localRotation = Quaternion.Euler(0, 0, 180);
-            TSize.rectTransform.localRotation = Quaternion.Euler(0, 0, -180);
+            // RectT.anchoredPosition = new Vector2(-RectT.anchoredPosition.x, RectT.anchoredPosition.y);
+            RectT.localRotation = Quaternion.Euler (0, 0, 180);
+            TSize.rectTransform.localRotation = Quaternion.Euler (0, 0, -180);
 
         }
 
@@ -50,8 +50,20 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public static void OrganizeHand (RectTransform rT) {
 
-        for (int i = 0; i < rT.childCount; i++)
-            rT.GetChild(i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 108.I(rT == GM.otherHand), 0);
+        /*if (rT == GM.localHand)
+            print("_________________________________");*/
+
+        for (int i = 0; i < rT.childCount; i++) {
+
+            //if (rT == GM.localHand)
+            //    print(rT.GetChild(i).GetComponent<SC_UI_Card>().name + " : " + i + " : " + rT.GetChild(i).GetSiblingIndex());
+
+            rT.GetChild (i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 108.I(rT == GM.otherHand), 0);
+
+            //if (rT == GM.localHand)
+            //    print(rT.GetChild(i).GetComponent<SC_UI_Card>().name + " : " + i + " : " + rT.GetChild(i).GetSiblingIndex());
+
+        }
 
     }
 
@@ -59,18 +71,20 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-        SC_UI_Card c = Instantiate(Resources.Load<SC_UI_Card>("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler(0, 0, 180), rT);
+        SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card>("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler(0, 0, 180), rT);
 
         c.name = cards[0].Path;
 
-        c.Card = Resources.Load<SC_BaseCard>(cards[0].Path);
+        c.Card = Instantiate (Resources.Load<SC_BaseCard>(cards[0].Path), c.transform);
+
+        c.Card.UICard = c;
 
         if (Local && !tween)
-            c.SetImages();
+            c.SetImages ();
 
-        cards.RemoveAt(0);
+        cards.RemoveAt (0);
 
-        OrganizeHand(rT);
+        OrganizeHand (rT);
 
         if (tween) {
 
@@ -81,22 +95,23 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
             c.transform.position = transform.position;
 
             c.transform.DOLocalMove(target, GM.drawSpeed, true).OnComplete(() => { FinishDrawing(c); });
-            c.transform.DORotate(Vector3.up * 90.I(Local), GM.drawSpeed / 2).OnComplete(() => { if(Local) c.SetImages(); });
-            c.transform.DORotate(Local ? Vector3.zero : Vector3.forward * 180, GM.drawSpeed / 2).SetDelay(GM.drawSpeed / 2);
+
+            if (Local)
+                DOTween.Sequence ().Append (c.transform.DORotate(Vector3.up * 90, GM.drawSpeed / 2).OnComplete(() => { c.SetImages(); })).Append(c.transform.DORotate(Vector3.zero, GM.drawSpeed / 2));
 
         }
 
-        TSize.text = Size.ToString();
+        TSize.text = Size.ToString ();
 
     }
 
-    void FinishDrawing(SC_UI_Card c) {
+    void FinishDrawing (SC_UI_Card c) {
 
         if (SC_Player.localPlayer.Turn) {
 
             SC_Player.localPlayer.CanPlay = true;
 
-            UI.skipButton.SetActive(true);
+            UI.skipButton.SetActive (true);
 
         }
 
@@ -104,7 +119,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    public void Shuffle() {
+    public void Shuffle () {
 
         int[] newOrder = new int[cards.Count];
 
@@ -113,13 +128,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         newOrder.Shuffle();
 
-        SC_Player.localPlayer.CmdShuffleDeck(newOrder);
+        SC_Player.localPlayer.ShuffleDeckServerRpc (newOrder);
 
     }
 
-    public void Shuffle(int[] newOrder) {
+    public void Shuffle (int[] newOrder) {
 
-        List<SC_BaseCard> oldCards = new List<SC_BaseCard>(cards);
+        List<SC_BaseCard> oldCards = new List<SC_BaseCard> (cards);
 
         for (int i = 0; i < newOrder.Length; i++)
             cards[i] = oldCards[newOrder[i]];
@@ -128,13 +143,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        TSize.gameObject.SetActive(true);
+        TSize.gameObject.SetActive (true);
 
     }
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        TSize.gameObject.SetActive(false);
+        TSize.gameObject.SetActive (false);
 
     }
 

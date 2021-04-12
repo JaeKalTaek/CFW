@@ -37,13 +37,13 @@ public class SC_UI_Manager : MonoBehaviour {
 
         skipButton.SetActive(false);
 
-        Player.CmdSkipTurn();
+        Player.SkipTurnServerRpc ();
 
     }
 
     public void ChoseBodyPart (bool first) {
 
-        Player.CmdUseOffensiveMoveCard(Player.gameObject, GM.UsingCardID, first);
+        Player.UseOffensiveMoveCardServerRpc (GM.UsingCardID, first);
 
     }
 

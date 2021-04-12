@@ -57,7 +57,7 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
             }
 
-            SC_Player.localPlayer.CmdShiFuMiChoice((int)choice);
+            SC_Player.localPlayer.ShiFuMiChoiceServerRpc ((int) choice);
 
         }
 

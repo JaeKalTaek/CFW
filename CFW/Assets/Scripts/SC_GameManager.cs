@@ -1,11 +1,10 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
 using static SC_Global;
 using DG.Tweening;
 
-public class SC_GameManager : NetworkBehaviour {
+public class SC_GameManager : MonoBehaviour {
 
     [Header("Match Heat")]
     public int startMatchHeat, maxMatchHeat, resetMatchHeat;
@@ -17,12 +16,14 @@ public class SC_GameManager : NetworkBehaviour {
     [Header("Start hand size")]
     public int startHandSize;
 
-    [Header("UI")]
+    [Header ("UI")]
     public RectTransform background;
-
-    public GameObject connectingPanel, shifumiPanel, chooseTurnPanel, waitPanel;
+    public GameObject waitingPanel, deckChoicePanel, shifumiPanel, chooseTurnPanel, waitPanel;
+    public TMP_Dropdown deckChoice;
 
     public RectTransform localHand, otherHand;
+
+    public SC_Graveyard localGraveyard, otherGraveyard;
 
     [Header("Cards")]
     public float cardWidth;    
@@ -49,9 +50,9 @@ public class SC_GameManager : NetworkBehaviour {
 
     void Awake () {
 
-        connectingPanel.SetActive(true);
-
         Instance = this;
+
+        //SC_Player.localPlayer?.SetupPlayerValues ();      
 
         AddMatchHeat(startMatchHeat);
 
@@ -98,7 +99,7 @@ public class SC_GameManager : NetworkBehaviour {
 
     public void ChooseStartTurn(bool yes) {
 
-        SC_Player.localPlayer.CmdStartGame(yes);
+        SC_Player.localPlayer.StartGameServerRpc (yes);
 
     }
 
@@ -108,7 +109,7 @@ public class SC_GameManager : NetworkBehaviour {
         waitPanel.SetActive(false);
 
         if (SC_Player.localPlayer.Turn)
-            SC_Player.localPlayer.CmdDraw(1);
+            SC_Player.localPlayer.DrawServerRpc (1);
 
     }
 
