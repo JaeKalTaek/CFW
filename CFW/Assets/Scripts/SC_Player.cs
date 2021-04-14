@@ -6,6 +6,7 @@ using MLAPI;
 using static SC_Global;
 using MLAPI.Messaging;
 using System.Collections;
+using MLAPI.NetworkVariable;
 
 public class SC_Player : NetworkBehaviour {
 
@@ -33,6 +34,8 @@ public class SC_Player : NetworkBehaviour {
 
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
+    private NetworkVariable<bool> otherPlayerHere = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
+
     #region Setup
     public override void NetworkStart () {
 
@@ -40,10 +43,24 @@ public class SC_Player : NetworkBehaviour {
 
             localPlayer = this;
 
+            if (otherPlayer)
+                Test ();
+
             StartCoroutine (SetupCoroutine ());
 
-        } else
+        } else {
+
             otherPlayer = this;
+
+            localPlayer?.Test ();
+
+        }
+
+    }
+
+    void Test () {
+
+        otherPlayerHere.Value = true;
 
     }
 
@@ -60,6 +77,22 @@ public class SC_Player : NetworkBehaviour {
                 BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
         SetDeckServerRpc (deckName);
+
+    }
+
+    [ServerRpc]
+    void PlayersReadyServerRpc () {
+
+        PlayersReadyClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void PlayersReadyClientRpc () {
+
+        print ("PLAYERS READY CLIENT: " + DateTime.Now + ":" + DateTime.Now.Millisecond);
+
+        playersReady = true;
 
     }
 
@@ -91,18 +124,23 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    bool decksReady, decksShuffled;
+    bool playersReady, decksReady, decksShuffled;
 
     IEnumerator SetupCoroutine () {
 
-        while (!otherPlayer || !GM)
+        while (!otherPlayer || !otherPlayer.otherPlayerHere.Value || !GM)
             yield return new WaitForEndOfFrame ();
 
-        SetupPlayerValues ();
+        PlayersReadyServerRpc ();
 
+        while (!playersReady || !otherPlayer.playersReady)
+            yield return new WaitForEndOfFrame ();
+
+        SetupPlayerValues ();        
+    
         while (!Deck || !otherPlayer.Deck)
             yield return new WaitForEndOfFrame ();
-
+        
         DecksReadyServerRpc ();
 
         while (!decksReady || !otherPlayer.decksReady)
@@ -113,7 +151,7 @@ public class SC_Player : NetworkBehaviour {
         SetupDeckServerRpc ();
 
         while (!decksShuffled || !otherPlayer.decksShuffled)
-            yield return new WaitForEndOfFrame ();        
+            yield return new WaitForEndOfFrame ();
 
         GM.waitingPanel.SetActive (false);
 
