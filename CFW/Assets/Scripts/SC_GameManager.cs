@@ -52,8 +52,6 @@ public class SC_GameManager : MonoBehaviour {
 
         Instance = this;
 
-        //SC_Player.localPlayer?.SetupPlayerValues ();      
-
         AddMatchHeat(startMatchHeat);
 
         SetAllValues(true);
