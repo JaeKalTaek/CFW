@@ -34,7 +34,7 @@ public class SC_Player : NetworkBehaviour {
 
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
-    private NetworkVariable<bool> otherPlayerHere = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
+    private NetworkVariable<bool> hasOtherPlayer = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
 
     #region Setup
     public override void NetworkStart () {
@@ -44,7 +44,7 @@ public class SC_Player : NetworkBehaviour {
             localPlayer = this;
 
             if (otherPlayer)
-                Test ();
+                SetHasOtherPlayer ();
 
             StartCoroutine (SetupCoroutine ());
 
@@ -52,15 +52,15 @@ public class SC_Player : NetworkBehaviour {
 
             otherPlayer = this;
 
-            localPlayer?.Test ();
+            localPlayer?.SetHasOtherPlayer ();
 
         }
 
     }
 
-    void Test () {
+    void SetHasOtherPlayer () {
 
-        otherPlayerHere.Value = true;
+        hasOtherPlayer.Value = true;
 
     }
 
@@ -81,22 +81,6 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ServerRpc]
-    void PlayersReadyServerRpc () {
-
-        PlayersReadyClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void PlayersReadyClientRpc () {
-
-        print ("PLAYERS READY CLIENT: " + DateTime.Now + ":" + DateTime.Now.Millisecond);
-
-        playersReady = true;
-
-    }
-
-    [ServerRpc]
     void SetDeckServerRpc (string deckName) {
 
         SetDeckClientRpc (deckName);
@@ -110,40 +94,16 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    [ServerRpc]
-    void DecksReadyServerRpc () {
-
-        DecksReadyClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void DecksReadyClientRpc () {
-
-        decksReady = true;
-
-    }
-
-    bool playersReady, decksReady, decksShuffled;
+    bool decksShuffled;
 
     IEnumerator SetupCoroutine () {
 
-        while (!otherPlayer || !otherPlayer.otherPlayerHere.Value || !GM)
-            yield return new WaitForEndOfFrame ();
-
-        PlayersReadyServerRpc ();
-
-        while (!playersReady || !otherPlayer.playersReady)
+        while (!otherPlayer || !otherPlayer.hasOtherPlayer.Value || !GM)
             yield return new WaitForEndOfFrame ();
 
         SetupPlayerValues ();        
     
         while (!Deck || !otherPlayer.Deck)
-            yield return new WaitForEndOfFrame ();
-        
-        DecksReadyServerRpc ();
-
-        while (!decksReady || !otherPlayer.decksReady)
             yield return new WaitForEndOfFrame ();
 
         Deck.Shuffle ();
