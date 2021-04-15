@@ -13,8 +13,9 @@ public class SC_GameManager : MonoBehaviour {
 
     public TextMeshProUGUI matchHeatText;
 
-    [Header("Start hand size")]
+    [Header("Hand sizes")]
     public int startHandSize;
+    public int maxHandSize;
 
     [Header ("UI")]
     public RectTransform background;
@@ -107,7 +108,7 @@ public class SC_GameManager : MonoBehaviour {
         waitPanel.SetActive(false);
 
         if (SC_Player.localPlayer.Turn)
-            SC_Player.localPlayer.DrawServerRpc (1);
+            SC_Player.localPlayer.DrawServerRpc (1, true);
 
     }
 

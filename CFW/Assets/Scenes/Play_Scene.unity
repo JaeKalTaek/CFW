@@ -2647,6 +2647,7 @@ MonoBehaviour:
   resetMatchHeat: 11
   matchHeatText: {fileID: 1435033152}
   startHandSize: 6
+  maxHandSize: 10
   background: {fileID: 1762723857}
   waitingPanel: {fileID: 456157239}
   deckChoicePanel: {fileID: 0}

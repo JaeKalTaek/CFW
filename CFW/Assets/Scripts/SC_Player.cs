@@ -14,6 +14,8 @@ public class SC_Player : NetworkBehaviour {
 
 	public SC_Deck Deck { get; set; }
 
+    public List<SC_BaseCard> Hand { get; set; }
+
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
     public static SC_Player localPlayer, otherPlayer;
@@ -38,6 +40,8 @@ public class SC_Player : NetworkBehaviour {
 
     #region Setup
     public override void NetworkStart () {
+
+        Hand = new List<SC_BaseCard> ();
 
         if (IsLocalPlayer) {
 
@@ -150,14 +154,14 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ServerRpc]
-    public void DrawServerRpc (int nbr) {
+    public void DrawServerRpc (int nbr, bool startTurn) {
 
-        DrawClientRpc (nbr);
+        DrawClientRpc (nbr, startTurn);
 
     }
 
     [ClientRpc]
-    void DrawClientRpc (int nbr) {
+    void DrawClientRpc (int nbr, bool startTurn) {
 
         Deck.Draw (nbr, true);
 
@@ -251,9 +255,9 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartGameClientRpc (bool start) {        
 
-        (IsLocalPlayer ? this : otherPlayer).Turn = start;
+        (IsLocalPlayer ? localPlayer : otherPlayer).Turn = start;
 
-        (IsLocalPlayer ? otherPlayer : this).Turn = !start;
+        (IsLocalPlayer ? otherPlayer : localPlayer).Turn = !start;
 
         GM.StartGame();
 
@@ -333,7 +337,7 @@ public class SC_Player : NetworkBehaviour {
 
             localPlayer.Turn = true;
 
-            localPlayer.DrawServerRpc (1);
+            localPlayer.DrawServerRpc (1, true);
 
         }
 

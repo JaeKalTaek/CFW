@@ -25,7 +25,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         Local = local;
 
-        Draw(GM.startHandSize);
+        Draw (GM.startHandSize, false, false);
 
         if (!local) {
 
@@ -41,10 +41,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    public void Draw (int nbr, bool tween = false) {
+    public void Draw (int nbr, bool StartTurn, bool tween = true) {
 
         for (int i = 0; i < nbr; i++)
-            Draw(tween);
+            Draw (StartTurn, tween);
 
     }
 
@@ -67,55 +67,74 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    void Draw (bool tween = false) {
+    void Draw (bool startTurn, bool tween = true) {
 
-        RectTransform rT = Local ? GM.localHand : GM.otherHand;
+        if ((Local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Count < GM.maxHandSize) {
 
-        SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card>("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler(0, 0, 180), rT);
+            RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-        c.name = cards[0].Path;
+            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler (0, 0, 180), rT);
 
-        c.Card = Instantiate (Resources.Load<SC_BaseCard>(cards[0].Path), c.transform);
+            c.name = cards[0].Path;
 
-        c.Card.UICard = c;
+            c.Card = Instantiate (Resources.Load<SC_BaseCard> (cards[0].Path), c.transform);
 
-        if (Local && !tween)
-            c.SetImages ();
+            c.Card.UICard = c;
 
-        cards.RemoveAt (0);
+            if (Local && !tween)
+                c.SetImages ();
 
-        OrganizeHand (rT);
+            cards.RemoveAt (0);
 
-        if (tween) {
+            print (c.transform.GetSiblingIndex ());
 
-            c.Moving = true;
+            OrganizeHand (rT);
 
-            Vector3 target = c.transform.localPosition;
+            print (c.transform.localPosition);
 
-            c.transform.position = transform.position;
+            TSize.text = Size.ToString ();
 
-            c.transform.DOLocalMove(target, GM.drawSpeed, true).OnComplete(() => { FinishDrawing(c); });
+            if (tween) {
 
-            if (Local)
-                DOTween.Sequence ().Append (c.transform.DORotate(Vector3.up * 90, GM.drawSpeed / 2).OnComplete(() => { c.SetImages(); })).Append(c.transform.DORotate(Vector3.zero, GM.drawSpeed / 2));
+                c.Moving = true;
+
+                Vector3 target = c.transform.localPosition;
+
+                c.transform.position = transform.position;
+
+                c.transform.DOLocalMove (target, GM.drawSpeed, true).OnComplete (() => { FinishDrawing (c, startTurn); });
+
+                if (Local)
+                    DOTween.Sequence ().Append (c.transform.DORotate (Vector3.up * 90, GM.drawSpeed / 2).OnComplete (() => { c.SetImages (); })).Append (c.transform.DORotate (Vector3.zero, GM.drawSpeed / 2));
+
+            } else 
+                FinishDrawing (c, startTurn);
+
+        } else {
+
+            FinishDrawing (null, startTurn);
 
         }
 
-        TSize.text = Size.ToString ();
-
     }
 
-    void FinishDrawing (SC_UI_Card c) {
+    void FinishDrawing (SC_UI_Card c, bool startTurn) {
 
-        if (SC_Player.localPlayer.Turn) {
+        if (c) {
+
+            (Local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
+
+            c.Moving = false;
+
+        }
+
+        if (SC_Player.localPlayer.Turn && startTurn) {
 
             SC_Player.localPlayer.CanPlay = true;
 
             UI.skipButton.SetActive (true);
 
-        }
-
-        c.Moving = false;        
+        }             
 
     }
 
