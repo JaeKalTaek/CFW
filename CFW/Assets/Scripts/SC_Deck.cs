@@ -50,20 +50,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public static void OrganizeHand (RectTransform rT) {
 
-        /*if (rT == GM.localHand)
-            print("_________________________________");*/
-
-        for (int i = 0; i < rT.childCount; i++) {
-
-            //if (rT == GM.localHand)
-            //    print(rT.GetChild(i).GetComponent<SC_UI_Card>().name + " : " + i + " : " + rT.GetChild(i).GetSiblingIndex());
-
-            rT.GetChild (i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * (GM.cardWidth / 2).F(rT.childCount % 2 == 0), 108.I(rT == GM.otherHand), 0);
-
-            //if (rT == GM.localHand)
-            //    print(rT.GetChild(i).GetComponent<SC_UI_Card>().name + " : " + i + " : " + rT.GetChild(i).GetSiblingIndex());
-
-        }
+        for (int i = 0; i < rT.childCount; i++)
+            rT.GetChild (i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * -(GM.cardWidth / 2), 108.I(rT == GM.otherHand), 0);
 
     }
 
@@ -86,11 +74,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             cards.RemoveAt (0);
 
-            print (c.transform.GetSiblingIndex ());
-
             OrganizeHand (rT);
-
-            print (c.transform.localPosition);
 
             TSize.text = Size.ToString ();
 
