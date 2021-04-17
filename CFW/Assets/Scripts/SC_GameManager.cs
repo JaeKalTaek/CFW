@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using static SC_Global;
+using static SC_Player;
 using DG.Tweening;
 
 public class SC_GameManager : MonoBehaviour {
@@ -51,14 +52,16 @@ public class SC_GameManager : MonoBehaviour {
 
     void Awake () {
 
-        Instance = this;
+        waitingPanel.SetActive (true);
 
-        AddMatchHeat(startMatchHeat);
+        Instance = this;        
 
-        SetAllValues(true);
-        SetAllValues(false);
+        AddMatchHeat (startMatchHeat);
 
-        DOTween.Init(false, true, LogBehaviour.Verbose);
+        SetAllValues (true);
+        SetAllValues (false);
+
+        DOTween.Init (false, true, LogBehaviour.Verbose);
 
     }
 
@@ -72,43 +75,59 @@ public class SC_GameManager : MonoBehaviour {
 
     public void SetValue(bool local, string id, int value) {
 
+        //(local ? SC_Player.localPlayer : SC_Player.otherPlayer).GetType ().
+
+        //typeof (SC_Player).GetF
+
         (local ? localValues : otherValues).Find(id).GetChild(1).GetComponent<TextMeshProUGUI>().text = value.ToString();
 
     }
 
-    void SetAllValues(bool local) {
+    void SetAllValues (bool local) {
 
-        SetValue(local, "Health", baseHealth);
+        SetValue (local, "Health", baseHealth);
 
-        SetValue(local, "Stamina", baseStamina);
+        SetValue (local, "Stamina", baseStamina);
 
-        SetValue(local, "Alignment", 0);
+        SetValue (local, "Alignment", 0);
 
         foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
             if (bP != BodyPart.None)
-                SetValue(local, bP.ToString(), baseBodyPartHealth);
+                SetValue (local, bP.ToString(), baseBodyPartHealth);
 
     }
 
     public void ShowTurnPanel(bool choose) {
 
-        (choose ? chooseTurnPanel : waitPanel).SetActive(true);
+        (choose ? chooseTurnPanel : waitPanel).SetActive (true);
 
     }
 
     public void ChooseStartTurn(bool yes) {
 
-        SC_Player.localPlayer.StartGameServerRpc (yes);
+        localPlayer.StartGameServerRpc (yes);
 
     }
 
     public void StartGame() {        
 
-        chooseTurnPanel.SetActive(false);
-        waitPanel.SetActive(false);
+        chooseTurnPanel.SetActive (false);
+        waitPanel.SetActive (false);
 
-        if (SC_Player.localPlayer.Turn)
-            SC_Player.localPlayer.DrawServerRpc (1, true);
+        if (localPlayer.Turn)
+            localPlayer.DrawServerRpc (1, true);
+
+    }
+
+    public void SkipTurn () {
+
+        localPlayer.Turn = false;
+
+        localPlayer.CanPlay = false;
+
+        SC_UI_Manager.Instance.skipButton.SetActive (false);
+
+        localPlayer.SkipTurnServerRpc ();
 
     }
 

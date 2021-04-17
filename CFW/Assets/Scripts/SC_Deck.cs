@@ -31,7 +31,6 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             RectT.anchorMin = Vector2.up;
             RectT.anchorMax = Vector2.up;
-            // RectT.anchoredPosition = new Vector2(-RectT.anchoredPosition.x, RectT.anchoredPosition.y);
             RectT.localRotation = Quaternion.Euler (0, 0, 180);
             TSize.rectTransform.localRotation = Quaternion.Euler (0, 0, -180);
 
@@ -61,7 +60,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler (0, 0, 180), rT);
+            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler (0, 0, 180), rT);
 
             c.name = cards[0].Path;
 
@@ -89,16 +88,15 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
                 c.transform.DOLocalMove (target, GM.drawSpeed, true).OnComplete (() => { FinishDrawing (c, startTurn); });
 
                 if (Local)
-                    DOTween.Sequence ().Append (c.transform.DORotate (Vector3.up * 90, GM.drawSpeed / 2).OnComplete (() => { c.SetImages (); })).Append (c.transform.DORotate (Vector3.zero, GM.drawSpeed / 2));
+                    DOTween.Sequence ().Append (c.transform.DORotate (Vector3.up * 90, GM.drawSpeed / 2)
+                        .OnComplete (() => { c.SetImages (); }))
+                        .Append (c.transform.DORotate (Vector3.zero, GM.drawSpeed / 2));
 
             } else 
                 FinishDrawing (c, startTurn);
 
-        } else {
-
+        } else
             FinishDrawing (null, startTurn);
-
-        }
 
     }
 

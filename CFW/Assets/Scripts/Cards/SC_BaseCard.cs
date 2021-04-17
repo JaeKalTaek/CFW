@@ -1,12 +1,11 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 using static SC_Global;
+using static SC_Player;
 
 namespace Card {
 
     public abstract class SC_BaseCard : MonoBehaviour {
-
-        static SC_Player Player { get { return SC_Player.localPlayer; } }
 
         protected static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
@@ -33,6 +32,7 @@ namespace Card {
                 return s + "/" + name.Replace("(Clone)", "");                
 
             }
+
         }
 
         string TypeToString (int i) {
@@ -49,48 +49,59 @@ namespace Card {
 
         public virtual void Use (SC_Player caller) {
 
-            // UICard.transform.SetParent((caller == Player.gameObject ? GM.localGraveyard : GM.otherGraveyard).RecT);
+            caller.Hand.Remove (this);
 
-            UICard.transform.SetParent(UICard.transform.parent.parent);
+            UICard.Moving = true;
 
-            float pos = UICard.RecT.sizeDelta.y * 2;
+            localPlayer.Busy = true;
 
-            Vector3 start = UICard.transform.position;
+            UICard.transform.SetParent (UICard.transform.parent.parent);
 
-            UICard.RecT.anchoredPosition3D = Vector3.up * (Player.Turn ? pos : (GM.transform as RectTransform).sizeDelta.y - pos);
+            SC_Deck.OrganizeHand (caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
-            Vector3 target = UICard.transform.position;
+            UICard.RecT.anchoredPosition3D = Vector3.up * (caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
 
-            UICard.transform.position = start;
+            UICard.RecT.DOLocalMove (Vector3.zero, 1);
 
-            UICard.transform.DOMove(target, 1);
+            DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * 1.5f, 1))
+                .OnComplete (() => {
+                    ApplyEffect (caller);
+                    FinishUse (caller);
+                });
 
-            /*if(!Player.Turn)
-                UICard.transform.DORotate()*/
+            if (!caller.IsLocalPlayer) {
 
-            // UICard.transform.DOMove(Vector3.up * 500, 1);
+                DOTween.Sequence ().Append (UICard.transform.DORotate (Vector3.up * 90, .5f)
+                    .OnComplete (() => {
+                        UICard.SetImages ();
+                        UICard.RecT.rotation = Quaternion.Euler (Vector3.up * 90);
+                    }))
+                    .Append (UICard.transform.DORotate (Vector3.zero, .5f));
 
-            // DOTween.Sequence().Append(UICard.transform.DOLocalMove(Vector3.up * 500, 1f)); //.Append(UICard.transform.DOMove(Vector3.up * 130, 1f));
-
-            // UICard.transform.DOMove(Vector3.up * 500, 1f).OnCO
-
-            /*Player.Turn ^= true;
-
-            if(!Player.Turn) {
-
-                Player.Busy = false;
-
-                Player.CanPlay = false;
-
-                UI.bodyPartDamageChoice.panel.SetActive(false);
-
-            } else {
-
-                Player.CmdDraw(1);
-
-            }*/
+            }            
 
         }
+
+        void FinishUse (SC_Player caller) {
+
+            UICard.RecT.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+
+            UICard.RecT.anchorMin = UICard.RecT.anchorMax = Vector2.one * .5f;
+
+            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / 1.5f, 1);
+
+            UICard.RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
+
+                localPlayer.Busy = false;
+
+                if (caller.IsLocalPlayer)
+                    GM.SkipTurn ();
+
+            });
+
+        }
+
+        public abstract void ApplyEffect (SC_Player caller);
 
     }
 

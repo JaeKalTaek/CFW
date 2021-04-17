@@ -2,6 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card;
+using static SC_Player;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -43,7 +44,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if (!Moving && Local && !SC_Player.localPlayer.Busy) {
+        if (!Moving && Local && !localPlayer.Busy) {
 
             bigCard.SetActive(true);
 
@@ -57,11 +58,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        if (!Moving && Local && !SC_Player.localPlayer.Busy) {
+        if (!Moving && Local && !localPlayer.Busy) {
 
-            bigCard.SetActive(false);
+            bigCard.SetActive (false);
 
-            RecT.SetSiblingIndex(prevSiblingIndex);
+            RecT.SetSiblingIndex (prevSiblingIndex);
 
         }
 
@@ -69,30 +70,30 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (Local && Card.CanUse() && SC_Player.localPlayer.CanPlay) {
+        if (Local && Card.CanUse () && localPlayer.CanPlay) {
 
-            UI.skipButton.SetActive(false);
+            OnPointerExit (new PointerEventData (EventSystem.current));
 
-            SC_Player.localPlayer.CanPlay = false;
+            UI.skipButton.SetActive (false);            
+
+            localPlayer.CanPlay = false;
+
+            localPlayer.Busy = true;                       
 
             SC_OffensiveMove om = Card as SC_OffensiveMove;
-
-            OnPointerExit(new PointerEventData(EventSystem.current));
-
-            SC_Player.localPlayer.Busy = true;
 
             if (om && (om.effectOnOpponent.bodyPartDamage.otherBodyPart != SC_Global.BodyPart.None) && !om.effectOnOpponent.bodyPartDamage.both) {
 
                 GM.UsingCardID = name;              
 
-                UI.bodyPartDamageChoice.firstChoice.text = om.effectOnOpponent.bodyPartDamage.bodyPart.ToString();
+                UI.bodyPartDamageChoice.firstChoice.text = om.effectOnOpponent.bodyPartDamage.bodyPart.ToString ();
 
-                UI.bodyPartDamageChoice.secondChoice.text = om.effectOnOpponent.bodyPartDamage.otherBodyPart.ToString();
+                UI.bodyPartDamageChoice.secondChoice.text = om.effectOnOpponent.bodyPartDamage.otherBodyPart.ToString ();
 
-                UI.bodyPartDamageChoice.panel.SetActive(true);
+                UI.bodyPartDamageChoice.panel.SetActive (true);
 
             } else
-                SC_Player.localPlayer.UseBaseCardServerRpc (name);
+                localPlayer.UseCardServerRpc (name, false);
 
         }
 

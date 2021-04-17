@@ -11,13 +11,12 @@ namespace Card {
         [Tooltip("Is this card a Finisher ?")]
         public bool finisher;
 
-        public override void Use (SC_Player caller) {
-
-            base.Use (caller);
+        public override void ApplyEffect (SC_Player caller) {
 
             GM.AddMatchHeat (matchHeatGain);
 
         }
+
     }
 
 }

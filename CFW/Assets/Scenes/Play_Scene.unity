@@ -158,11 +158,11 @@ RectTransform:
   m_Father: {fileID: 1762723857}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -25, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.67}
+  m_AnchorMax: {x: 0.5, y: 0.67}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 250, y: 100}
-  m_Pivot: {x: 1, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &12439932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,8 +207,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1762723860}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 670482959}
+        m_TargetAssemblyTypeName: SC_GameManager, Assembly-CSharp
         m_MethodName: SkipTurn
         m_Mode: 1
         m_Arguments:
@@ -1895,7 +1895,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &456157240
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2646,7 +2646,7 @@ MonoBehaviour:
   maxMatchHeat: 20
   resetMatchHeat: 11
   matchHeatText: {fileID: 1435033152}
-  startHandSize: 6
+  startHandSize: 4
   maxHandSize: 10
   background: {fileID: 1762723857}
   waitingPanel: {fileID: 456157239}
@@ -2662,9 +2662,9 @@ MonoBehaviour:
   cardWidth: 190
   enlargeCardFactor: 2.25
   drawSpeed: 1
-  baseHealth: 30
-  baseStamina: 15
-  baseBodyPartHealth: 10
+  baseHealth: 20
+  baseStamina: 10
+  baseBodyPartHealth: 7
   localValues: {fileID: 338365020}
   otherValues: {fileID: 941922592}
   shifumiText: {fileID: 2139284678}
@@ -6886,7 +6886,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6722231e3f6fe2e46accc3f24885f478, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f036ef40395a04447ae2329a6fc0359a, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1

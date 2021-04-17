@@ -1,10 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using static SC_Global;
+using static SC_Player;
 
 namespace Card {
 
     public class SC_OffensiveMove : SC_AttackCard {
+
+        public static bool currentChoice;
 
         [Header("Offensive Move Variables")]
         [Tooltip("Effects of this offensive move on you")]
@@ -35,67 +38,67 @@ namespace Card {
 
         }
 
-        public void Use (SC_Player caller, bool choice) {
+        public override void ApplyEffect (SC_Player caller) {
 
-            Use(caller);
-
-            SC_Player other = caller == SC_Player.localPlayer ? SC_Player.otherPlayer : SC_Player.localPlayer;
-
-            BodyPart bp = choice ? effectOnOpponent.bodyPartDamage.bodyPart : effectOnOpponent.bodyPartDamage.otherBodyPart;
-
-            other.BodyPartsHealth[bp] = other.BodyPartsHealth[bp].ReduceWithMin(effectOnOpponent.bodyPartDamage.damage);
-
-            GM.SetValue(other == SC_Player.localPlayer, bp.ToString(), other.BodyPartsHealth[bp]);
-
-        }
-
-        public override void Use (SC_Player caller) {
-
-            base.Use(caller);
+            base.ApplyEffect (caller);
 
             // Effect on user
             caller.Stamina = caller.Stamina.ReduceWithMin(effectOnYou.stamina);
 
-            GM.SetValue(caller == SC_Player.localPlayer, "Stamina", caller.Stamina);
+            GM.SetValue (caller.IsLocalPlayer, "Stamina", caller.Stamina);
 
             caller.Health = caller.Health.ReduceWithMin(effectOnYou.health);
 
-            GM.SetValue(caller == SC_Player.localPlayer, "Health", caller.Health);
+            GM.SetValue (caller.IsLocalPlayer, "Health", caller.Health);
 
             if (effectOnYou.bodyPartDamage.bodyPart != BodyPart.None) {
 
                 caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart] = caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart].ReduceWithMin(effectOnYou.bodyPartDamage.damage);
 
-                GM.SetValue(caller == SC_Player.localPlayer, effectOnYou.bodyPartDamage.bodyPart.ToString(), caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart]);
+                GM.SetValue (caller.IsLocalPlayer, effectOnYou.bodyPartDamage.bodyPart.ToString(), caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart]);
 
             }
 
             // Effect on opponent
-            SC_Player other = caller == SC_Player.localPlayer ? SC_Player.otherPlayer : SC_Player.localPlayer;
+            SC_Player other = caller.IsLocalPlayer ? otherPlayer : localPlayer;
 
             other.Stamina = other.Stamina.ReduceWithMin(effectOnOpponent.stamina);
 
-            GM.SetValue(other == SC_Player.localPlayer, "Stamina", other.Stamina);
+            GM.SetValue (other.IsLocalPlayer, "Stamina", other.Stamina);
 
             other.Health = other.Health.ReduceWithMin(effectOnOpponent.health);
 
-            GM.SetValue(other == SC_Player.localPlayer, "Health", other.Health);
+            GM.SetValue (other.IsLocalPlayer, "Health", other.Health);
 
-            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || effectOnOpponent.bodyPartDamage.both)) {
+            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || currentChoice || effectOnOpponent.bodyPartDamage.both)) {
 
-                other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart].ReduceWithMin(effectOnOpponent.bodyPartDamage.damage);
+                other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart].ReduceWithMin (effectOnOpponent.bodyPartDamage.damage);
 
-                GM.SetValue(other == SC_Player.localPlayer, effectOnOpponent.bodyPartDamage.bodyPart.ToString(), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
-
-                if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None) {
-
-                    other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart].ReduceWithMin(effectOnOpponent.bodyPartDamage.damage);
-
-                    GM.SetValue(other == SC_Player.localPlayer, effectOnOpponent.bodyPartDamage.bodyPart.ToString(), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
-
-                }
+                GM.SetValue (other.IsLocalPlayer, effectOnOpponent.bodyPartDamage.bodyPart.ToString (), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
 
             }
+
+            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || !currentChoice)) {
+
+                other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.otherBodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.otherBodyPart].ReduceWithMin (effectOnOpponent.bodyPartDamage.damage);
+
+                GM.SetValue (other.IsLocalPlayer, effectOnOpponent.bodyPartDamage.otherBodyPart.ToString (), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
+
+            }
+
+        }
+
+        /*void ApplySingleEffect (SC_Player target, string field) {
+
+            target.Stamina = target.Stamina.ReduceWithMin (effectOnOpponent.stamina);
+
+            GM.SetValue (target == localPlayer, "Stamina", target.Stamina);
+
+        }*/
+
+        void DamageBodyPart () {
+
+
 
         }
 

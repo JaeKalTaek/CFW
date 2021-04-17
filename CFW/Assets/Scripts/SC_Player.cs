@@ -80,7 +80,8 @@ public class SC_Player : NetworkBehaviour {
             if (bP != BodyPart.None)
                 BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
-        SetDeckServerRpc (deckName);
+        if (IsLocalPlayer)
+            SetDeckServerRpc (deckName);
 
     }
 
@@ -105,7 +106,8 @@ public class SC_Player : NetworkBehaviour {
         while (!otherPlayer || !otherPlayer.hasOtherPlayer.Value || !GM)
             yield return new WaitForEndOfFrame ();
 
-        SetupPlayerValues ();        
+        SetupPlayerValues ();
+        otherPlayer.SetupPlayerValues ();
     
         while (!Deck || !otherPlayer.Deck)
             yield return new WaitForEndOfFrame ();
@@ -275,48 +277,20 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    #region Base usage
+    #region Use card
     [ServerRpc]
-    public void UseBaseCardServerRpc (string id) {
+    public void UseCardServerRpc (string id, bool choice) {
 
-        BaseUseCardClientRpc (id);
+        UseCardClientRpc (id, choice);
 
     }
 
     [ClientRpc]
-    void BaseUseCardClientRpc (string id) {
+    void UseCardClientRpc (string id, bool choice) {
 
-        ActionOnCard(id, (t) => { t.GetComponent<SC_UI_Card>().Card.Use(this); });
+        SC_OffensiveMove.currentChoice = choice;        
 
-        BaseCardUsage(id);
-
-    }
-
-    void BaseCardUsage (string id) {
-
-        RectTransform h = IsLocalPlayer ? GM.localHand : GM.otherHand;
-
-        ActionOnCard(id, (t) => { Destroy(t.gameObject); });
-
-        SC_Deck.OrganizeHand(h);
-
-    }
-    #endregion
-
-    #region Offensive move with body part choice
-    [ServerRpc]
-    public void UseOffensiveMoveCardServerRpc (string id, bool choice) {
-
-        UseOffensiveMoveCardClientRpc (id, choice);
-
-    }
-
-    [ClientRpc]
-    void UseOffensiveMoveCardClientRpc (string id, bool choice) {
-
-        ActionOnCard(id, (t) => { (t.GetComponent<SC_UI_Card>().Card as SC_OffensiveMove).Use(this, choice); });
-
-        BaseCardUsage(id);
+        ActionOnCard (id, (t) => { t.GetComponent<SC_UI_Card> ().Card.Use (this); });
 
     }
     #endregion
