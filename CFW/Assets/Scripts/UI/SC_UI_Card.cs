@@ -42,11 +42,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (!Moving && Local && !localPlayer.Busy) {
 
-            bigCard.SetActive(true);
+            bigCard.transform.SetParent (transform.parent);
 
-            prevSiblingIndex = RecT.GetSiblingIndex();
+            bigCard.transform.SetAsLastSibling ();
 
-            RecT.SetAsLastSibling();           
+            bigCard.SetActive(true);      
 
         }
 
@@ -56,9 +56,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (!Moving && Local && !localPlayer.Busy) {
 
-            bigCard.SetActive (false);
+            bigCard.transform.SetParent (transform);
 
-            RecT.SetSiblingIndex (prevSiblingIndex);
+            bigCard.SetActive (false);
 
         }
 
