@@ -47,7 +47,7 @@ MonoBehaviour:
   types: 00000000
   matchHeatGain: 2
   cost:
-    stamina: 20
+    stamina: 2
     health: 1
     bodyPartDamage:
       bodyPart: 0

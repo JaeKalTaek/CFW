@@ -84,20 +84,28 @@ namespace Card {
 
         void FinishUse (SC_Player caller) {
 
-            UICard.RecT.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+            if ((caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
 
-            UICard.RecT.anchorMin = UICard.RecT.anchorMax = Vector2.one * .5f;
+                UI.ShowEndPanel (caller.IsLocalPlayer);
 
-            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / 1.5f, 1);
+            } else {
 
-            UICard.RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
+                UICard.RecT.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
 
-                localPlayer.Busy = false;
+                UICard.RecT.anchorMin = UICard.RecT.anchorMax = Vector2.one * .5f;
 
-                if (caller.IsLocalPlayer)
-                    GM.SkipTurn ();
+                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / 1.5f, 1);
 
-            });
+                UICard.RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
+
+                    localPlayer.Busy = false;
+
+                    if (caller.IsLocalPlayer)
+                        GM.SkipTurn ();
+
+                });
+
+            }
 
         }
 

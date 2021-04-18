@@ -8,6 +8,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public static SC_UI_Manager Instance;
 
+    public Transform localValues, otherValues;
+
     public BodyPartDamageChoice bodyPartDamageChoice;
 
     public GameObject skipButton;
@@ -27,7 +29,13 @@ public class SC_UI_Manager : MonoBehaviour {
 
         Instance = this;
 
-    }    
+    }
+
+    public void SetValue (bool local, string id, int value) {
+
+        (local ? localValues : otherValues).Find (id).GetChild (1).GetComponent<TextMeshProUGUI> ().text = value.ToString ();
+
+    }
 
     public void ChoseBodyPart (bool first) {
 

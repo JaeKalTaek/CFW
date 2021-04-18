@@ -29,64 +29,27 @@ namespace Card {
             base.ApplyEffect (caller);
 
             // Effect on user
-            caller.Stamina = caller.Stamina.ReduceWithMin(cost.stamina);
+            caller.ApplySingleEffect ("Stamina", cost);
 
-            GM.SetValue (caller.IsLocalPlayer, "Stamina", caller.Stamina);
+            caller.ApplySingleEffect ("Health", cost);
 
-            caller.Health = caller.Health.ReduceWithMin(cost.health);
-
-            GM.SetValue (caller.IsLocalPlayer, "Health", caller.Health);
-
-            if (cost.bodyPartDamage.bodyPart != BodyPart.None) {
-
-                caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart] = caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart].ReduceWithMin(cost.bodyPartDamage.damage);
-
-                GM.SetValue (caller.IsLocalPlayer, cost.bodyPartDamage.bodyPart.ToString(), caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart]);
-
-            }
+            if (cost.bodyPartDamage.bodyPart != BodyPart.None)
+                caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
 
             // Effect on opponent
             SC_Player other = caller.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            other.Stamina = other.Stamina.ReduceWithMin(effectOnOpponent.stamina);
+            other.ApplySingleEffect ("Stamina", effectOnOpponent);
 
-            GM.SetValue (other.IsLocalPlayer, "Stamina", other.Stamina);
+            other.ApplySingleEffect ("Health", effectOnOpponent);
 
-            other.Health = other.Health.ReduceWithMin(effectOnOpponent.health);
+            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || currentChoice || effectOnOpponent.bodyPartDamage.both))
+                other.ApplySingleBodyEffect (effectOnOpponent.bodyPartDamage.bodyPart, effectOnOpponent.bodyPartDamage.damage);
 
-            GM.SetValue (other.IsLocalPlayer, "Health", other.Health);
+            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || !currentChoice))
+                other.ApplySingleBodyEffect (effectOnOpponent.bodyPartDamage.otherBodyPart, effectOnOpponent.bodyPartDamage.damage);
 
-            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || currentChoice || effectOnOpponent.bodyPartDamage.both)) {
-
-                other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart].ReduceWithMin (effectOnOpponent.bodyPartDamage.damage);
-
-                GM.SetValue (other.IsLocalPlayer, effectOnOpponent.bodyPartDamage.bodyPart.ToString (), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
-
-            }
-
-            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || !currentChoice)) {
-
-                other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.otherBodyPart] = other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.otherBodyPart].ReduceWithMin (effectOnOpponent.bodyPartDamage.damage);
-
-                GM.SetValue (other.IsLocalPlayer, effectOnOpponent.bodyPartDamage.otherBodyPart.ToString (), other.BodyPartsHealth[effectOnOpponent.bodyPartDamage.bodyPart]);
-
-            }
-
-        }
-
-        /*void ApplySingleEffect (SC_Player target, string field) {
-
-            target.Stamina = target.Stamina.ReduceWithMin (effectOnOpponent.stamina);
-
-            GM.SetValue (target == localPlayer, "Stamina", target.Stamina);
-
-        }*/
-
-        void DamageBodyPart () {
-
-
-
-        }
+        }        
 
     }
 

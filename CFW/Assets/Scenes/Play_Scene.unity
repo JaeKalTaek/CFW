@@ -2864,7 +2864,6 @@ MonoBehaviour:
   shifumiPanel: {fileID: 1333918836}
   chooseTurnPanel: {fileID: 1935579055}
   waitPanel: {fileID: 153060187}
-  deckChoice: {fileID: 0}
   localHand: {fileID: 1837487025}
   otherHand: {fileID: 358808372}
   localGraveyard: {fileID: 1774692600}
@@ -2875,8 +2874,7 @@ MonoBehaviour:
   baseHealth: 20
   baseStamina: 10
   baseBodyPartHealth: 7
-  localValues: {fileID: 338365020}
-  otherValues: {fileID: 941922592}
+  staminaPerTurn: 2
   shifumiText: {fileID: 2139284678}
   baseShiFuMiChoiceColor: {r: 1, g: 1, b: 1, a: 0.49019608}
   lockedChoiceColor: {r: 0.28627452, g: 0.28627452, b: 0.28627452, a: 1}
@@ -7127,11 +7125,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3208b8324a03fc4aa8c95c2f6aa91d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  localValues: {fileID: 338365020}
+  otherValues: {fileID: 941922592}
   bodyPartDamageChoice:
     panel: {fileID: 1687882673}
     firstChoice: {fileID: 465557256}
     secondChoice: {fileID: 1649399420}
   skipButton: {fileID: 12439930}
+  endText: {fileID: 419388182}
 --- !u!1 &1769731456
 GameObject:
   m_ObjectHideFlags: 0

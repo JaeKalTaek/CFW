@@ -30,7 +30,7 @@ namespace Card {
 
         public override bool CanUse () {
 
-            if (base.CanUse () && localPlayer.Health > cost.health && localPlayer.Stamina > cost.stamina) {
+            if (base.CanUse () && localPlayer.Health > cost.health && localPlayer.Stamina >= cost.stamina) {
 
                 foreach (BodyPart b in localPlayer.BodyPartsHealth.Keys)
                     if (b == cost.bodyPartDamage.bodyPart && localPlayer.BodyPartsHealth[b] < cost.bodyPartDamage.damage)

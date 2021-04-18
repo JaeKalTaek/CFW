@@ -18,6 +18,8 @@ public class SC_Player : NetworkBehaviour {
 
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
+    SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
+
     public static SC_Player localPlayer, otherPlayer;
 
     public ShiFuMi ShifumiChoice { get; set; }
@@ -30,9 +32,10 @@ public class SC_Player : NetworkBehaviour {
 
     public int Health { get; set; }
 
-    public int Stamina { get; set; }
+    private int stamina;
+    public int Stamina { get => stamina; set => stamina = Mathf.Min (value, GM.baseStamina); }
 
-    public int Alignment { get; set; }
+    public int Alignment { get; set; }    
 
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
@@ -164,6 +167,8 @@ public class SC_Player : NetworkBehaviour {
 
     [ClientRpc]
     void DrawClientRpc (int nbr, bool startTurn) {
+
+        ApplySingleEffect ("Stamina", null, -GM.staminaPerTurn);
 
         Deck.Draw (nbr, true);
 
@@ -305,7 +310,7 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void SkipTurnClientRpc () {
+    void SkipTurnClientRpc () {        
 
         if (!IsLocalPlayer) {
 
@@ -314,6 +319,24 @@ public class SC_Player : NetworkBehaviour {
             localPlayer.DrawServerRpc (1, true);
 
         }
+
+    }
+    #endregion
+
+    #region Apply effects
+    public void ApplySingleEffect (string field, object effect, int? value = null) {
+
+        typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)).ReduceWithMin (value ?? (int) effect.GetType ().GetField (field.ToLower ()).GetValue (effect)));
+
+        UI.SetValue (IsLocalPlayer, field, (int) typeof (SC_Player).GetProperty (field).GetValue (this));
+
+    }
+
+    public void ApplySingleBodyEffect (BodyPart part, int effect) {
+
+        BodyPartsHealth[part] = BodyPartsHealth[part].ReduceWithMin (effect);
+
+        UI.SetValue (IsLocalPlayer, part.ToString (), BodyPartsHealth[part]);
 
     }
     #endregion

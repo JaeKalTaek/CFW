@@ -7,8 +7,9 @@ using DG.Tweening;
 
 public class SC_GameManager : MonoBehaviour {
 
-    [Header("Match Heat")]
-    public int startMatchHeat, maxMatchHeat, resetMatchHeat;
+    [Header ("Match Heat")]
+    public int startMatchHeat;
+    public int maxMatchHeat, resetMatchHeat;
 
     public int MatchHeat { get; set; }
 
@@ -21,7 +22,6 @@ public class SC_GameManager : MonoBehaviour {
     [Header ("UI")]
     public RectTransform background;
     public GameObject waitingPanel, deckChoicePanel, shifumiPanel, chooseTurnPanel, waitPanel;
-    public TMP_Dropdown deckChoice;
 
     public RectTransform localHand, otherHand;
 
@@ -34,12 +34,14 @@ public class SC_GameManager : MonoBehaviour {
 
     public float drawSpeed;
 
-    [Header("Values")]
+    [Header ("Values")]
+    [Header ("Base Values")]
     public int baseHealth;
 
     public int baseStamina, baseBodyPartHealth;
 
-    public Transform localValues, otherValues;
+    [Header ("Other Values")]
+    public int staminaPerTurn;
 
     [Header("ShiFuMi")]
     public TextMeshProUGUI shifumiText;
@@ -50,7 +52,9 @@ public class SC_GameManager : MonoBehaviour {
 
     public string UsingCardID { get; set; }
 
-    void Awake () {
+    SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
+
+    void Start () {
 
         waitingPanel.SetActive (true);
 
@@ -71,29 +75,19 @@ public class SC_GameManager : MonoBehaviour {
 
         matchHeatText.text = MatchHeat.ToString();
 
-    }
-
-    public void SetValue(bool local, string id, int value) {
-
-        //(local ? SC_Player.localPlayer : SC_Player.otherPlayer).GetType ().
-
-        //typeof (SC_Player).GetF
-
-        (local ? localValues : otherValues).Find(id).GetChild(1).GetComponent<TextMeshProUGUI>().text = value.ToString();
-
-    }
+    }    
 
     void SetAllValues (bool local) {
 
-        SetValue (local, "Health", baseHealth);
+        UI.SetValue (local, "Health", baseHealth);
 
-        SetValue (local, "Stamina", baseStamina);
+        UI.SetValue (local, "Stamina", baseStamina);
 
-        SetValue (local, "Alignment", 0);
+        UI.SetValue (local, "Alignment", 0);
 
         foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
             if (bP != BodyPart.None)
-                SetValue (local, bP.ToString(), baseBodyPartHealth);
+                UI.SetValue (local, bP.ToString(), baseBodyPartHealth);
 
     }
 
