@@ -28,11 +28,9 @@ public class SC_GameManager : MonoBehaviour {
     public SC_Graveyard localGraveyard, otherGraveyard;
 
     [Header("Cards")]
-    public float cardWidth;    
+    public float cardWidth;
 
-    public float enlargeCardFactor;
-
-    public float drawSpeed;
+    public float yOffset, enlargeCardFactor, drawSpeed;
 
     [Header ("Values")]
     [Header ("Base Values")]

@@ -27,16 +27,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         Draw (GM.startHandSize, false, false);
 
-        if (!local) {
-
-            RectT.anchorMin = Vector2.up;
-            RectT.anchorMax = Vector2.up;
-            RectT.localRotation = Quaternion.Euler (0, 0, 180);
-            TSize.rectTransform.localRotation = Quaternion.Euler (0, 0, -180);
-
-        }
-
-        TSize.gameObject.SetActive(false);
+        if (!local)
+            RectT.anchorMin = RectT.anchorMax = RectT.pivot = Vector2.up;
 
     }
 
@@ -50,7 +42,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
     public static void OrganizeHand (RectTransform rT) {
 
         for (int i = 0; i < rT.childCount; i++)
-            rT.GetChild (i).transform.localPosition = new Vector3((((rT.childCount - 1) / 2f) - i) * -(GM.cardWidth / 2), 108.I(rT == GM.otherHand), 0);
+            (rT.GetChild (i).transform as RectTransform).anchoredPosition = new Vector2((((rT.childCount - 1) / 2f) - i) * -(GM.cardWidth / 2), GM.yOffset.F(rT == GM.otherHand));
 
     }
 
@@ -60,7 +52,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Local ? Quaternion.identity : Quaternion.Euler (0, 0, 180), rT);
+            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Quaternion.identity, rT);
+
+            if (!Local)
+                c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);
 
             c.name = cards[0].Path;
 

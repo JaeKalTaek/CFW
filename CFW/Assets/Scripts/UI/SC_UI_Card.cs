@@ -28,17 +28,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
 
-        BigRec.anchoredPosition = Vector2.up * 400.5f;
+        BigRec.anchoredPosition += Vector2.up * GM.yOffset;
 
     }
 
     public void SetImages () {
 
-        Sprite s = Resources.Load<Sprite>(Card.Path);
-
-        GetComponent<Image>().sprite = s;
-
-        bigCard.GetComponent<Image>().sprite = s;
+        GetComponent<Image>().sprite = bigCard.GetComponent<Image>().sprite = Resources.Load<Sprite> (Card.Path);
 
     }
 
