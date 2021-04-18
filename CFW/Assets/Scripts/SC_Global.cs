@@ -3,7 +3,7 @@
 public class SC_Global {
 
     [Serializable]
-    public struct SelfBodyPartDamage {
+    public struct BodyPartDamage {
 
         public BodyPart bodyPart;
 
@@ -12,11 +12,9 @@ public class SC_Global {
     }
 
     [Serializable]
-    public struct BodyPartDamage {
+    public struct OffensiveBodyPartDamage {
 
-        public BodyPart bodyPart;
-
-        public BodyPart otherBodyPart;
+        public BodyPart bodyPart, otherBodyPart;
 
         public bool both;
 
@@ -32,7 +30,7 @@ public class SC_Global {
 
     public enum CardType {
 
-        Aerial, Classic, Hardcore, Mytho, Special, Strike, Submission
+        Aerial, Classic, Hardcore, Strike
 
     }
 

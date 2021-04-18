@@ -22,8 +22,8 @@ public class SC_CardEditor : Editor {
 
         if(oM) {
 
-            if (oM.effectOnYou.bodyPartDamage.bodyPart == SC_Global.BodyPart.None)
-                oM.effectOnYou.bodyPartDamage.damage = 0;
+            if (oM.cost.bodyPartDamage.bodyPart == SC_Global.BodyPart.None)
+                oM.cost.bodyPartDamage.damage = 0;
 
             if (oM.effectOnOpponent.bodyPartDamage.bodyPart == SC_Global.BodyPart.None) {
 

@@ -9,23 +9,9 @@ namespace Card {
 
         public static bool currentChoice;
 
-        [Header("Offensive Move Variables")]
-        [Tooltip("Effects of this offensive move on you")]
-        public SelfEffect effectOnYou;
-
+        [Header("Offensive Move Variables")]      
         [Tooltip("Effects of this offensive move on your opponent")]
-        public Effect effectOnOpponent;
-
-        [Serializable]
-        public struct SelfEffect {
-
-            public int stamina;
-
-            public int health;
-
-            public SelfBodyPartDamage bodyPartDamage;
-
-        }
+        public Effect effectOnOpponent;        
 
         [Serializable]
         public struct Effect {
@@ -34,7 +20,7 @@ namespace Card {
 
             public int health;
 
-            public BodyPartDamage bodyPartDamage;
+            public OffensiveBodyPartDamage bodyPartDamage;
 
         }
 
@@ -43,19 +29,19 @@ namespace Card {
             base.ApplyEffect (caller);
 
             // Effect on user
-            caller.Stamina = caller.Stamina.ReduceWithMin(effectOnYou.stamina);
+            caller.Stamina = caller.Stamina.ReduceWithMin(cost.stamina);
 
             GM.SetValue (caller.IsLocalPlayer, "Stamina", caller.Stamina);
 
-            caller.Health = caller.Health.ReduceWithMin(effectOnYou.health);
+            caller.Health = caller.Health.ReduceWithMin(cost.health);
 
             GM.SetValue (caller.IsLocalPlayer, "Health", caller.Health);
 
-            if (effectOnYou.bodyPartDamage.bodyPart != BodyPart.None) {
+            if (cost.bodyPartDamage.bodyPart != BodyPart.None) {
 
-                caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart] = caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart].ReduceWithMin(effectOnYou.bodyPartDamage.damage);
+                caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart] = caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart].ReduceWithMin(cost.bodyPartDamage.damage);
 
-                GM.SetValue (caller.IsLocalPlayer, effectOnYou.bodyPartDamage.bodyPart.ToString(), caller.BodyPartsHealth[effectOnYou.bodyPartDamage.bodyPart]);
+                GM.SetValue (caller.IsLocalPlayer, cost.bodyPartDamage.bodyPart.ToString(), caller.BodyPartsHealth[cost.bodyPartDamage.bodyPart]);
 
             }
 

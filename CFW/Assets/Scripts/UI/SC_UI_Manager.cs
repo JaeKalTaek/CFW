@@ -12,6 +12,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject skipButton;
 
+    public TextMeshProUGUI endText;
+
     [Serializable]
 	public struct BodyPartDamageChoice {
 
@@ -21,7 +23,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    void Start () {
+    void Awake () {
 
         Instance = this;
 
@@ -32,6 +34,14 @@ public class SC_UI_Manager : MonoBehaviour {
         SC_Player.localPlayer.UseCardServerRpc (GM.UsingCardID, first);
 
         bodyPartDamageChoice.panel.SetActive (false);
+
+    }
+
+    public void ShowEndPanel (bool won) {
+
+        endText.text = "YOU " + (won ? "WON" : "LOST");
+
+        endText.transform.parent.gameObject.SetActive (true);
 
     }
 
