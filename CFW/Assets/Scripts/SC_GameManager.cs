@@ -41,6 +41,8 @@ public class SC_GameManager : MonoBehaviour {
     [Header ("Other Values")]
     public int staminaPerTurn;
 
+    public int maxAlignment;
+
     [Header("ShiFuMi")]
     public TextMeshProUGUI shifumiText;
 

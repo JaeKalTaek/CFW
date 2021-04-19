@@ -30,12 +30,14 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Busy { get; set; }
 
-    public int Health { get; set; }
+    private int health;
+    public int Health { get => health; set => health = Mathf.Min (value, GM.baseHealth); }
 
     private int stamina;
     public int Stamina { get => stamina; set => stamina = Mathf.Min (value, GM.baseStamina); }
 
-    public int Alignment { get; set; }    
+    private int alignment;
+    public int Alignment { get => alignment; set => alignment = Mathf.Clamp (value, -GM.maxAlignment, GM.maxAlignment); }
 
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
