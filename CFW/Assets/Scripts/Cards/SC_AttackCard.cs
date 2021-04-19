@@ -45,7 +45,7 @@ namespace Card {
 
         public override void ApplyEffect (SC_Player caller) {
 
-            GM.AddMatchHeat (matchHeatGain);
+            GM.AddMatchHeat (matchHeatGain, true);
 
         }
 
