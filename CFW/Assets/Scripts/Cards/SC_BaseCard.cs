@@ -24,20 +24,14 @@ namespace Card {
 
             get {
 
-                string s = TypeToString(0);
+                string s = types[0].ToString () + (types.Length == 1 ? "s" : "");
 
                 for (int i = 1; i < types.Length; i++)
-                    s += " " + TypeToString(i);
+                    s += " " + types[i].ToString () + (types.Length == i + 1 ? "s" : "");
 
                 return s + "/" + name.Replace("(Clone)", "");                
 
             }
-
-        }
-
-        string TypeToString (int i) {
-
-            return types[i].ToString() + (types.Length == i + 1 ? "s" : "");
 
         }
 
