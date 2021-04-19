@@ -336,7 +336,7 @@ public class SC_Player : NetworkBehaviour {
 
     public void ApplySingleBodyEffect (BodyPart part, int effect) {
 
-        BodyPartsHealth[part] = BodyPartsHealth[part].ReduceWithMin (effect);
+        BodyPartsHealth[part] = Mathf.Clamp (BodyPartsHealth[part] - effect, 0, GM.baseBodyPartHealth);
 
         UI.SetValue (IsLocalPlayer, part.ToString (), BodyPartsHealth[part]);
 
