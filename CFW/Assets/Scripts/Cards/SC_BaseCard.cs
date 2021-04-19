@@ -59,6 +59,8 @@ namespace Card {
 
             SC_Deck.OrganizeHand (caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
+            UICard.RecT.pivot = Vector2.one * .5f;
+
             UICard.RecT.anchoredPosition3D = Vector3.up * (caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
 
             UICard.RecT.DOLocalMove (Vector3.zero, 1);
