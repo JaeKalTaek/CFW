@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+using UnityEditor;
 using UnityEngine;
 using Card;
 
@@ -25,18 +25,20 @@ public class SC_CardEditor : Editor {
             if (oM.cost.bodyPartDamage.bodyPart == SC_Global.BodyPart.None)
                 oM.cost.bodyPartDamage.damage = 0;
 
-            if (oM.effectOnOpponent.bodyPartDamage.bodyPart == SC_Global.BodyPart.None) {
+            SC_Global.OffensiveBodyPartDamage oBPD = oM.effectOnOpponent.bodyPartDamage;
 
-                oM.effectOnOpponent.bodyPartDamage.otherBodyPart = SC_Global.BodyPart.None;
+            if (oBPD.bodyPart == SC_Global.BodyPart.None) {
 
-                oM.effectOnOpponent.bodyPartDamage.damage = 0;
+                oBPD.otherBodyPart = SC_Global.BodyPart.None;
 
-                oM.effectOnOpponent.bodyPartDamage.both = false;
+                oBPD.damage = 0;
+
+                oBPD.both = false;
 
             }
 
-            if (oM.effectOnOpponent.bodyPartDamage.otherBodyPart == SC_Global.BodyPart.None)
-                oM.effectOnOpponent.bodyPartDamage.both = false;
+            if (oBPD.otherBodyPart == SC_Global.BodyPart.None)
+                oBPD.both = false;
 
         }
 
