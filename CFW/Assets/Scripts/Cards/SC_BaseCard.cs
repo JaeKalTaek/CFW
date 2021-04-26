@@ -25,12 +25,14 @@ namespace Card {
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
         [Serializable]
         public struct CommonEffect {
+
+            public bool effectOnOpponent;
 
             public CommonEffectType effectType;
 
@@ -55,7 +57,7 @@ namespace Card {
 
         }
 
-        protected SC_Player Caller { get; set; }
+        protected SC_Player caller, other;
 
         public virtual bool CanUse () {
 
@@ -102,29 +104,31 @@ namespace Card {
 
         }
 
-        public virtual void Play (SC_Player caller) {
+        public virtual void Play (SC_Player c) {
 
-            cardToAssess = caller.Hand[caller.CurrentChoice].UICard.name;
+            caller = c;
 
-            Caller = caller;
+            other = c.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            Caller.Hand.Remove (this);
+            cardToAssess = caller.Hand[caller.CurrentChoice].UICard.name;            
+
+            caller.Hand.Remove (this);
 
             localPlayer.Busy = true;
 
             UICard.transform.SetParent (UICard.transform.parent.parent);
 
-            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+            SC_Deck.OrganizeHand (caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
             UICard.RecT.pivot = Vector2.one * .5f;
 
-            UICard.RecT.anchoredPosition3D = Vector3.up * (Caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
+            UICard.RecT.anchoredPosition3D = Vector3.up * (caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
 
             UICard.RecT.DOLocalMove (Vector3.zero, 1);
 
             DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * 1.5f, 1)).OnComplete (() => { StartCoroutine (Use ()); });
 
-            UICard.Flip (!Caller.IsLocalPlayer, .5f);
+            UICard.Flip (!caller.IsLocalPlayer, .5f);
 
         }        
 
@@ -137,13 +141,13 @@ namespace Card {
             while (applyingEffects)
                 yield return new WaitForEndOfFrame ();
 
-            if ((Caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
+            if ((caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
 
-                UI.ShowEndPanel (Caller.IsLocalPlayer);
+                UI.ShowEndPanel (caller.IsLocalPlayer);
 
             } else {
 
-                UICard.RecT.transform.SetParent ((Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+                UICard.RecT.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
 
                 UICard.RecT.anchorMin = UICard.RecT.anchorMax = Vector2.one * .5f;
 
@@ -156,8 +160,8 @@ namespace Card {
 
                     localPlayer.Busy = false;
 
-                    if (Caller.IsLocalPlayer)
-                        Caller.SkipTurn ();
+                    if (caller.IsLocalPlayer)
+                        caller.SkipTurn ();
 
                 });
 
@@ -187,21 +191,21 @@ namespace Card {
 
             applyingEffects = true;
 
-            Caller.ActionOnCard (cardToAssess, (c) => {
+            caller.ActionOnCard (cardToAssess, (c) => {
 
-                Caller.Hand.Remove (c.Card);
+                caller.Hand.Remove (c.Card);
 
-                c.transform.SetParent ((Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+                c.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
 
                 c.RecT.pivot = c.RecT.anchorMin = c.RecT.anchorMax = Vector2.one * .5f;
 
-                c.Flip (!Caller.IsLocalPlayer, .5f);
+                c.Flip (!caller.IsLocalPlayer, .5f);
 
                 c.RecT.DOAnchorPos (Vector2.zero, GM.drawSpeed).OnComplete (() => { applyingEffects = false; });
 
             });
 
-            Caller.Deck.Draw (1, false);
+            caller.Deck.Draw (1, false);
 
         }
 
@@ -213,15 +217,21 @@ namespace Card {
 
         public void SingleValueEffect () {
 
-            Caller.ApplySingleEffect (currentEffect.valueName.ToString (), currentEffect.effectValue);
+            (currentEffect.effectOnOpponent ? other : caller).ApplySingleEffect (currentEffect.valueName.ToString (), currentEffect.effectValue);
 
         }
 
         public void BodyPartEffect () {
 
-            Caller.ApplySingleBodyEffect (BodyPart.Arms, currentEffect.effectValue);
+            (currentEffect.effectOnOpponent ? other : caller).ApplySingleBodyEffect (BodyPart.Arms, currentEffect.effectValue);
 
         } 
+
+        public void Tire () {
+
+            (currentEffect.effectOnOpponent ? other : caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+
+        }
 
         public bool Is (CardType t) {
 

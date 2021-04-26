@@ -44,16 +44,14 @@ namespace Card {
             base.ApplyEffect ();
 
             // Effect on user
-            Caller.ApplySingleEffect ("Stamina", null, cost);
+            caller.ApplySingleEffect ("Stamina", null, cost);
 
-            Caller.ApplySingleEffect ("Health", null, cost);
+            caller.ApplySingleEffect ("Health", null, cost);
 
             if (cost.bodyPartDamage.bodyPart != BodyPart.None)
-                Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+                caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
 
             // Effect on opponent
-            SC_Player other = Caller.IsLocalPlayer ? otherPlayer : localPlayer;
-
             other.ApplySingleEffect ("Stamina", null, effectOnOpponent);
 
             other.ApplySingleEffect ("Health", null, effectOnOpponent);
