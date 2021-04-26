@@ -6,9 +6,7 @@ using static SC_Player;
 namespace Card {
 
     public class SC_OffensiveMove : SC_AttackCard {
-
-        public static bool currentChoice;
-
+        
         [Header("Offensive Move Variables")]      
         [Tooltip("Effects of this offensive move on your opponent")]
         public Effect effectOnOpponent;        
@@ -24,29 +22,46 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect (SC_Player caller) {
+        public override void StartUsing () {
 
-            base.ApplyEffect (caller);
+            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && !effectOnOpponent.bodyPartDamage.both) {
+
+                activeCard = this;
+
+                foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                    if (t.GetSiblingIndex () > 0)
+                        t.gameObject.SetActive (t.name == effectOnOpponent.bodyPartDamage.bodyPart.ToString () || t.name == effectOnOpponent.bodyPartDamage.otherBodyPart.ToString ());
+
+                UI.bodyPartDamageChoicePanel.SetActive (true);
+
+            } else
+                base.StartUsing ();
+
+        }
+
+        public override void ApplyEffect () {
+
+            base.ApplyEffect ();
 
             // Effect on user
-            caller.ApplySingleEffect ("Stamina", cost);
+            Caller.ApplySingleEffect ("Stamina", null, cost);
 
-            caller.ApplySingleEffect ("Health", cost);
+            Caller.ApplySingleEffect ("Health", null, cost);
 
             if (cost.bodyPartDamage.bodyPart != BodyPart.None)
-                caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+                Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
 
             // Effect on opponent
-            SC_Player other = caller.IsLocalPlayer ? otherPlayer : localPlayer;
+            SC_Player other = Caller.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            other.ApplySingleEffect ("Stamina", effectOnOpponent);
+            other.ApplySingleEffect ("Stamina", null, effectOnOpponent);
 
-            other.ApplySingleEffect ("Health", effectOnOpponent);
+            other.ApplySingleEffect ("Health", null, effectOnOpponent);
 
-            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || currentChoice || effectOnOpponent.bodyPartDamage.both))
+            if (effectOnOpponent.bodyPartDamage.bodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || effectOnOpponent.bodyPartDamage.otherBodyPart == BodyPart.None || effectOnOpponent.bodyPartDamage.bodyPart == (BodyPart) localPlayer.CurrentChoice))
                 other.ApplySingleBodyEffect (effectOnOpponent.bodyPartDamage.bodyPart, effectOnOpponent.bodyPartDamage.damage);
 
-            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || !currentChoice))
+            if (effectOnOpponent.bodyPartDamage.otherBodyPart != BodyPart.None && (effectOnOpponent.bodyPartDamage.both || effectOnOpponent.bodyPartDamage.otherBodyPart == (BodyPart) localPlayer.CurrentChoice))
                 other.ApplySingleBodyEffect (effectOnOpponent.bodyPartDamage.otherBodyPart, effectOnOpponent.bodyPartDamage.damage);
 
         }        

@@ -59,9 +59,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             c.name = cards[0].Path;
 
-            c.Card = Instantiate (Resources.Load<SC_BaseCard> (cards[0].Path), c.transform);
-
-            c.Card.UICard = c;
+            c.Card = Instantiate (cards[0], c.transform);
 
             if (Local && !tween)
                 c.SetImages ();
@@ -74,18 +72,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             if (tween) {
 
-                c.Moving = true;
-
                 Vector3 target = c.transform.localPosition;
 
                 c.transform.position = transform.position;
 
                 c.transform.DOLocalMove (target, GM.drawSpeed, true).OnComplete (() => { FinishDrawing (c, startTurn); });
 
-                if (Local)
-                    DOTween.Sequence ().Append (c.transform.DORotate (Vector3.up * 90, GM.drawSpeed / 2)
-                        .OnComplete (() => { c.SetImages (); }))
-                        .Append (c.transform.DORotate (Vector3.zero, GM.drawSpeed / 2));
+                c.Flip (Local, GM.drawSpeed / 2);
 
             } else 
                 FinishDrawing (c, startTurn);
@@ -97,13 +90,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     void FinishDrawing (SC_UI_Card c, bool startTurn) {
 
-        if (c) {
-
+        if (c)
             (Local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
-
-            c.Moving = false;
-
-        }
 
         if (SC_Player.localPlayer.Turn && startTurn) {
 

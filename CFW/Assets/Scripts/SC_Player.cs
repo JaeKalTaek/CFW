@@ -7,6 +7,7 @@ using static SC_Global;
 using MLAPI.Messaging;
 using System.Collections;
 using MLAPI.NetworkVariable;
+using UnityEngine.UI;
 
 public class SC_Player : NetworkBehaviour {
 
@@ -30,11 +31,15 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Busy { get; set; }
 
+    public bool Assessing { get; set; }
+
+    public int CurrentChoice { get; set; }
+
     private int health;
-    public int Health { get => health; set => health = Mathf.Min (value, GM.baseHealth); }
+    public int Health { get => health; set => health = Mathf.Clamp (value, 0, GM.baseHealth); }
 
     private int stamina;
-    public int Stamina { get => stamina; set => stamina = Mathf.Min (value, GM.baseStamina); }
+    public int Stamina { get => stamina; set => stamina = Mathf.Clamp (value, 0, GM.baseStamina); }
 
     private int alignment;
     public int Alignment { get => alignment; set => alignment = Mathf.Clamp (value, -GM.maxAlignment, GM.maxAlignment); }
@@ -145,7 +150,7 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion
 
-    #region Deck
+    #region Shuffle Deck
     [ServerRpc]
     public void ShuffleDeckServerRpc (int[] newOrder) {
 
@@ -159,7 +164,9 @@ public class SC_Player : NetworkBehaviour {
         Deck.Shuffle (newOrder);
 
     }
+    #endregion
 
+    #region Draw
     [ServerRpc]
     public void DrawServerRpc (int nbr, bool startTurn) {
 
@@ -169,8 +176,9 @@ public class SC_Player : NetworkBehaviour {
 
     [ClientRpc]
     void DrawClientRpc (int nbr, bool startTurn) {
-
-        ApplySingleEffect ("Stamina", null, -GM.staminaPerTurn);
+        
+        if (startTurn)
+            ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
         Deck.Draw (nbr, true);
 
@@ -274,36 +282,71 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Card usage
-    delegate void CardAction (Transform t);
+    public delegate void CardAction (SC_UI_Card c);
 
-    void ActionOnCard (string id, CardAction a) {
+    public void ActionOnCard (string id, CardAction a) {
 
         foreach (Transform t in IsLocalPlayer ? GM.localHand : GM.otherHand)
             if (t.name == id)
-                a(t);
+                a (t.GetComponent <SC_UI_Card> ());
 
     }
 
     #region Use card
     [ServerRpc]
-    public void UseCardServerRpc (string id, bool choice) {
+    public void UseCardServerRpc (string id, int choice = 0) {
 
         UseCardClientRpc (id, choice);
 
     }
 
     [ClientRpc]
-    void UseCardClientRpc (string id, bool choice) {
+    void UseCardClientRpc (string id, int choice) {
 
-        SC_OffensiveMove.currentChoice = choice;        
+        localPlayer.CurrentChoice = choice;        
 
-        ActionOnCard (id, (t) => { t.GetComponent<SC_UI_Card> ().Card.Use (this); });
+        ActionOnCard (id, (c) => { c.Card.Play (this); });
+
+    }
+
+    [ServerRpc]
+    public void UseBasicCardServerRpc (int id, int choice = 0) {
+
+        UseBasicCardClientRpc (id, choice);
+
+    }
+
+    [ClientRpc]
+    void UseBasicCardClientRpc (int id, int choice) {
+
+        CurrentChoice = choice;
+
+        SC_UI_Card c = Instantiate (UI.basicsPanel.transform.GetChild (id)).GetComponent <SC_UI_Card> ();
+
+        c.name = c.Card.Path;
+
+        c.transform.SetParent (IsLocalPlayer ? GM.localHand : GM.otherHand, false);
+
+        if (!IsLocalPlayer)
+            c.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Sprites/CardBack");
+
+        c.Card.Play (this);
 
     }
     #endregion
     #endregion
 
     #region Skip turn
+    public void SkipTurn () {
+
+        Turn = false;
+
+        CanPlay = false;
+
+        SkipTurnServerRpc ();
+
+    }
+
     [ServerRpc]
     public void SkipTurnServerRpc () {
 
@@ -326,9 +369,9 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Apply effects
-    public void ApplySingleEffect (string field, object effect, int? value = null) {
+    public void ApplySingleEffect (string field, int? value = null, object effect = null) {
 
-        typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)).ReduceWithMin (value ?? (int) effect.GetType ().GetField (field.ToLower ()).GetValue (effect)));
+        typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)) + (value ?? -(int) effect.GetType ().GetField (field.ToLower ()).GetValue (effect)));
 
         UI.SetValue (IsLocalPlayer, field, (int) typeof (SC_Player).GetProperty (field).GetValue (this));
 

@@ -21,7 +21,7 @@ public class SC_GameManager : MonoBehaviour {
 
     [Header ("UI")]
     public RectTransform background;
-    public GameObject waitingPanel, deckChoicePanel, shifumiPanel, chooseTurnPanel, waitPanel;
+    public GameObject waitingPanel, shifumiPanel, chooseTurnPanel, waitPanel;
 
     public RectTransform localHand, otherHand;
 
@@ -111,18 +111,6 @@ public class SC_GameManager : MonoBehaviour {
         if (localPlayer.Turn)
             localPlayer.DrawServerRpc (1, true);
 
-    }
-
-    public void SkipTurn () {
-
-        localPlayer.Turn = false;
-
-        localPlayer.CanPlay = false;
-
-        SC_UI_Manager.Instance.skipButton.SetActive (false);
-
-        localPlayer.SkipTurnServerRpc ();
-
-    }
+    }    
 
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using static SC_Player;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -10,20 +11,11 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public Transform localValues, otherValues;
 
-    public BodyPartDamageChoice bodyPartDamageChoice;
+    public GameObject bodyPartDamageChoicePanel, assessPanel;
 
-    public GameObject skipButton;
+    public GameObject basicsPanel, skipButton;
 
     public TextMeshProUGUI endText;
-
-    [Serializable]
-	public struct BodyPartDamageChoice {
-
-        public GameObject panel;
-
-        public TextMeshProUGUI firstChoice, secondChoice;
-
-    }
 
     void Awake () {
 
@@ -37,11 +29,19 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public void ChoseBodyPart (bool first) {
+    public void SkipTurn () {
 
-        SC_Player.localPlayer.UseCardServerRpc (GM.UsingCardID, first);
+        skipButton.SetActive (false);
 
-        bodyPartDamageChoice.panel.SetActive (false);
+        basicsPanel.SetActive (true);
+
+    }
+
+    public void ChoseBodyPart (int bodyPart) {
+
+        bodyPartDamageChoicePanel.SetActive (false);
+
+        localPlayer.UseCardServerRpc (GM.UsingCardID, bodyPart);        
 
     }
 

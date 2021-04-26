@@ -43,9 +43,11 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect (SC_Player caller) {
+        public override void ApplyEffect () {
 
-            GM.AddMatchHeat (matchHeatGain, true);
+            base.ApplyEffect ();
+
+            GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, true);
 
         }
 

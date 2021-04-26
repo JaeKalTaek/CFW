@@ -3,12 +3,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card;
 using static SC_Player;
+using DG.Tweening;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
     public SC_BaseCard Card { get; set; }
-
-    public bool Moving { get; set; }
 
     static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
@@ -22,13 +21,16 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     bool Local { get { return transform.parent.name.Contains("Local"); } }
 
-    int prevSiblingIndex;
+    bool IsBasic { get { return Card.Is (SC_Global.CardType.Basic); } }
 
     void Awake() {
 
-        BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
+        BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;        
 
-        BigRec.anchoredPosition += Vector2.up * GM.yOffset;
+        Card = GetComponentInChildren<SC_BaseCard> ();
+
+        if (!Card)
+            BigRec.anchoredPosition += Vector2.up * GM.yOffset;
 
     }
 
@@ -40,7 +42,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if (!Moving && Local && !localPlayer.Busy) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card)) && !localPlayer.Busy) {
 
             bigCard.transform.SetParent (transform.parent);
 
@@ -54,7 +56,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        if (!Moving && Local && !localPlayer.Busy) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card)) && !localPlayer.Busy) {
 
             bigCard.transform.SetParent (transform);
 
@@ -66,7 +68,21 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (Local && Card.CanUse () && localPlayer.CanPlay) {
+        if (localPlayer.Assessing && SC_BaseCard.activeCard != Card) {
+
+            localPlayer.Assessing = false;
+
+            UI.assessPanel.SetActive (false);
+
+            if (SC_BaseCard.activeCard.Is (SC_Global.CardType.Basic))
+                localPlayer.UseBasicCardServerRpc (SC_BaseCard.activeCard.UICard.transform.GetSiblingIndex (), localPlayer.Hand.IndexOf (Card));
+            else
+                localPlayer.UseCardServerRpc (SC_BaseCard.activeCard.UICard.name, localPlayer.Hand.IndexOf (Card));
+
+        } else if (IsBasic || (Local && Card.CanUse () && localPlayer.CanPlay)) {
+
+            if (IsBasic)
+                UI.basicsPanel.SetActive (false);                
 
             OnPointerExit (new PointerEventData (EventSystem.current));
 
@@ -74,24 +90,20 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             localPlayer.CanPlay = false;
 
-            localPlayer.Busy = true;                       
+            localPlayer.Busy = true;
 
-            SC_OffensiveMove om = Card as SC_OffensiveMove;
-
-            if (om && (om.effectOnOpponent.bodyPartDamage.otherBodyPart != SC_Global.BodyPart.None) && !om.effectOnOpponent.bodyPartDamage.both) {
-
-                GM.UsingCardID = name;              
-
-                UI.bodyPartDamageChoice.firstChoice.text = om.effectOnOpponent.bodyPartDamage.bodyPart.ToString ();
-
-                UI.bodyPartDamageChoice.secondChoice.text = om.effectOnOpponent.bodyPartDamage.otherBodyPart.ToString ();
-
-                UI.bodyPartDamageChoice.panel.SetActive (true);
-
-            } else
-                localPlayer.UseCardServerRpc (name, false);
+            Card.StartUsing ();
 
         }
+
+    }
+
+    public void Flip (bool flip, float speed) {
+
+        if (flip)
+            DOTween.Sequence ().Append (transform.DORotate (Vector3.up * 90, speed)
+                .OnComplete (() => { SetImages (); }))
+                .Append (transform.DORotate (Vector3.zero, speed));
 
     }
 
