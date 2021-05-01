@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using static SC_Global;
+using DG.Tweening;
 
 namespace Card {
 
@@ -18,6 +19,34 @@ namespace Card {
             public OffensiveBodyPartDamage bodyPartDamage;
 
             public int breakCost, earlyBreakDamage;            
+
+        }
+
+        int choice;
+
+        public override void ApplyEffect () {            
+
+            base.ApplyEffect ();
+
+            Other.ApplySingleEffect ("Stamina", -effect.stamina);
+
+            choice = SC_Player.localPlayer.CurrentChoice;
+
+            ApplyBodyPartDamage ();
+
+        }
+
+        public void Maintain () {
+
+            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.enlargeCardFactor, .5f).OnComplete (() => {
+
+                SC_Player.localPlayer.CurrentChoice = choice;
+
+                ApplyBodyPartDamage ();
+
+                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.enlargeCardFactor, .5f).onComplete = NextTurn;
+
+            });               
 
         }
 

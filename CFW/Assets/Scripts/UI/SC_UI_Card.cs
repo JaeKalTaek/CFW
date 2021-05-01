@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Card;
 using static SC_Player;
 using DG.Tweening;
+using System;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -15,17 +16,17 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public RectTransform RecT { get { return transform as RectTransform; } }
 
-    RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
+    public RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
 
     public GameObject bigCard;
 
-    bool Local { get { return transform.parent.name.Contains("Local"); } }
+    bool Local { get { return transform.parent.name.Contains ("Local"); } }
 
     bool IsBasic { get { return Card.Is (SC_Global.CardType.Basic); } }
 
-    void Awake() {
+    void Awake () {
 
-        BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;        
+        BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
 
         Card = GetComponentInChildren<SC_BaseCard> ();
 
@@ -36,19 +37,19 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void SetImages () {
 
-        GetComponent<Image>().sprite = bigCard.GetComponent<Image>().sprite = Resources.Load<Sprite> (Card.Path);
+        GetComponent<Image> ().sprite = bigCard.GetComponent<Image> ().sprite = Resources.Load<Sprite> (Card.Path);
 
     }
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card)) && !localPlayer.Busy) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card) || SC_BaseCard.lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing)) {
 
             bigCard.transform.SetParent (transform.parent);
 
             bigCard.transform.SetAsLastSibling ();
 
-            bigCard.SetActive(true);      
+            bigCard.SetActive (true);
 
         }
 
@@ -56,7 +57,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card)) && !localPlayer.Busy) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card) || SC_BaseCard.lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing)) {
 
             bigCard.transform.SetParent (transform);
 
@@ -66,9 +67,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void OnPointerClick (PointerEventData eventData) {
+    public void OnPointerClick (PointerEventData eventData) {        
 
         if (localPlayer.Assessing && SC_BaseCard.activeCard != Card) {
+
+            OnPointerExit (new PointerEventData (EventSystem.current));
 
             localPlayer.Assessing = false;
 
@@ -79,16 +82,16 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             else
                 localPlayer.UseCardServerRpc (SC_BaseCard.activeCard.UICard.name, localPlayer.Hand.IndexOf (Card));
 
-        } else if (IsBasic || (Local && Card.CanUse () && localPlayer.CanPlay)) {
-
-            if (IsBasic)
-                UI.basicsPanel.SetActive (false);                
+        } else if (bigCard.activeSelf && Card.CanUse ()) {
 
             OnPointerExit (new PointerEventData (EventSystem.current));
 
-            UI.skipButton.SetActive (false);            
+            if (IsBasic)
+                UI.ShowBasics (false);
 
-            localPlayer.CanPlay = false;
+            UI.showBasicsButton.SetActive (false);
+
+            UI.showLockedBasicsButton.SetActive (false);
 
             localPlayer.Busy = true;
 
@@ -104,6 +107,16 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             DOTween.Sequence ().Append (transform.DORotate (Vector3.up * 90, speed)
                 .OnComplete (() => { SetImages (); }))
                 .Append (transform.DORotate (Vector3.zero, speed));
+
+    }
+
+    public void ToGraveyard (float speed, Action action) {
+
+        transform.SetParent ((Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+
+        RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
+
+        RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => { action (); });
 
     }
 

@@ -27,8 +27,6 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Turn { get; set; }
 
-    public bool CanPlay { get; set; }
-
     public bool Busy { get; set; }
 
     public bool Assessing { get; set; }
@@ -46,7 +44,17 @@ public class SC_Player : NetworkBehaviour {
 
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
-    private NetworkVariable<bool> hasOtherPlayer = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
+    NetworkVariable<bool> hasOtherPlayer = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
+
+    public NetworkVariable<Locked> locked = new NetworkVariable<Locked> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, Locked.Unlocked);
+
+    public bool Unlocked { get { return locked.Value == Locked.Unlocked; } }
+
+    public bool Pinned { get { return locked.Value == Locked.Pinned; } }
+
+    public bool Submitted { get { return locked.Value == Locked.Submission; } }
+
+    public static bool NoLock { get { return localPlayer.Unlocked && otherPlayer.Unlocked; } }
 
     #region Setup
     public override void NetworkStart () {
@@ -105,7 +113,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void SetDeckClientRpc (string deckName) {
 
-         Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + "Deck"), GM.background);
+        Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + "Deck"), GM.background);
 
     }
 
@@ -291,8 +299,6 @@ public class SC_Player : NetworkBehaviour {
                 a (t.GetComponent <SC_UI_Card> ());
 
     }
-
-    #region Use card
     [ServerRpc]
     public void UseCardServerRpc (string id, int choice = 0) {
 
@@ -323,6 +329,8 @@ public class SC_Player : NetworkBehaviour {
 
         SC_UI_Card c = Instantiate (UI.basicsPanel.transform.GetChild (id)).GetComponent <SC_UI_Card> ();
 
+        c.gameObject.SetActive (true);
+
         c.name = c.Card.Path;
 
         c.transform.SetParent (IsLocalPlayer ? GM.localHand : GM.otherHand, false);
@@ -333,29 +341,42 @@ public class SC_Player : NetworkBehaviour {
         c.Card.Play (this);
 
     }
-    #endregion
-    #endregion
-
-    #region Skip turn
-    public void SkipTurn () {
-
-        Turn = false;
-
-        CanPlay = false;
-
-        SkipTurnServerRpc ();
-
-    }
 
     [ServerRpc]
-    public void SkipTurnServerRpc () {
+    public void MaintainSubmissionServerRpc () {
 
-        SkipTurnClientRpc ();
+        MaintainSubmissionClientRpc ();
 
     }
 
     [ClientRpc]
-    void SkipTurnClientRpc () {        
+    void MaintainSubmissionClientRpc () {
+
+        localPlayer.Busy = true;
+
+        (SC_BaseCard.lockingCard as SC_Submission).Maintain ();
+
+    }
+    #endregion
+
+    #region Next turn
+    public void NextTurn () {
+
+        Turn = false;
+
+        NextTurnServerRpc ();
+
+    }
+
+    [ServerRpc]
+    public void NextTurnServerRpc () {
+
+        NextTurnClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void NextTurnClientRpc () {
 
         if (!IsLocalPlayer) {
 

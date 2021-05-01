@@ -34,6 +34,12 @@ public class SC_Global {
 
     }
 
+    public enum Locked {
+
+        Unlocked, Pinned, Submission
+
+    }
+
     public enum ShiFuMi {
 
         None, Rock, Paper, Scissors

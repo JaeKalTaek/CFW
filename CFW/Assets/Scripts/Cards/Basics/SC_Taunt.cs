@@ -8,7 +8,7 @@ namespace Card {
 
             base.ApplyEffect ();
 
-            caller.ApplySingleEffect ("Alignment", Mathf.Clamp (caller.Alignment, -1, 1));
+            Caller.ApplySingleEffect ("Alignment", Mathf.Clamp (Caller.Alignment, -1, 1));
 
         }
 

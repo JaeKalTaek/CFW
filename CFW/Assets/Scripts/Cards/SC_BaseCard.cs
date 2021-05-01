@@ -25,7 +25,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -57,15 +57,17 @@ namespace Card {
 
         }
 
-        protected SC_Player caller, other;
+        public SC_Player Caller { get; set; }
+
+        public SC_Player Other { get; set; }
 
         public virtual bool CanUse () {
 
-            return GM.MatchHeat >= matchHeat;
+            return GM.MatchHeat >= matchHeat && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break));
 
         }
 
-        public static SC_BaseCard activeCard;
+        public static SC_BaseCard activeCard, lockingCard;
 
         void Awake () {
 
@@ -75,21 +77,11 @@ namespace Card {
 
         public virtual void StartUsing () {
 
-            activeCard = this;
+            activeCard = this;            
 
-            foreach (CommonEffect c in commonEffects) {
-
-                if (c.effectType == CommonEffectType.Assess) {
-
-                    PrepareAssess ();
-
-                    return;
-
-                }
-
-            }
-
-            if (Is (CardType.Basic))
+            if (Has (CommonEffectType.Assess))
+                PrepareAssess ();
+            else if (Is (CardType.Basic))
                 localPlayer.UseBasicCardServerRpc (UICard.transform.GetSiblingIndex ());
             else
                 localPlayer.UseCardServerRpc (UICard.name);
@@ -106,29 +98,29 @@ namespace Card {
 
         public virtual void Play (SC_Player c) {
 
-            caller = c;
+            Caller = c;
 
-            other = c.IsLocalPlayer ? otherPlayer : localPlayer;
+            Other = c.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            cardToAssess = caller.Hand[caller.CurrentChoice].UICard.name;            
+            cardToAssess = Caller.Hand[Caller.CurrentChoice].UICard.name;            
 
-            caller.Hand.Remove (this);
+            Caller.Hand.Remove (this);
 
             localPlayer.Busy = true;
 
             UICard.transform.SetParent (UICard.transform.parent.parent);
 
-            SC_Deck.OrganizeHand (caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
             UICard.RecT.pivot = Vector2.one * .5f;
 
-            UICard.RecT.anchoredPosition3D = Vector3.up * (caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
+            UICard.RecT.anchoredPosition3D = Vector3.up * (Caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
 
             UICard.RecT.DOLocalMove (Vector3.zero, 1);
 
-            DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * 1.5f, 1)).OnComplete (() => { StartCoroutine (Use ()); });
+            DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.playedSizeMultiplicator, 1)).OnComplete (() => { StartCoroutine (Use ()); });
 
-            UICard.Flip (!caller.IsLocalPlayer, .5f);
+            UICard.Flip (!Caller.IsLocalPlayer, .5f);
 
         }        
 
@@ -141,31 +133,73 @@ namespace Card {
             while (applyingEffects)
                 yield return new WaitForEndOfFrame ();
 
-            if ((caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
+            if (SC_GameManager.count == 3) {
 
-                UI.ShowEndPanel (caller.IsLocalPlayer);
+                UI.ShowEndPanel (!Caller.IsLocalPlayer);
+
+            } else if ((Caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
+
+                UI.ShowEndPanel (Caller.IsLocalPlayer);
 
             } else {
 
-                UICard.RecT.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-                UICard.RecT.anchorMin = UICard.RecT.anchorMax = Vector2.one * .5f;
+                if (Is (CardType.Submission) || UICard.name.EndsWith ("Pinfall")) {
 
-                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / 1.5f, 1);
+                    lockingCard = this;
 
-                UICard.RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
+                    SC_GameManager.count = 0;
 
-                    if (Is (CardType.Basic))
-                        Destroy (transform.parent.gameObject);
+                    if (localPlayer != Caller)
+                        localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
 
-                    localPlayer.Busy = false;
+                    if (Is (CardType.Submission)) {
 
-                    if (caller.IsLocalPlayer)
-                        caller.SkipTurn ();
+                        Vector3 oldPos = UICard.RecT.position;
 
-                });
+                        UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
+
+                        UICard.RecT.position = oldPos;
+
+                        UICard.BigRec.anchoredPosition = Vector2.zero;
+
+                    }
+
+                    UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y / 4, 1).onComplete = NextTurn;
+
+                } else {
+
+                    UICard.ToGraveyard (1, () => {
+
+                        localPlayer.Busy = false;
+
+                        if (Is (CardType.Basic)) {
+
+                            Destroy (transform.parent.gameObject);
+
+                            if (!Has (CommonEffectType.Break))
+                                NextTurn ();
+                            else if (localPlayer.Turn)
+                                UI.showBasicsButton.SetActive (true);
+
+                        } else if (Caller.IsLocalPlayer && this as SC_OffensiveMove)
+                            UI.pinfallPanel.SetActive (true);
+
+                    });
+
+                }
 
             }
+
+        }
+
+        protected void NextTurn () {
+
+            localPlayer.Busy = false;
+
+            if (Caller.IsLocalPlayer)
+                Caller.NextTurn ();
 
         }
 
@@ -191,21 +225,19 @@ namespace Card {
 
             applyingEffects = true;
 
-            caller.ActionOnCard (cardToAssess, (c) => {
+            Caller.ActionOnCard (cardToAssess, (c) => {
 
-                caller.Hand.Remove (c.Card);
+                Caller.Hand.Remove (c.Card);           
+                
+                c.Flip (!Caller.IsLocalPlayer, .5f);
 
-                c.transform.SetParent ((caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+                c.Card.Caller = Caller;
 
-                c.RecT.pivot = c.RecT.anchorMin = c.RecT.anchorMax = Vector2.one * .5f;
-
-                c.Flip (!caller.IsLocalPlayer, .5f);
-
-                c.RecT.DOAnchorPos (Vector2.zero, GM.drawSpeed).OnComplete (() => { applyingEffects = false; });
+                c.ToGraveyard (GM.drawSpeed, () => { applyingEffects = false; });                
 
             });
 
-            caller.Deck.Draw (1, false);
+            Caller.Deck.Draw (1, false);
 
         }
 
@@ -217,19 +249,36 @@ namespace Card {
 
         public void SingleValueEffect () {
 
-            (currentEffect.effectOnOpponent ? other : caller).ApplySingleEffect (currentEffect.valueName.ToString (), currentEffect.effectValue);
+            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect (currentEffect.valueName.ToString (), currentEffect.effectValue);
 
         }
 
         public void BodyPartEffect () {
 
-            (currentEffect.effectOnOpponent ? other : caller).ApplySingleBodyEffect (BodyPart.Arms, currentEffect.effectValue);
+            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect (BodyPart.Arms, currentEffect.effectValue);
 
         } 
 
         public void Tire () {
 
-            (currentEffect.effectOnOpponent ? other : caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+
+        }
+
+        public void Break () {
+
+            applyingEffects = true;
+
+            lockingCard.UICard.ToGraveyard (1, () => {
+
+                Destroy (lockingCard.UICard.gameObject);
+
+                if (!localPlayer.Unlocked)
+                    localPlayer.locked.Value = Locked.Unlocked;
+
+                applyingEffects = false;
+
+            });          
 
         }
 
@@ -237,6 +286,16 @@ namespace Card {
 
             foreach (CardType c in types)
                 if (c == t)
+                    return true;
+
+            return false;
+
+        }
+
+        public bool Has (CommonEffectType ce) {
+
+            foreach (CommonEffect c in commonEffects)
+                if (c.effectType == ce)
                     return true;
 
             return false;

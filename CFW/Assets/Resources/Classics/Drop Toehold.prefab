@@ -46,7 +46,7 @@ MonoBehaviour:
   matchHeat: 1
   types: 01000000
   commonEffects:
-  - effectOnOpponent: 0
+  - effectOnOpponent: 1
     effectType: 4
     valueName: 0
     effectValue: 0

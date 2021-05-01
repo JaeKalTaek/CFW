@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Card;
+using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
@@ -13,9 +14,11 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject bodyPartDamageChoicePanel, assessPanel;
 
-    public GameObject basicsPanel, skipButton;
+    public GameObject pinfallPanel;
 
     public TextMeshProUGUI endText;
+
+    public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton, maintainSubmissionButton;           
 
     void Awake () {
 
@@ -29,11 +32,38 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public void SkipTurn () {
+    public void ShowBasics (bool show) {
 
-        skipButton.SetActive (false);
+        (NoLock ? showBasicsButton : showLockedBasicsButton).SetActive (!show);
 
-        basicsPanel.SetActive (true);
+        if (show)
+            for (int i = 0; i < 9; i++)
+                basicsPanel.transform.GetChild (i).gameObject.SetActive (otherPlayer.Unlocked ? (localPlayer.Unlocked ? (0 <= i && i < 3) : (localPlayer.Pinned ? (4 <= i && i < 7) : (5 <= i && i < 8))) : i == 8);        
+
+        basicsPanel.SetActive (show);
+
+        (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
+
+        GM.localHand.gameObject.SetActive (!show);
+
+    }
+
+    public void MaintainSubmission () {
+
+        maintainSubmissionButton.SetActive (false);
+
+        localPlayer.MaintainSubmissionServerRpc ();
+
+    }
+
+    public void Pinfall (bool yes) {
+
+        pinfallPanel.SetActive (false);
+
+        if (yes)
+            localPlayer.UseBasicCardServerRpc (3);
+        else
+            localPlayer.NextTurn ();
 
     }
 
@@ -41,7 +71,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
         bodyPartDamageChoicePanel.SetActive (false);
 
-        localPlayer.UseCardServerRpc (GM.UsingCardID, bodyPart);        
+        localPlayer.UseCardServerRpc (SC_BaseCard.activeCard.UICard.name, bodyPart);        
 
     }
 

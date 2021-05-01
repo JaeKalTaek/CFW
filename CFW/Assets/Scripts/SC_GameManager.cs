@@ -30,7 +30,7 @@ public class SC_GameManager : MonoBehaviour {
     [Header("Cards")]
     public float cardWidth;
 
-    public float yOffset, enlargeCardFactor, drawSpeed;
+    public float yOffset, enlargeCardFactor, drawSpeed, playedSizeMultiplicator;
 
     [Header ("Values")]
     [Header ("Base Values")]
@@ -50,9 +50,9 @@ public class SC_GameManager : MonoBehaviour {
 
     public static SC_GameManager Instance;
 
-    public string UsingCardID { get; set; }
-
     SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
+
+    public static int count;
 
     void Start () {
 

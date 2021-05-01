@@ -43,11 +43,49 @@ namespace Card {
 
         }
 
+        public override void StartUsing () {
+
+            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+
+            if (bodyPartDamage.otherBodyPart != BodyPart.None && !bodyPartDamage.both) {
+
+                activeCard = this;
+
+                foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                    if (t.GetSiblingIndex () > 0)
+                        t.gameObject.SetActive (t.name == bodyPartDamage.bodyPart.ToString () || t.name == bodyPartDamage.otherBodyPart.ToString ());
+
+                UI.bodyPartDamageChoicePanel.SetActive (true);
+
+            } else
+                base.StartUsing ();
+
+        }
+
         public override void ApplyEffect () {
 
             base.ApplyEffect ();
 
             GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, true);
+
+            Caller.ApplySingleEffect ("Stamina", null, cost);
+
+            Caller.ApplySingleEffect ("Health", null, cost);
+
+            if (cost.bodyPartDamage.bodyPart != BodyPart.None)
+                Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+
+        }
+
+        protected void ApplyBodyPartDamage () {
+
+            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+
+            if (bodyPartDamage.bodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == BodyPart.None || bodyPartDamage.bodyPart == (BodyPart) localPlayer.CurrentChoice))
+                Other.ApplySingleBodyEffect (bodyPartDamage.bodyPart, bodyPartDamage.damage);
+
+            if (bodyPartDamage.otherBodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == (BodyPart) localPlayer.CurrentChoice))
+                Other.ApplySingleBodyEffect (bodyPartDamage.otherBodyPart, bodyPartDamage.damage);
 
         }
 

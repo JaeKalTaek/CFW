@@ -4,6 +4,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine.EventSystems;
 using Card;
+using static SC_Player;
 
 public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
@@ -28,7 +29,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
         Draw (GM.startHandSize, false, false);
 
         if (!local)
-            RectT.anchorMin = RectT.anchorMax = RectT.pivot = Vector2.up;
+            RectT.anchorMin = RectT.anchorMax = RectT.pivot = Vector2.up;        
 
     }
 
@@ -48,7 +49,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     void Draw (bool startTurn, bool tween = true) {
 
-        if ((Local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Count < GM.maxHandSize) {
+        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize) {
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
@@ -91,15 +92,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
     void FinishDrawing (SC_UI_Card c, bool startTurn) {
 
         if (c)
-            (Local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
+            (Local ? localPlayer : otherPlayer).Hand.Add (c.Card);
 
-        if (SC_Player.localPlayer.Turn && startTurn) {
-
-            SC_Player.localPlayer.CanPlay = true;
-
-            UI.skipButton.SetActive (true);
-
-        }             
+        if (localPlayer.Turn && startTurn)
+            (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);         
 
     }
 
@@ -112,7 +108,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         newOrder.Shuffle();
 
-        SC_Player.localPlayer.ShuffleDeckServerRpc (newOrder);
+        localPlayer.ShuffleDeckServerRpc (newOrder);
 
     }
 
