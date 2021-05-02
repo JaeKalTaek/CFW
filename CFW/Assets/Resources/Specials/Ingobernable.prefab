@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6274978370742008012}
   - component: {fileID: 7794098353662327379}
   m_Layer: 0
-  m_Name: Rest
+  m_Name: Ingobernable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44,11 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchHeat: 1
-  types: 04000000
+  types: 
+  commonRequirements: []
   commonEffects:
-  - effectType: 2
-    valueName: 1
-    effectValue: 1
-  - effectType: 2
-    valueName: 2
-    effectValue: 1
+  - effectOnOpponent: 0
+    effectType: 6
+    valueName: 0
+    effectValue: 0

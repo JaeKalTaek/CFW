@@ -22,10 +22,13 @@ namespace Card {
         [Tooltip("Types of this card")]
         public CardType[] types;
 
+        [Tooltip ("Common requirements of this card")]
+        public CommonRequirement[] commonRequirements;
+
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -40,6 +43,21 @@ namespace Card {
 
             public int effectValue;
         
+        }
+
+        public enum RequirementType { Minimum, Maximum }
+
+        [Serializable]
+        public struct CommonRequirement {
+
+            public bool opponent;
+
+            public ValueName valueType;
+
+            public RequirementType requirementType;
+
+            public int requirementValue;
+
         }
 
         public string Path {
@@ -63,7 +81,24 @@ namespace Card {
 
         public virtual bool CanUse () {
 
-            return GM.MatchHeat >= matchHeat && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break));
+            if (GM.MatchHeat >= matchHeat && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+
+                foreach (CommonRequirement c in commonRequirements)
+                    if (!Test (c))
+                        return false;
+
+                return true;
+
+            } else
+                return false;
+
+        }
+
+        bool Test (CommonRequirement c) {
+
+            int value = (int) typeof (SC_Player).GetProperty (c.valueType.ToString ()).GetValue (c.opponent ? otherPlayer : localPlayer);
+
+            return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
 
         }
 
@@ -77,22 +112,25 @@ namespace Card {
 
         public virtual void StartUsing () {
 
-            activeCard = this;            
+            activeCard = this;
 
-            if (Has (CommonEffectType.Assess))
-                PrepareAssess ();
-            else if (Is (CardType.Basic))
+            if (Has (CommonEffectType.BodyPartEffect)) {
+
+                foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                    t.gameObject.SetActive (true);
+
+                UI.bodyPartDamageChoicePanel.SetActive (true);
+
+            } else if (Has (CommonEffectType.Assess)) {
+
+                localPlayer.Assessing = true;
+
+                UI.assessPanel.SetActive (true);
+
+            } else if (Is (CardType.Basic))
                 localPlayer.UseBasicCardServerRpc (UICard.transform.GetSiblingIndex ());
             else
                 localPlayer.UseCardServerRpc (UICard.name);
-
-        }
-
-        void PrepareAssess () {
-
-            localPlayer.Assessing = true;
-
-            UI.assessPanel.SetActive (true);
 
         }
 
@@ -255,7 +293,7 @@ namespace Card {
 
         public void BodyPartEffect () {
 
-            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect (BodyPart.Arms, currentEffect.effectValue);
+            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.CurrentChoice, currentEffect.effectValue);
 
         } 
 
@@ -279,6 +317,14 @@ namespace Card {
                 applyingEffects = false;
 
             });          
+
+        }
+
+        public void Rest () {
+
+            Caller.ApplySingleEffect ("Stamina", 1);
+
+            Caller.ApplySingleEffect ("Health", 1);
 
         }
 

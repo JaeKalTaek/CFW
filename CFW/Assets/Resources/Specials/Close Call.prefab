@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6274978370742008012}
   - component: {fileID: 7794098353662327379}
   m_Layer: 0
-  m_Name: Rope Break
+  m_Name: Close Call
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,23 +43,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef0a76ffbe6421d4b8f0a82d72789faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchHeat: 1
-  types: 04000000
-  commonRequirements:
-  - opponent: 0
-    valueType: 2
-    requirementType: 0
-    requirementValue: 4
+  matchHeat: 17
+  types: 
+  commonRequirements: []
   commonEffects:
   - effectOnOpponent: 0
     effectType: 5
     valueName: 0
     effectValue: 0
-  - effectOnOpponent: 1
-    effectType: 2
-    valueName: 2
-    effectValue: -1
   - effectOnOpponent: 0
-    effectType: 2
-    valueName: 1
-    effectValue: 1
+    effectType: 0
+    valueName: 0
+    effectValue: 0

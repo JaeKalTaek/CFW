@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1546395002530676725
+--- !u!1 &1893016452083620
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6274978370742008012}
-  - component: {fileID: 7794098353662327379}
+  - component: {fileID: 4460878627833408}
+  - component: {fileID: 114469490836081776}
   m_Layer: 0
-  m_Name: Rope Break
+  m_Name: Superkick to Kneeling Opponent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6274978370742008012
+--- !u!4 &4460878627833408
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1546395002530676725}
+  m_GameObject: {fileID: 1893016452083620}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,35 +31,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7794098353662327379
+--- !u!114 &114469490836081776
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1546395002530676725}
+  m_GameObject: {fileID: 1893016452083620}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef0a76ffbe6421d4b8f0a82d72789faa, type: 3}
+  m_Script: {fileID: 11500000, guid: 7be245046a8c69d40b947d3de2ff42b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchHeat: 1
-  types: 04000000
+  matchHeat: 12
+  types: 03000000
   commonRequirements:
-  - opponent: 0
+  - opponent: 1
     valueType: 2
-    requirementType: 0
-    requirementValue: 4
-  commonEffects:
-  - effectOnOpponent: 0
-    effectType: 5
-    valueName: 0
-    effectValue: 0
-  - effectOnOpponent: 1
-    effectType: 2
-    valueName: 2
-    effectValue: -1
-  - effectOnOpponent: 0
-    effectType: 2
-    valueName: 1
-    effectValue: 1
+    requirementType: 1
+    requirementValue: 3
+  commonEffects: []
+  matchHeatGain: 3
+  cost:
+    stamina: 2
+    health: 0
+    bodyPartDamage:
+      bodyPart: 0
+      damage: 0
+  finisher: 0
+  effectOnOpponent:
+    stamina: 0
+    health: 4
+    bodyPartDamage:
+      bodyPart: 5
+      otherBodyPart: 0
+      both: 0
+      damage: 2
