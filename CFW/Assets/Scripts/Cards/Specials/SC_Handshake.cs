@@ -25,25 +25,12 @@ namespace Card {
 
             if (choice != 1) {
 
-                if (choice == 0) {
-
+                if (choice == 0)
                     Caller.ApplySingleEffect ("Health", -2);
-
-                } else if (choice == 2) {
-
+                else if (choice == 2)
                     yield return Draw (Other);
 
-                    /*Other.Deck.Draw (1, false);
-
-                    yield return new WaitForSeconds (GM.drawSpeed);*/
-
-                }
-
                 yield return Draw (Caller);
-
-                /*Caller.Deck.Draw (1, false);
-
-                yield return new WaitForSeconds (GM.drawSpeed);*/
 
             }
 
