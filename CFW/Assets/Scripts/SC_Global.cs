@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 public class SC_Global {
 
@@ -30,7 +31,7 @@ public class SC_Global {
 
     public enum CardType {
 
-        Aerial, Classic, Hardcore, Strike, Basic, Submission
+        Aerial, Classic, Hardcore, Strike, Basic, Submission, Special
 
     }
 
@@ -52,6 +53,18 @@ public class SC_Global {
             ((a == ShiFuMi.Rock) && (b == ShiFuMi.Scissors)) ||
             ((a == ShiFuMi.Scissors) && (b == ShiFuMi.Paper));
 
-    }    
+    }
+
+    public static Dictionary<string, string> Messages = new Dictionary<string, string> () {
+
+        { "Assess", "Choose which card to discard to assess" },
+        
+        { "Discard", "Choose which card to discard" },
+
+        { "BodyPartDamage", "Which body part do you want to damage?" },
+
+        { "BodyPartHeal", "Which body part do you want to heal?" }
+
+    };
 
 }

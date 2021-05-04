@@ -44,10 +44,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchHeat: 5
-  types: 
+  types: 06000000
   commonRequirements: []
   commonEffects:
   - effectOnOpponent: 0
     effectType: 3
     valueName: 0
-    effectValue: 4
+    effectValue: -4

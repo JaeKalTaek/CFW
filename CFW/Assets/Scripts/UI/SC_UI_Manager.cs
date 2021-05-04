@@ -12,7 +12,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public Transform localValues, otherValues;
 
-    public GameObject bodyPartDamageChoicePanel, assessPanel;
+    public GameObject bodyPartDamageChoicePanel, messagePanel;
 
     public GameObject pinfallPanel;
 
@@ -32,13 +32,23 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
+    public void ShowMessage (string id) {
+
+        SC_Global.Messages.TryGetValue (id, out string m);
+
+        messagePanel.GetComponentInChildren<TextMeshProUGUI> ().text = m;
+
+        messagePanel.SetActive (true);
+
+    }
+
     public void ShowBasics (bool show) {
 
         (NoLock ? showBasicsButton : showLockedBasicsButton).SetActive (!show);
 
         if (show)
-            for (int i = 0; i < 9; i++)
-                basicsPanel.transform.GetChild (i).gameObject.SetActive (otherPlayer.Unlocked ? (localPlayer.Unlocked ? (0 <= i && i < 3) : (localPlayer.Pinned ? (4 <= i && i < 7) : (5 <= i && i < 8))) : i == 8);        
+            for (int i = 0; i < 10; i++)
+                basicsPanel.transform.GetChild (i).gameObject.SetActive (otherPlayer.Unlocked ? (localPlayer.Unlocked ? (0 <= i && i < 3) : (localPlayer.Pinned ? (4 <= i && i < 6) : (6 <= i && i < 9))) : i == 9);        
 
         basicsPanel.SetActive (show);
 
@@ -67,7 +77,17 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
+    public void ShowBodyPartPanel (bool damage = true) {
+
+        ShowMessage ("BodyPart" + (damage ? "Damage" : "Heal"));
+
+        bodyPartDamageChoicePanel.SetActive (true);
+
+    }
+
     public void ChoseBodyPart (int bodyPart) {
+
+        messagePanel.SetActive (false);
 
         bodyPartDamageChoicePanel.SetActive (false);
 

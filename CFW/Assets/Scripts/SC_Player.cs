@@ -56,6 +56,8 @@ public class SC_Player : NetworkBehaviour {
 
     public static bool NoLock { get { return localPlayer.Unlocked && otherPlayer.Unlocked; } }
 
+    public bool SpecialUsed { get; set; }
+
     #region Setup
     public override void NetworkStart () {
 
@@ -294,9 +296,17 @@ public class SC_Player : NetworkBehaviour {
 
     public void ActionOnCard (string id, CardAction a) {
 
-        foreach (Transform t in IsLocalPlayer ? GM.localHand : GM.otherHand)
-            if (t.name == id)
-                a (t.GetComponent <SC_UI_Card> ());
+        foreach (Transform t in IsLocalPlayer ? GM.localHand : GM.otherHand) {
+
+            if (t.name == id) {
+
+                a (t.GetComponent<SC_UI_Card> ());
+
+                return;
+
+            }
+
+        }
 
     }
     [ServerRpc]
@@ -309,7 +319,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void UseCardClientRpc (string id, int choice) {
 
-        localPlayer.CurrentChoice = choice;        
+        CurrentChoice = choice;        
 
         ActionOnCard (id, (c) => { c.Card.Play (this); });
 
@@ -380,6 +390,8 @@ public class SC_Player : NetworkBehaviour {
 
         if (!IsLocalPlayer) {
 
+            localPlayer.SpecialUsed = false;
+
             localPlayer.Turn = true;
 
             localPlayer.DrawServerRpc (1, true);
@@ -403,6 +415,56 @@ public class SC_Player : NetworkBehaviour {
         BodyPartsHealth[part] = Mathf.Clamp (BodyPartsHealth[part] - effect, 0, GM.baseBodyPartHealth);
 
         UI.SetValue (IsLocalPlayer, part.ToString (), BodyPartsHealth[part]);
+
+    }
+    #endregion
+
+    #region Discard
+    [ServerRpc]
+    public void RandomDiscardServerRpc (string id) {
+
+        RandomDiscardClientRpc (id);
+
+    }
+
+    [ClientRpc]
+    void RandomDiscardClientRpc (string id) {
+
+        ActionOnCard (id, (c) => {
+
+            Hand.Remove (c.Card);
+
+            SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+            c.Card.Caller = this;
+
+            c.ToGraveyard (GM.drawSpeed, () => { SC_BaseCard.activeCard.ApplyingEffects = false; }, !IsLocalPlayer);
+
+        });
+
+    }
+
+    [ServerRpc]
+    public void ChosenDiscardServerRpc (string id) {
+
+        ChosenDiscardClientRpc (id);
+
+    }
+
+    [ClientRpc]
+    void ChosenDiscardClientRpc (string id) {
+
+        ActionOnCard (id, (c) => {
+
+            Hand.Remove (c.Card);
+
+            SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+            c.Card.Caller = this;
+
+            c.ToGraveyard (GM.drawSpeed, () => { SC_BaseCard.activeCard.ApplyingEffects = false; }, !IsLocalPlayer);
+
+        });
 
     }
     #endregion

@@ -28,7 +28,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -81,7 +81,7 @@ namespace Card {
 
         public virtual bool CanUse () {
 
-            if (GM.MatchHeat >= matchHeat && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+            if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !localPlayer.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c))
@@ -114,18 +114,26 @@ namespace Card {
 
             activeCard = this;
 
-            if (Has (CommonEffectType.BodyPartEffect)) {
+            foreach (CommonEffect c in commonEffects) {
 
-                foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
-                    t.gameObject.SetActive (true);
+                if (c.effectType == CommonEffectType.BodyPartEffect) {
 
-                UI.bodyPartDamageChoicePanel.SetActive (true);
+                    foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                        t.gameObject.SetActive (true);
 
-            } else if (Has (CommonEffectType.Assess)) {
+                    UI.ShowBodyPartPanel (c.effectValue > 0);
+
+                    return;
+
+                }
+
+            }
+
+            if (Has (CommonEffectType.Assess)) {
 
                 localPlayer.Assessing = true;
 
-                UI.assessPanel.SetActive (true);
+                UI.ShowMessage ("Assess");
 
             } else if (Is (CardType.Basic))
                 localPlayer.UseBasicCardServerRpc (UICard.transform.GetSiblingIndex ());
@@ -164,20 +172,18 @@ namespace Card {
 
         IEnumerator Use () {
 
+            activeCard = this;
+
             yield return new WaitForSeconds (1);
 
             ApplyEffect ();
 
-            while (applyingEffects)
+            while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
 
-            if (SC_GameManager.count == 3) {
+            if (GM.count == 3) {
 
                 UI.ShowEndPanel (!Caller.IsLocalPlayer);
-
-            } else if ((Caller.IsLocalPlayer ? otherPlayer : localPlayer).Health <= 0) {
-
-                UI.ShowEndPanel (Caller.IsLocalPlayer);
 
             } else {
 
@@ -187,7 +193,7 @@ namespace Card {
 
                     lockingCard = this;
 
-                    SC_GameManager.count = 0;
+                    GM.count = 0;
 
                     if (localPlayer != Caller)
                         localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
@@ -200,11 +206,11 @@ namespace Card {
 
                         UICard.RecT.position = oldPos;
 
-                        UICard.BigRec.anchoredPosition = Vector2.zero;
+                        UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
 
                     }
 
-                    UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y / 4, 1).onComplete = NextTurn;
+                    UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = NextTurn;
 
                 } else {
 
@@ -221,8 +227,21 @@ namespace Card {
                             else if (localPlayer.Turn)
                                 UI.showBasicsButton.SetActive (true);
 
-                        } else if (Caller.IsLocalPlayer && this as SC_OffensiveMove)
-                            UI.pinfallPanel.SetActive (true);
+                        } else if (Caller.IsLocalPlayer) {
+
+                            if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
+                                UI.pinfallPanel.SetActive (true);
+                            else if (Is (CardType.Special)) {
+
+                                Caller.SpecialUsed = true;
+
+                                UI.showBasicsButton.SetActive (true);
+
+                            } else
+                                NextTurn ();
+
+                        } else
+                            localPlayer.Busy = false;
 
                     });
 
@@ -241,9 +260,9 @@ namespace Card {
 
         }
 
-        CommonEffect currentEffect;
+        protected CommonEffect currentEffect;
 
-        bool applyingEffects;
+        public bool ApplyingEffects { get; set; }
 
         public virtual void ApplyEffect () {
 
@@ -261,17 +280,15 @@ namespace Card {
 
         public void Assess () {
 
-            applyingEffects = true;
+            ApplyingEffects = true;
 
             Caller.ActionOnCard (cardToAssess, (c) => {
 
                 Caller.Hand.Remove (c.Card);           
-                
-                c.Flip (!Caller.IsLocalPlayer, .5f);
 
                 c.Card.Caller = Caller;
 
-                c.ToGraveyard (GM.drawSpeed, () => { applyingEffects = false; });                
+                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; }, !Caller.IsLocalPlayer);                
 
             });
 
@@ -305,16 +322,17 @@ namespace Card {
 
         public void Break () {
 
-            applyingEffects = true;
+            ApplyingEffects = true;
 
             lockingCard.UICard.ToGraveyard (1, () => {
 
-                Destroy (lockingCard.UICard.gameObject);
+                if (lockingCard.Is (CardType.Basic))
+                    Destroy (lockingCard.UICard.gameObject);
 
                 if (!localPlayer.Unlocked)
                     localPlayer.locked.Value = Locked.Unlocked;
 
-                applyingEffects = false;
+                ApplyingEffects = false;
 
             });          
 
@@ -325,6 +343,30 @@ namespace Card {
             Caller.ApplySingleEffect ("Stamina", 1);
 
             Caller.ApplySingleEffect ("Health", 1);
+
+        }
+
+        public void Draw () {
+
+            ApplyingEffects = true;
+
+            Caller.Deck.Draw (1, false);
+
+            StartCoroutine (AppliedEffects (GM.drawSpeed));
+
+        }
+
+        public void Count () {
+
+            GM.count++;
+
+        }
+
+        IEnumerator AppliedEffects (float delay) {
+
+            yield return new WaitForSeconds (delay);
+
+            ApplyingEffects = false;
 
         }
 

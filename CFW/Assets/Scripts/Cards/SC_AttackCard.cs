@@ -52,10 +52,9 @@ namespace Card {
                 activeCard = this;
 
                 foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
-                    if (t.GetSiblingIndex () > 0)
-                        t.gameObject.SetActive (t.name == bodyPartDamage.bodyPart.ToString () || t.name == bodyPartDamage.otherBodyPart.ToString ());
+                    t.gameObject.SetActive (t.name == bodyPartDamage.bodyPart.ToString () || t.name == bodyPartDamage.otherBodyPart.ToString ());
 
-                UI.bodyPartDamageChoicePanel.SetActive (true);
+                UI.ShowBodyPartPanel ();
 
             } else
                 base.StartUsing ();

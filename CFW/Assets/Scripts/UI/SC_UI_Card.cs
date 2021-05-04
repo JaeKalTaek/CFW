@@ -57,7 +57,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card) || SC_BaseCard.lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing)) {
+        if (bigCard.activeSelf) {
 
             bigCard.transform.SetParent (transform);
 
@@ -75,7 +75,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             localPlayer.Assessing = false;
 
-            UI.assessPanel.SetActive (false);
+            UI.messagePanel.SetActive (false);
 
             if (SC_BaseCard.activeCard.Is (SC_Global.CardType.Basic))
                 localPlayer.UseBasicCardServerRpc (SC_BaseCard.activeCard.UICard.transform.GetSiblingIndex (), localPlayer.Hand.IndexOf (Card));
@@ -110,11 +110,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void ToGraveyard (float speed, Action action) {
+    public void ToGraveyard (float speed, Action action, bool flip = false) {
 
         transform.SetParent ((Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
 
         RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
+
+        Flip (flip, speed / 2);
 
         RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => { action (); });
 
