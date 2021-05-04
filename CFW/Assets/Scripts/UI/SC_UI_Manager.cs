@@ -20,6 +20,11 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton, maintainSubmissionButton;           
 
+    [Serializable]
+    public struct HandshakeUI { public GameObject panel, heelChoice, /*neutralChoice,*/ faceButton; }
+
+    public HandshakeUI handshakeUI;
+
     void Awake () {
 
         Instance = this;
@@ -74,6 +79,14 @@ public class SC_UI_Manager : MonoBehaviour {
             localPlayer.UseBasicCardServerRpc (3);
         else
             localPlayer.NextTurn ();
+
+    }
+
+    public void HandshakeChoice (int choice) {
+
+        handshakeUI.panel.SetActive (false);
+
+        localPlayer.HandshakeServerRpc (choice);
 
     }
 

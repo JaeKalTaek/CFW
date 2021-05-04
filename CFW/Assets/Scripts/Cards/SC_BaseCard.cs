@@ -350,11 +350,19 @@ namespace Card {
 
         public void Draw () {
 
+            StartCoroutine (Draw (currentEffect.effectOnOpponent ? Other : Caller));
+
+        }
+
+        protected IEnumerator Draw (SC_Player p) {
+
             ApplyingEffects = true;
 
-            Caller.Deck.Draw (1, false);
+            p.Deck.Draw (1, false);
 
-            StartCoroutine (AppliedEffects (GM.drawSpeed));
+            yield return new WaitForSeconds (GM.drawSpeed);
+
+            ApplyingEffects = false;
 
         }
 
@@ -362,15 +370,7 @@ namespace Card {
 
             GM.count++;
 
-        }
-
-        IEnumerator AppliedEffects (float delay) {
-
-            yield return new WaitForSeconds (delay);
-
-            ApplyingEffects = false;
-
-        }
+        }        
 
         public bool Is (CardType t) {
 

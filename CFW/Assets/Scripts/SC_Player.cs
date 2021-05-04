@@ -44,6 +44,10 @@ public class SC_Player : NetworkBehaviour {
     private int alignment;
     public int Alignment { get => alignment; set => alignment = Mathf.Clamp (value, -GM.maxAlignment, GM.maxAlignment); }
 
+    public bool Heel { get { return alignment < 0; } }
+    public bool Neutral { get { return alignment == 0; } }
+    public bool Face { get { return alignment > 0; } }
+
     public Dictionary<BodyPart, int> BodyPartsHealth;
 
     NetworkVariable<bool> hasOtherPlayer = new NetworkVariable<bool> (new NetworkVariableSettings { WritePermission = NetworkVariablePermission.OwnerOnly }, false);
@@ -443,6 +447,22 @@ public class SC_Player : NetworkBehaviour {
             c.ToGraveyard (GM.drawSpeed, () => { SC_BaseCard.activeCard.ApplyingEffects = false; }, !IsLocalPlayer);
 
         });
+
+    }
+    #endregion
+
+    #region Handshake choice
+    [ServerRpc]
+    public void HandshakeServerRpc (int choice) {
+
+        HandshakeClientRpc (choice);
+
+    }
+
+    [ClientRpc]
+    void HandshakeClientRpc (int choice) {
+
+        StartCoroutine ((SC_BaseCard.activeCard as SC_Handshake).FinishApplying (choice));
 
     }
     #endregion
