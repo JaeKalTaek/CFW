@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6274978370742008012}
-  - component: {fileID: 7949979019899661876}
+  - component: {fileID: 8490434239597296266}
   m_Layer: 0
-  m_Name: Eye Rake
+  m_Name: Flip Off
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31,7 +31,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7949979019899661876
+--- !u!114 &8490434239597296266
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40,17 +40,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1546395002530676725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7552766206aa0fa4fb8a4e527920dac7, type: 3}
+  m_Script: {fileID: 11500000, guid: c91bf2f4da10c6248a97da4d4f63437b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchHeat: 7
+  matchHeat: 3
   types: 06000000
-  commonRequirements:
-  - opponent: 0
-    valueType: 3
-    requirementType: 1
-    requirementValue: 1
+  commonRequirements: []
   commonEffects:
+  - effectOnOpponent: 1
+    effectType: 2
+    valueName: 2
+    effectValue: -1
   - effectOnOpponent: 0
     effectType: 2
     valueName: 3

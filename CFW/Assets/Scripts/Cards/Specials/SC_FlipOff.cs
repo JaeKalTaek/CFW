@@ -1,18 +1,24 @@
-using UnityEngine;
-
 namespace Card {
 
     public class SC_FlipOff : SC_BaseCard {
 
-        public override void ApplyEffect () {
-
-            ApplyingEffects = true;
+        public override void ApplyEffect () {            
 
             base.ApplyEffect ();
 
-            if (!Caller.IsLocalPlayer)
-                UI.ShowMessage ("Discard");
-                    //SC_Player.localPlayer.RandomDiscardServerRpc (Other.Hand[Random.Range (0, Other.Hand.Count)].Path);
+            if (Other.Hand.Count > 0) {
+
+                ApplyingEffects = true;
+
+                if (Other.IsLocalPlayer) {
+
+                    SC_Player.localPlayer.Discarding = true;
+
+                    UI.ShowMessage ("Discard");
+
+                }
+
+            }
 
         }
 

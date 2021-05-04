@@ -156,6 +156,8 @@ namespace Card {
 
             UICard.transform.SetParent (UICard.transform.parent.parent);
 
+            UICard.transform.SetAsFirstSibling ();
+
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
             UICard.RecT.pivot = Vector2.one * .5f;

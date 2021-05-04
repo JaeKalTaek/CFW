@@ -31,6 +31,8 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Assessing { get; set; }
 
+    public bool Discarding { get; set; }
+
     public int CurrentChoice { get; set; }
 
     private int health;
@@ -421,38 +423,14 @@ public class SC_Player : NetworkBehaviour {
 
     #region Discard
     [ServerRpc]
-    public void RandomDiscardServerRpc (string id) {
+    public void DiscardServerRpc (string id) {
 
-        RandomDiscardClientRpc (id);
-
-    }
-
-    [ClientRpc]
-    void RandomDiscardClientRpc (string id) {
-
-        ActionOnCard (id, (c) => {
-
-            Hand.Remove (c.Card);
-
-            SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
-
-            c.Card.Caller = this;
-
-            c.ToGraveyard (GM.drawSpeed, () => { SC_BaseCard.activeCard.ApplyingEffects = false; }, !IsLocalPlayer);
-
-        });
-
-    }
-
-    [ServerRpc]
-    public void ChosenDiscardServerRpc (string id) {
-
-        ChosenDiscardClientRpc (id);
+        DiscardClientRpc (id);
 
     }
 
     [ClientRpc]
-    void ChosenDiscardClientRpc (string id) {
+    void DiscardClientRpc (string id) {
 
         ActionOnCard (id, (c) => {
 

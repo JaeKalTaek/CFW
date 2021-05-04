@@ -5,6 +5,7 @@ using Card;
 using static SC_Player;
 using DG.Tweening;
 using System;
+using static Card.SC_BaseCard;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -43,7 +44,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card) || SC_BaseCard.lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing)) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing || localPlayer.Discarding)) {
 
             bigCard.transform.SetParent (transform.parent);
 
@@ -69,18 +70,20 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerClick (PointerEventData eventData) {        
 
-        if (localPlayer.Assessing && SC_BaseCard.activeCard != Card) {
+        if ((localPlayer.Assessing || localPlayer.Discarding) && activeCard != Card) {
 
-            OnPointerExit (new PointerEventData (EventSystem.current));
-
-            localPlayer.Assessing = false;
+            OnPointerExit (new PointerEventData (EventSystem.current));            
 
             UI.messagePanel.SetActive (false);
 
-            if (SC_BaseCard.activeCard.Is (SC_Global.CardType.Basic))
-                localPlayer.UseBasicCardServerRpc (SC_BaseCard.activeCard.UICard.transform.GetSiblingIndex (), localPlayer.Hand.IndexOf (Card));
+            if (localPlayer.Discarding)
+                localPlayer.DiscardServerRpc (name);
+            else if (activeCard.Is (SC_Global.CardType.Basic))
+                localPlayer.UseBasicCardServerRpc (activeCard.UICard.transform.GetSiblingIndex (), localPlayer.Hand.IndexOf (Card));
             else
-                localPlayer.UseCardServerRpc (SC_BaseCard.activeCard.UICard.name, localPlayer.Hand.IndexOf (Card));
+                localPlayer.UseCardServerRpc (activeCard.UICard.name, localPlayer.Hand.IndexOf (Card));
+
+            localPlayer.Assessing = localPlayer.Discarding = false;
 
         } else if (bigCard.activeSelf && Card.CanUse ()) {
 
