@@ -33,7 +33,9 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Discarding { get; set; }
 
-    public int CurrentChoice { get; set; }
+    public Dictionary<string, int> Choices { get; set; }
+
+    public int GetChoice (string id) { Choices.TryGetValue (id, out int v); return v; }
 
     private int health;
     public int Health { get => health; set => health = Mathf.Clamp (value, 0, GM.baseHealth); }
@@ -66,6 +68,8 @@ public class SC_Player : NetworkBehaviour {
 
     #region Setup
     public override void NetworkStart () {
+
+        Choices = new Dictionary<string, int> ();
 
         Hand = new List<SC_BaseCard> ();
 
@@ -315,46 +319,59 @@ public class SC_Player : NetworkBehaviour {
         }
 
     }
-    [ServerRpc]
-    public void UseCardServerRpc (string id, int choice = 0) {
 
-        UseCardClientRpc (id, choice);
+    [ServerRpc]
+    public void SetChoiceServerRpc (string id, int choice) {
+
+        SetChoiceClientRpc (id, choice);
 
     }
 
     [ClientRpc]
-    void UseCardClientRpc (string id, int choice) {
+    void SetChoiceClientRpc (string id, int choice) {
 
-        CurrentChoice = choice;        
+        Choices[id] = choice;
+
+    }
+
+    [ServerRpc]
+    public void PlayCardServerRpc (string id) {
+
+        PlayCardClientRpc (id);
+
+    }
+
+    [ClientRpc]
+    void PlayCardClientRpc (string id) {   
 
         ActionOnCard (id, (c) => { c.Card.Play (this); });
 
     }
 
     [ServerRpc]
-    public void UseBasicCardServerRpc (int id, int choice = 0) {
+    public void StartUsingBasicServerRpc (int id) {
 
-        UseBasicCardClientRpc (id, choice);
+        StartUsingBasicClientRpc (id);
 
     }
 
     [ClientRpc]
-    void UseBasicCardClientRpc (int id, int choice) {
+    void StartUsingBasicClientRpc (int id) {
 
-        CurrentChoice = choice;
-
-        SC_UI_Card c = Instantiate (UI.basicsPanel.transform.GetChild (id)).GetComponent <SC_UI_Card> ();
+        SC_UI_Card c = Instantiate (UI.basicsPanel.transform.GetChild (id), IsLocalPlayer ? GM.localHand : GM.otherHand).GetComponent <SC_UI_Card> ();
 
         c.gameObject.SetActive (true);
 
         c.name = c.Card.Path;
 
-        c.transform.SetParent (IsLocalPlayer ? GM.localHand : GM.otherHand, false);
+        c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = c.BigRec.anchorMin = c.BigRec.anchorMax = c.BigRec.pivot = new Vector2 (.5f, IsLocalPlayer ? 0 : 1);
+
+        SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
 
         if (!IsLocalPlayer)
             c.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Sprites/CardBack");
-
-        c.Card.Play (this);
+        else
+            StartCoroutine (c.Card.StartUsing ());
 
     }
 
@@ -371,6 +388,20 @@ public class SC_Player : NetworkBehaviour {
         localPlayer.Busy = true;
 
         (SC_BaseCard.lockingCard as SC_Submission).Maintain ();
+
+    }
+
+    [ServerRpc]
+    public void FinishApplyingCardServerRpc () {
+
+        FinishApplyingCardClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void FinishApplyingCardClientRpc () {
+
+        StartCoroutine (SC_BaseCard.activeCard.FinishApplying ());
 
     }
     #endregion
@@ -449,22 +480,6 @@ public class SC_Player : NetworkBehaviour {
         });
 
     }
-    #endregion
-
-    #region Handshake choice
-    [ServerRpc]
-    public void HandshakeServerRpc (int choice) {
-
-        HandshakeClientRpc (choice);
-
-    }
-
-    [ClientRpc]
-    void HandshakeClientRpc (int choice) {
-
-        StartCoroutine ((SC_BaseCard.activeCard as SC_Handshake).FinishApplying (choice));
-
-    }
-    #endregion
+    #endregion    
 
 }

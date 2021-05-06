@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using static SC_Global;
 using static SC_Player;
@@ -43,7 +44,11 @@ namespace Card {
 
         }
 
-        public override void StartUsing () {
+        public override IEnumerator StartUsing () {
+
+            MakingChoices = true;
+
+            StartCoroutine (base.StartUsing ());            
 
             OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 
@@ -57,7 +62,9 @@ namespace Card {
                 UI.ShowBodyPartPanel ();
 
             } else
-                base.StartUsing ();
+                MakingChoices = false;
+
+            yield return null;
 
         }
 
@@ -80,10 +87,10 @@ namespace Card {
 
             OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 
-            if (bodyPartDamage.bodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == BodyPart.None || bodyPartDamage.bodyPart == (BodyPart) localPlayer.CurrentChoice))
+            if (bodyPartDamage.bodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == BodyPart.None || bodyPartDamage.bodyPart == (BodyPart) Caller.GetChoice ("BodyPart")))
                 Other.ApplySingleBodyEffect (bodyPartDamage.bodyPart, bodyPartDamage.damage);
 
-            if (bodyPartDamage.otherBodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == (BodyPart) localPlayer.CurrentChoice))
+            if (bodyPartDamage.otherBodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == (BodyPart) Caller.GetChoice ("BodyPart")))
                 Other.ApplySingleBodyEffect (bodyPartDamage.otherBodyPart, bodyPartDamage.damage);
 
         }

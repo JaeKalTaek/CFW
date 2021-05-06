@@ -1,6 +1,8 @@
 ﻿using DG.Tweening;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using static SC_Global;
 using static SC_Player;
@@ -28,7 +30,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -110,35 +112,37 @@ namespace Card {
 
         }
 
-        public virtual void StartUsing () {
+        public bool MakingChoices { get; set; }
+
+        public List<Action> ChoicesActions { get; set; }
+
+        public virtual IEnumerator StartUsing () {
 
             activeCard = this;
 
+            while (MakingChoices)
+                yield return new WaitForEndOfFrame ();
+
             foreach (CommonEffect c in commonEffects) {
 
-                if (c.effectType == CommonEffectType.BodyPartEffect) {
+                CurrentEffect = c;
 
-                    foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
-                        t.gameObject.SetActive (true);
+                MethodInfo mi = typeof (SC_BaseCard).GetMethod (c.effectType.ToString () + "Choice");
 
-                    UI.ShowBodyPartPanel (c.effectValue > 0);
+                if (mi != null) {
 
-                    return;
+                    MakingChoices = true;
 
-                }
+                    mi.Invoke (this, null);
+
+                    while (MakingChoices)
+                        yield return new WaitForEndOfFrame ();
+
+                }            
 
             }
 
-            if (Has (CommonEffectType.Assess)) {
-
-                localPlayer.Assessing = true;
-
-                UI.ShowMessage ("Assess");
-
-            } else if (Is (CardType.Basic))
-                localPlayer.UseBasicCardServerRpc (UICard.transform.GetSiblingIndex ());
-            else
-                localPlayer.UseCardServerRpc (UICard.name);
+            localPlayer.PlayCardServerRpc (UICard.name);
 
         }
 
@@ -148,15 +152,13 @@ namespace Card {
 
             Other = c.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            cardToAssess = Caller.Hand[Caller.CurrentChoice].UICard.name;            
+            cardToAssess = Caller.Hand[Caller.GetChoice ("Assess")].UICard.name;            
 
             Caller.Hand.Remove (this);
 
             localPlayer.Busy = true;
 
-            UICard.transform.SetParent (UICard.transform.parent.parent);
-
-            UICard.transform.SetAsFirstSibling ();
+            UICard.RecT.SetParent (UICard.RecT.parent.parent);
 
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
@@ -193,6 +195,8 @@ namespace Card {
 
                 if (Is (CardType.Submission) || UICard.name.EndsWith ("Pinfall")) {
 
+                    UICard.RecT.SetAsFirstSibling ();
+
                     lockingCard = this;
 
                     GM.count = 0;
@@ -200,17 +204,14 @@ namespace Card {
                     if (localPlayer != Caller)
                         localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
 
-                    if (Is (CardType.Submission)) {
 
-                        Vector3 oldPos = UICard.RecT.position;
+                    Vector3 oldPos = UICard.RecT.position;
 
-                        UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
+                    UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
 
-                        UICard.RecT.position = oldPos;
+                    UICard.RecT.position = oldPos;
 
-                        UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
-
-                    }
+                    UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
 
                     UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = NextTurn;
 
@@ -262,7 +263,7 @@ namespace Card {
 
         }
 
-        protected CommonEffect currentEffect;
+        public CommonEffect CurrentEffect { get; set; }
 
         public bool ApplyingEffects { get; set; }
 
@@ -270,7 +271,7 @@ namespace Card {
 
             foreach (CommonEffect e in commonEffects) {
 
-                currentEffect = e;
+                CurrentEffect = e;
 
                 typeof (SC_BaseCard).GetMethod (e.effectType.ToString ()).Invoke (this, null);
 
@@ -278,6 +279,15 @@ namespace Card {
 
         }
 
+        public virtual IEnumerator FinishApplying () {
+
+            yield return null;
+
+            ApplyEffect ();
+
+        }
+
+        #region Common Effects
         string cardToAssess;
 
         public void Assess () {
@@ -298,27 +308,44 @@ namespace Card {
 
         }
 
+        public void AssessChoice () {
+
+            localPlayer.Assessing = true;
+
+            UI.ShowMessage ("Assess");
+
+        }
+
         public void MatchHeatEffect () {
 
-            GM.AddMatchHeat (currentEffect.effectValue);
+            GM.AddMatchHeat (CurrentEffect.effectValue);
 
         }
 
         public void SingleValueEffect () {
 
-            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect (currentEffect.valueName.ToString (), currentEffect.effectValue);
+            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect (CurrentEffect.valueName.ToString (), CurrentEffect.effectValue);
 
         }
 
         public void BodyPartEffect () {
 
-            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.CurrentChoice, currentEffect.effectValue);
+            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetChoice ("BodyPart"), CurrentEffect.effectValue);
 
         } 
 
+        public void BodyPartEffectChoice () {
+
+            foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                t.gameObject.SetActive (true);
+
+            UI.ShowBodyPartPanel (CurrentEffect.effectValue > 0);
+
+        }
+
         public void Tire () {
 
-            (currentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
 
         }
 
@@ -350,7 +377,7 @@ namespace Card {
 
         public void Draw () {
 
-            StartCoroutine (Draw (currentEffect.effectOnOpponent ? Other : Caller));
+            StartCoroutine (Draw (CurrentEffect.effectOnOpponent ? Other : Caller));
 
         }
 
@@ -370,7 +397,20 @@ namespace Card {
 
             GM.count++;
 
-        }        
+        }
+
+        public void AlignmentChoice () {
+
+            Caller.ApplySingleEffect ("Alignment", Caller.GetChoice ("AlignmentChoice"));
+
+        }
+
+        public void AlignmentChoiceChoice () {
+
+            UI.ShowAlignmentChoice (CurrentEffect.effectValue);
+
+        }
+        #endregion
 
         public bool Is (CardType t) {
 

@@ -13,7 +13,7 @@ namespace Card {
 
                 UI.handshakeUI.heelChoice.SetActive (Other.Alignment <= 0);
 
-                UI.handshakeUI.faceButton.SetActive (Other.Alignment >= 0);
+                UI.handshakeUI.faceChoice.SetActive (Other.Alignment >= 0);
 
                 UI.handshakeUI.panel.SetActive (true);
 
@@ -21,7 +21,9 @@ namespace Card {
 
         }
         
-        public IEnumerator FinishApplying (int choice) {            
+        public override IEnumerator FinishApplying () {
+
+            int choice = Other.GetChoice ("Handshake");
 
             if (choice != 1) {
 

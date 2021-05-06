@@ -30,7 +30,7 @@ namespace Card {
 
             Other.ApplySingleEffect ("Stamina", -effect.stamina);
 
-            choice = SC_Player.localPlayer.CurrentChoice;
+            SC_Player.localPlayer.GetChoice ("BodyPart");
 
             ApplyBodyPartDamage ();
 
@@ -38,13 +38,21 @@ namespace Card {
 
         public void Maintain () {
 
+            UICard.RecT.SetAsLastSibling ();
+
             UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.enlargeCardFactor, .5f).OnComplete (() => {
 
-                SC_Player.localPlayer.CurrentChoice = choice;
+                SC_Player.localPlayer.Choices ["BodyPart"] = choice;
 
-                ApplyBodyPartDamage ();
+                ApplyBodyPartDamage ();                
 
-                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.enlargeCardFactor, .5f).onComplete = NextTurn;
+                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.enlargeCardFactor, .5f).OnComplete (() => {
+
+                    UICard.RecT.SetAsFirstSibling ();
+
+                    NextTurn ();
+
+                });
 
             });               
 

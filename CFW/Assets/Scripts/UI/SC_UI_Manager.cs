@@ -21,9 +21,14 @@ public class SC_UI_Manager : MonoBehaviour {
     public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton, maintainSubmissionButton;           
 
     [Serializable]
-    public struct HandshakeUI { public GameObject panel, heelChoice, /*neutralChoice,*/ faceButton; }
+    public struct HandshakeUI { public GameObject panel, heelChoice, faceChoice; }
 
     public HandshakeUI handshakeUI;
+
+    [Serializable]
+    public struct AlignmentChoiceUI { public GameObject panel; public TextMeshProUGUI heelChoice, faceChoice; }
+
+    public AlignmentChoiceUI alignmentChoiceUI;
 
     void Awake () {
 
@@ -51,13 +56,13 @@ public class SC_UI_Manager : MonoBehaviour {
 
         (NoLock ? showBasicsButton : showLockedBasicsButton).SetActive (!show);
 
+        (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
+
         if (show)
             for (int i = 0; i < 10; i++)
                 basicsPanel.transform.GetChild (i).gameObject.SetActive (otherPlayer.Unlocked ? (localPlayer.Unlocked ? (0 <= i && i < 3) : (localPlayer.Pinned ? (4 <= i && i < 6) : (6 <= i && i < 9))) : i == 9);        
 
-        basicsPanel.SetActive (show);
-
-        (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
+        basicsPanel.SetActive (show);        
 
         GM.localHand.gameObject.SetActive (!show);
 
@@ -76,7 +81,7 @@ public class SC_UI_Manager : MonoBehaviour {
         pinfallPanel.SetActive (false);
 
         if (yes)
-            localPlayer.UseBasicCardServerRpc (3);
+            localPlayer.StartUsingBasicServerRpc (3);
         else
             localPlayer.NextTurn ();
 
@@ -86,10 +91,35 @@ public class SC_UI_Manager : MonoBehaviour {
 
         handshakeUI.panel.SetActive (false);
 
-        localPlayer.HandshakeServerRpc (choice);
+        localPlayer.SetChoiceServerRpc ("Handshake", choice);
+
+        localPlayer.FinishApplyingCardServerRpc ();
 
     }
 
+    #region Alignment choice
+    public void ShowAlignmentChoice (int value) {
+
+        alignmentChoiceUI.heelChoice.text = "Alignment - " + value;
+
+        alignmentChoiceUI.faceChoice.text = "Alignment + " + value;
+
+        alignmentChoiceUI.panel.SetActive (true);
+
+    }
+
+    public void AlignmentChoice (int value) {
+
+        alignmentChoiceUI.panel.SetActive (false);
+
+        localPlayer.SetChoiceServerRpc ("AlignmentChoice", SC_BaseCard.activeCard.CurrentEffect.effectValue * value);
+
+        SC_BaseCard.activeCard.MakingChoices = false;
+
+    }
+    #endregion
+
+    #region BodyPart choice
     public void ShowBodyPartPanel (bool damage = true) {
 
         ShowMessage ("BodyPart" + (damage ? "Damage" : "Heal"));
@@ -104,9 +134,14 @@ public class SC_UI_Manager : MonoBehaviour {
 
         bodyPartDamageChoicePanel.SetActive (false);
 
-        localPlayer.UseCardServerRpc (SC_BaseCard.activeCard.UICard.name, bodyPart);        
+        localPlayer.SetChoiceServerRpc ("BodyPart", bodyPart);
+
+        SC_BaseCard.activeCard.MakingChoices = false;
+
+        // localPlayer.PlayCardServerRpc (SC_BaseCard.activeCard.UICard.name);        
 
     }
+    #endregion
 
     public void ShowEndPanel (bool won) {
 

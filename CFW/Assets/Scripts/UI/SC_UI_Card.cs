@@ -68,37 +68,47 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void OnPointerClick (PointerEventData eventData) {        
+    public void OnPointerClick (PointerEventData eventData) {
 
-        if ((localPlayer.Assessing || localPlayer.Discarding) && activeCard != Card) {
+        if (activeCard != Card) {
 
-            OnPointerExit (new PointerEventData (EventSystem.current));            
+            if (localPlayer.Assessing || localPlayer.Discarding) {
 
-            UI.messagePanel.SetActive (false);
+                OnPointerExit (new PointerEventData (EventSystem.current));
 
-            if (localPlayer.Discarding)
-                localPlayer.DiscardServerRpc (name);
-            else if (activeCard.Is (SC_Global.CardType.Basic))
-                localPlayer.UseBasicCardServerRpc (activeCard.UICard.transform.GetSiblingIndex (), localPlayer.Hand.IndexOf (Card));
-            else
-                localPlayer.UseCardServerRpc (activeCard.UICard.name, localPlayer.Hand.IndexOf (Card));
+                UI.messagePanel.SetActive (false);
 
-            localPlayer.Assessing = localPlayer.Discarding = false;
+                if (localPlayer.Discarding)
+                    localPlayer.DiscardServerRpc (name);
+                else {
 
-        } else if (bigCard.activeSelf && Card.CanUse ()) {
+                    localPlayer.SetChoiceServerRpc ("Assess", localPlayer.Hand.IndexOf (Card));
 
-            OnPointerExit (new PointerEventData (EventSystem.current));
+                    activeCard.MakingChoices = false;
 
-            if (IsBasic)
-                UI.ShowBasics (false);
+                }
 
-            UI.showBasicsButton.SetActive (false);
+                localPlayer.Assessing = localPlayer.Discarding = false;
 
-            UI.showLockedBasicsButton.SetActive (false);
+            } else if (bigCard.activeSelf && Card.CanUse ()) {
 
-            localPlayer.Busy = true;
+                OnPointerExit (new PointerEventData (EventSystem.current));
 
-            Card.StartUsing ();
+                foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.showLockedBasicsButton, UI.hideBasicsButton, UI.hideLockedBasicsButton })
+                    g.SetActive (false);
+
+                localPlayer.Busy = true;
+
+                if (IsBasic) {
+
+                    GM.localHand.gameObject.SetActive (true);
+
+                    localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
+
+                } else
+                    StartCoroutine (Card.StartUsing ());
+
+            }
 
         }
 
