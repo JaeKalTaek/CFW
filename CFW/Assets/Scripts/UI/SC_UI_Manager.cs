@@ -30,6 +30,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public AlignmentChoiceUI alignmentChoiceUI;
 
+    public TMP_InputField knowYourOpponentChoice;
+
     void Awake () {
 
         Instance = this;
@@ -91,7 +93,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
         handshakeUI.panel.SetActive (false);
 
-        localPlayer.SetChoiceServerRpc ("Handshake", choice);
+        localPlayer.SetIntChoiceServerRpc ("Handshake", choice);
 
         localPlayer.FinishApplyingCardServerRpc ();
 
@@ -112,7 +114,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
         alignmentChoiceUI.panel.SetActive (false);
 
-        localPlayer.SetChoiceServerRpc ("AlignmentChoice", SC_BaseCard.activeCard.CurrentEffect.effectValue * value);
+        localPlayer.SetIntChoiceServerRpc ("AlignmentChoice", SC_BaseCard.activeCard.CurrentEffect.effectValue * value);
 
         SC_BaseCard.activeCard.MakingChoices = false;
 
@@ -134,14 +136,24 @@ public class SC_UI_Manager : MonoBehaviour {
 
         bodyPartDamageChoicePanel.SetActive (false);
 
-        localPlayer.SetChoiceServerRpc ("BodyPart", bodyPart);
+        localPlayer.SetIntChoiceServerRpc ("BodyPart", bodyPart);
 
         SC_BaseCard.activeCard.MakingChoices = false;
 
-        // localPlayer.PlayCardServerRpc (SC_BaseCard.activeCard.UICard.name);        
-
     }
     #endregion
+
+    public void KnowYourOpponentConfirmedChoice () {
+
+        messagePanel.SetActive (false);
+
+        knowYourOpponentChoice.transform.parent.gameObject.SetActive (false);
+
+        localPlayer.SetStringChoiceServerRpc ("KnowYourOpponent", knowYourOpponentChoice.text);
+
+        SC_BaseCard.activeCard.MakingChoices = false;
+
+    }
 
     public void ShowEndPanel (bool won) {
 

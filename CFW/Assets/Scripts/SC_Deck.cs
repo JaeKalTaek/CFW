@@ -33,6 +33,22 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
+    public SC_UI_Card CreateCard (Transform parent, SC_BaseCard original) {
+
+        SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Quaternion.identity, parent);
+
+        c.name = original.Path;
+
+        c.Card = Instantiate (original, c.transform);
+
+        cards.Remove (original);
+
+        TSize.text = Size.ToString ();
+
+        return c;
+
+    }
+
     public void Draw (int nbr, bool StartTurn, bool tween = true) {
 
         for (int i = 0; i < nbr; i++)
@@ -53,23 +69,15 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
-            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Quaternion.identity, rT);
+            SC_UI_Card c = CreateCard (rT, cards[0]);
 
             if (!Local)
-                c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);
-
-            c.name = cards[0].Path;
-
-            c.Card = Instantiate (cards[0], c.transform);
+                c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);            
 
             if (Local && !tween)
                 c.SetImages ();
 
-            cards.RemoveAt (0);
-
-            OrganizeHand (rT);
-
-            TSize.text = Size.ToString ();
+            OrganizeHand (rT);            
 
             if (tween) {
 

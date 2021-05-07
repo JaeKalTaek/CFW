@@ -23,7 +23,7 @@ namespace Card {
         
         public override IEnumerator FinishApplying () {
 
-            int choice = Other.GetChoice ("Handshake");
+            int choice = Other.GetIntChoice ("Handshake");
 
             if (choice != 1) {
 

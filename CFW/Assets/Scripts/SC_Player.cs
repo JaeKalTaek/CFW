@@ -33,9 +33,13 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Discarding { get; set; }
 
-    public Dictionary<string, int> Choices { get; set; }
+    public Dictionary<string, int> IntChoices { get; set; }
 
-    public int GetChoice (string id) { Choices.TryGetValue (id, out int v); return v; }
+    public int GetIntChoice (string id) { IntChoices.TryGetValue (id, out int v); return v; }
+
+    public Dictionary<string, string> StringChoices { get; set; }
+
+    public string GetStringChoice (string id) { StringChoices.TryGetValue (id, out string v); return v; }
 
     private int health;
     public int Health { get => health; set => health = Mathf.Clamp (value, 0, GM.baseHealth); }
@@ -69,7 +73,9 @@ public class SC_Player : NetworkBehaviour {
     #region Setup
     public override void NetworkStart () {
 
-        Choices = new Dictionary<string, int> ();
+        IntChoices = new Dictionary<string, int> ();
+
+        StringChoices = new Dictionary<string, string> ();
 
         Hand = new List<SC_BaseCard> ();
 
@@ -320,19 +326,35 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
+    #region Set choices
     [ServerRpc]
-    public void SetChoiceServerRpc (string id, int choice) {
+    public void SetIntChoiceServerRpc (string id, int choice) {
 
-        SetChoiceClientRpc (id, choice);
+        SetIntChoiceClientRpc (id, choice);
 
     }
 
     [ClientRpc]
-    void SetChoiceClientRpc (string id, int choice) {
+    void SetIntChoiceClientRpc (string id, int choice) {
 
-        Choices[id] = choice;
+        IntChoices[id] = choice;
 
     }
+
+    [ServerRpc]
+    public void SetStringChoiceServerRpc (string id, string choice) {
+
+        SetStringChoiceClientRpc (id, choice);
+
+    }
+
+    [ClientRpc]
+    void SetStringChoiceClientRpc (string id, string choice) {
+
+        StringChoices[id] = choice;
+
+    }
+    #endregion
 
     [ServerRpc]
     public void PlayCardServerRpc (string id) {
@@ -467,17 +489,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void DiscardClientRpc (string id) {
 
-        ActionOnCard (id, (c) => {
-
-            Hand.Remove (c.Card);
-
-            SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
-
-            c.Card.Caller = this;
-
-            c.ToGraveyard (GM.drawSpeed, () => { SC_BaseCard.activeCard.ApplyingEffects = false; }, !IsLocalPlayer);
-
-        });
+        ActionOnCard (id, (c) => { c.Card.Discard (this); });
 
     }
     #endregion    

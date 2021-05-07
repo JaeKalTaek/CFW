@@ -82,7 +82,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                     localPlayer.DiscardServerRpc (name);
                 else {
 
-                    localPlayer.SetChoiceServerRpc ("Assess", localPlayer.Hand.IndexOf (Card));
+                    localPlayer.SetIntChoiceServerRpc ("Assess", localPlayer.Hand.IndexOf (Card));
 
                     activeCard.MakingChoices = false;
 
@@ -123,13 +123,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void ToGraveyard (float speed, Action action, bool flip = false) {
+    public void ToGraveyard (float speed, Action action, bool? flip = null) {
 
         transform.SetParent ((Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
 
         RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
 
-        Flip (flip, speed / 2);
+        Flip (flip ?? !Card.Caller.IsLocalPlayer, speed / 2);
 
         RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => { action (); });
 

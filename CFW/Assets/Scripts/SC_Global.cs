@@ -63,7 +63,9 @@ public class SC_Global {
 
         { "BodyPartDamage", "Which body part do you want to damage?" },
 
-        { "BodyPartHeal", "Which body part do you want to heal?" }
+        { "BodyPartHeal", "Which body part do you want to heal?" },
+
+        { "KnowYourOpponent", "Type a card name and press confirm" }
 
     };
 

@@ -152,7 +152,7 @@ namespace Card {
 
             Other = c.IsLocalPlayer ? otherPlayer : localPlayer;
 
-            cardToAssess = Caller.Hand[Caller.GetChoice ("Assess")].UICard.name;            
+            cardToAssess = Caller.Hand[Caller.GetIntChoice ("Assess")].UICard.name;            
 
             Caller.Hand.Remove (this);
 
@@ -246,7 +246,7 @@ namespace Card {
                         } else
                             localPlayer.Busy = false;
 
-                    });
+                    }, false);
 
                 }
 
@@ -300,7 +300,7 @@ namespace Card {
 
                 c.Card.Caller = Caller;
 
-                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; }, !Caller.IsLocalPlayer);                
+                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; });                
 
             });
 
@@ -330,7 +330,7 @@ namespace Card {
 
         public void BodyPartEffect () {
 
-            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetChoice ("BodyPart"), CurrentEffect.effectValue);
+            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetIntChoice ("BodyPart"), CurrentEffect.effectValue);
 
         } 
 
@@ -363,7 +363,7 @@ namespace Card {
 
                 ApplyingEffects = false;
 
-            });          
+            }, false);          
 
         }
 
@@ -401,7 +401,7 @@ namespace Card {
 
         public void AlignmentChoice () {
 
-            Caller.ApplySingleEffect ("Alignment", Caller.GetChoice ("AlignmentChoice"));
+            Caller.ApplySingleEffect ("Alignment", Caller.GetIntChoice ("AlignmentChoice"));
 
         }
 
@@ -411,6 +411,18 @@ namespace Card {
 
         }
         #endregion
+
+        public void Discard (SC_Player owner) {
+
+            Caller = owner;
+
+            Caller.Hand.Remove (this);
+
+            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);            
+
+            UICard.ToGraveyard (GM.drawSpeed, () => { activeCard.ApplyingEffects = false; });
+
+        }
 
         public bool Is (CardType t) {
 
