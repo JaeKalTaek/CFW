@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1902924050585946}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 301.5199, y: 155.4845, z: -14.515154}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -45,6 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matchHeat: 12
   types: 00000000
+  commonRequirements: []
+  commonEffects: []
   matchHeatGain: 4
   cost:
     stamina: 3

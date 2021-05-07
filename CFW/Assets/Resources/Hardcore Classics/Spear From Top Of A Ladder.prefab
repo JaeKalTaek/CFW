@@ -45,6 +45,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   matchHeat: 20
   types: 0200000001000000
+  commonRequirements: []
+  commonEffects: []
   matchHeatGain: 0
   cost:
     stamina: 5

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6274978370742008012}
   - component: {fileID: -7309167600695952131}
   m_Layer: 0
-  m_Name: Reaching for the Ropes
+  m_Name: 3 Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
