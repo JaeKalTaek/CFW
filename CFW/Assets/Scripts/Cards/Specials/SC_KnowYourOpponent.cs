@@ -5,19 +5,19 @@ namespace Card {
 
     public class SC_KnowYourOpponent : SC_BaseCard {
 
-        public override IEnumerator StartUsing () {
+        protected override IEnumerator MakeChoices () {
 
-            MakingChoices = true;
+            yield return StartCoroutine (base.MakeChoices ());
 
-            StartCoroutine (base.StartUsing ());
+            yield return StartCoroutine (MakeChoice (() => {
 
-            UI.ShowMessage ("KnowYourOpponent");
+                UI.ShowMessage ("KnowYourOpponent");
 
-            UI.knowYourOpponentChoice.text = "";
+                UI.knowYourOpponentChoice.text = "";
 
-            UI.knowYourOpponentChoice.transform.parent.gameObject.SetActive (true);
+                UI.knowYourOpponentChoice.transform.parent.gameObject.SetActive (true);
 
-            yield return null;
+            }));
 
         }
 
@@ -29,7 +29,7 @@ namespace Card {
 
             foreach (SC_BaseCard c in Other.Hand) {
 
-                if (c.name.Replace ("(Clone)", "").ToLower () == choice) {
+                if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {
 
                     ApplyingEffects = true;
 

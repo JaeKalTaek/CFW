@@ -4488,6 +4488,7 @@ MonoBehaviour:
   baseBodyPartHealth: 7
   staminaPerTurn: 2
   maxAlignment: 10
+  responseTime: 1
   shifumiText: {fileID: 2139284678}
   baseShiFuMiChoiceColor: {r: 1, g: 1, b: 1, a: 0.49019608}
   lockedChoiceColor: {r: 0.28627452, g: 0.28627452, b: 0.28627452, a: 1}

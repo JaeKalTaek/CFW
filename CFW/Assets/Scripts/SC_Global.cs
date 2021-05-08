@@ -47,6 +47,12 @@ public class SC_Global {
 
     }
 
+    public enum ChoosingCard {
+
+        None, Discarding, Assessing, DoubleTapping
+
+    }
+
     public static bool Win (ShiFuMi a, ShiFuMi b) {
 
         return ((a == ShiFuMi.Paper) && (b == ShiFuMi.Rock)) ||
@@ -65,7 +71,9 @@ public class SC_Global {
 
         { "BodyPartHeal", "Which body part do you want to heal?" },
 
-        { "KnowYourOpponent", "Type a card name and press confirm" }
+        { "KnowYourOpponent", "Type a card name and press confirm" },
+
+        { "DoubleTap", "Choose two cards to discard to Double Tap" }
 
     };
 

@@ -6,6 +6,7 @@ using static SC_Player;
 using DG.Tweening;
 using System;
 using static Card.SC_BaseCard;
+using static SC_Global;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -44,7 +45,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) && (!localPlayer.Busy || localPlayer.Assessing || localPlayer.Discarding)) {
+        if ((IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) && (!localPlayer.Busy || localPlayer.ChoosingCard != ChoosingCard.None)) {
 
             bigCard.transform.SetParent (transform.parent);
 
@@ -72,23 +73,33 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (activeCard != Card) {
 
-            if (localPlayer.Assessing || localPlayer.Discarding) {
+            if (localPlayer.ChoosingCard == ChoosingCard.DoubleTapping && localPlayer.GetStringChoice ("DoubleTapping") == "") {
+
+                localPlayer.SetStringChoiceServerRpc ("DoubleTapping", name);
+
+            } else if (localPlayer.ChoosingCard != ChoosingCard.None && (localPlayer.ChoosingCard != ChoosingCard.DoubleTapping || name != localPlayer.GetStringChoice ("DoubleTapping"))) {
 
                 OnPointerExit (new PointerEventData (EventSystem.current));
 
                 UI.messagePanel.SetActive (false);
 
-                if (localPlayer.Discarding)
+                if (localPlayer.ChoosingCard == ChoosingCard.Discarding)
                     localPlayer.DiscardServerRpc (name);
-                else {
+                else if (localPlayer.ChoosingCard == ChoosingCard.Assessing) {
 
-                    localPlayer.SetIntChoiceServerRpc ("Assess", localPlayer.Hand.IndexOf (Card));
+                    localPlayer.SetStringChoiceServerRpc ("Assess", name);
+
+                    activeCard.MakingChoices = false;
+
+                } else {
+
+                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping2", name);
 
                     activeCard.MakingChoices = false;
 
                 }
 
-                localPlayer.Assessing = localPlayer.Discarding = false;
+                localPlayer.ChoosingCard = ChoosingCard.None;
 
             } else if (bigCard.activeSelf && Card.CanUse ()) {
 

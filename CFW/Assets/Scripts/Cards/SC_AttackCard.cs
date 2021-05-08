@@ -44,27 +44,24 @@ namespace Card {
 
         }
 
-        public override IEnumerator StartUsing () {
+        protected override IEnumerator MakeChoices () {
 
-            MakingChoices = true;
-
-            StartCoroutine (base.StartUsing ());            
+            yield return StartCoroutine (base.MakeChoices ());
 
             OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 
             if (bodyPartDamage.otherBodyPart != BodyPart.None && !bodyPartDamage.both) {
 
-                activeCard = this;
+                yield return StartCoroutine (MakeChoice (() => {
 
-                foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
-                    t.gameObject.SetActive (t.name == bodyPartDamage.bodyPart.ToString () || t.name == bodyPartDamage.otherBodyPart.ToString ());
+                    foreach (Transform t in UI.bodyPartDamageChoicePanel.transform)
+                        t.gameObject.SetActive (t.name == bodyPartDamage.bodyPart.ToString () || t.name == bodyPartDamage.otherBodyPart.ToString ());
 
-                UI.ShowBodyPartPanel ();
+                    UI.ShowBodyPartPanel ();
 
-            } else
-                MakingChoices = false;
+                }));
 
-            yield return null;
+            }
 
         }
 

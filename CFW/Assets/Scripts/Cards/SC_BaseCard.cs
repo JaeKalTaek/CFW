@@ -30,7 +30,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]        
         public CommonEffect[] commonEffects;
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -112,16 +112,22 @@ namespace Card {
 
         }
 
+        #region Start using & making choices
         public bool MakingChoices { get; set; }
 
         public List<Action> ChoicesActions { get; set; }
 
-        public virtual IEnumerator StartUsing () {
+        public IEnumerator StartUsing () {
 
             activeCard = this;
 
-            while (MakingChoices)
-                yield return new WaitForEndOfFrame ();
+            yield return StartCoroutine (MakeChoices ());
+
+            localPlayer.PlayCardServerRpc (UICard.name);
+
+        }
+
+        protected virtual IEnumerator MakeChoices () {
 
             foreach (CommonEffect c in commonEffects) {
 
@@ -129,30 +135,30 @@ namespace Card {
 
                 MethodInfo mi = typeof (SC_BaseCard).GetMethod (c.effectType.ToString () + "Choice");
 
-                if (mi != null) {
-
-                    MakingChoices = true;
-
-                    mi.Invoke (this, null);
-
-                    while (MakingChoices)
-                        yield return new WaitForEndOfFrame ();
-
-                }            
+                if (mi != null)
+                    yield return StartCoroutine (MakeChoice (() => { mi.Invoke (this, null); }));                
 
             }
 
-            localPlayer.PlayCardServerRpc (UICard.name);
+        }
+
+        protected IEnumerator MakeChoice (Action a) {
+
+            MakingChoices = true;
+
+            a ();
+
+            while (MakingChoices)
+                yield return new WaitForEndOfFrame ();
 
         }
+        #endregion
 
         public virtual void Play (SC_Player c) {
 
             Caller = c;
 
-            Other = c.IsLocalPlayer ? otherPlayer : localPlayer;
-
-            cardToAssess = Caller.Hand[Caller.GetIntChoice ("Assess")].UICard.name;            
+            Other = c.IsLocalPlayer ? otherPlayer : localPlayer;       
 
             Caller.Hand.Remove (this);
 
@@ -178,7 +184,7 @@ namespace Card {
 
             activeCard = this;
 
-            yield return new WaitForSeconds (1);
+            yield return new WaitForSeconds (GM.responseTime);
 
             ApplyEffect ();
 
@@ -275,6 +281,9 @@ namespace Card {
 
                 typeof (SC_BaseCard).GetMethod (e.effectType.ToString ()).Invoke (this, null);
 
+                /*while (ApplyingEffects)
+                    yield return new WaitForEndOfFrame ();*/
+
             }
 
         }
@@ -288,13 +297,12 @@ namespace Card {
         }
 
         #region Common Effects
-        string cardToAssess;
-
+        #region Assess
         public void Assess () {
 
             ApplyingEffects = true;
 
-            Caller.ActionOnCard (cardToAssess, (c) => {
+            Caller.ActionOnCard (Caller.GetStringChoice ("Assess"), (c) => {
 
                 Caller.Hand.Remove (c.Card);           
 
@@ -310,12 +318,14 @@ namespace Card {
 
         public void AssessChoice () {
 
-            localPlayer.Assessing = true;
+            localPlayer.ChoosingCard = ChoosingCard.Assessing;
 
             UI.ShowMessage ("Assess");
 
         }
+        #endregion
 
+        #region Value effects
         public void MatchHeatEffect () {
 
             GM.AddMatchHeat (CurrentEffect.effectValue);
@@ -342,7 +352,9 @@ namespace Card {
             UI.ShowBodyPartPanel (CurrentEffect.effectValue > 0);
 
         }
+        #endregion
 
+        #region Simple Effects
         public void Tire () {
 
             (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
@@ -374,7 +386,9 @@ namespace Card {
             Caller.ApplySingleEffect ("Health", 1);
 
         }
+        #endregion
 
+        #region Draw
         public void Draw () {
 
             StartCoroutine (Draw (CurrentEffect.effectOnOpponent ? Other : Caller));
@@ -392,6 +406,7 @@ namespace Card {
             ApplyingEffects = false;
 
         }
+        #endregion
 
         public void Count () {
 
@@ -399,6 +414,7 @@ namespace Card {
 
         }
 
+        #region Alignment Choice
         public void AlignmentChoice () {
 
             Caller.ApplySingleEffect ("Alignment", Caller.GetIntChoice ("AlignmentChoice"));
@@ -412,7 +428,51 @@ namespace Card {
         }
         #endregion
 
-        public void Discard (SC_Player owner) {
+        #region Double Tap
+        public void DoubleTap () {
+
+            if (Caller.GetStringChoice ("DoubleTapping") != "") {
+
+                ApplyingEffects = true;
+
+                Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => { c.Card.Discard (Caller, DoubleTapNext); });
+
+            }
+
+        }
+
+        void DoubleTapNext () {
+
+            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (c) => { c.Card.Discard (Caller, DoubleTapEnd); });
+
+        }
+
+        void DoubleTapEnd () {
+
+
+
+        }
+
+        public void DoubleTapChoice () {
+
+            localPlayer.SetStringChoiceServerRpc ("DoubleTapping", "");
+
+            if (localPlayer.Hand.Count >= 3) {
+
+                localPlayer.ChoosingCard = ChoosingCard.DoubleTapping;
+
+                localPlayer.StringChoices["DoubleTap2"] = "";
+
+                UI.ShowMessage ("DoubleTap");
+
+            } else
+                MakingChoices = false;
+
+        }
+        #endregion
+        #endregion
+
+        public void Discard (SC_Player owner, Action a = null) {
 
             Caller = owner;
 
@@ -420,7 +480,7 @@ namespace Card {
 
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);            
 
-            UICard.ToGraveyard (GM.drawSpeed, () => { activeCard.ApplyingEffects = false; });
+            UICard.ToGraveyard (GM.drawSpeed, a ?? (() => { activeCard.ApplyingEffects = false; }));
 
         }
 

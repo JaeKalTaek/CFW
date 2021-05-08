@@ -29,9 +29,7 @@ public class SC_Player : NetworkBehaviour {
 
     public bool Busy { get; set; }
 
-    public bool Assessing { get; set; }
-
-    public bool Discarding { get; set; }
+    public ChoosingCard ChoosingCard { get; set; }
 
     public Dictionary<string, int> IntChoices { get; set; }
 
