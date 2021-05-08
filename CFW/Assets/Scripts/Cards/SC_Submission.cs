@@ -22,15 +22,11 @@ namespace Card {
 
         }
 
-        int choice;
-
         public override void ApplyEffect () {            
 
             base.ApplyEffect ();
 
             Other.ApplySingleEffect ("Stamina", -effect.stamina);
-
-            SC_Player.localPlayer.GetIntChoice ("BodyPart");
 
             ApplyBodyPartDamage ();
 
@@ -41,8 +37,6 @@ namespace Card {
             UICard.RecT.SetAsLastSibling ();
 
             UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.enlargeCardFactor, .5f).OnComplete (() => {
-
-                SC_Player.localPlayer.IntChoices ["BodyPart"] = choice;
 
                 ApplyBodyPartDamage ();                
 
