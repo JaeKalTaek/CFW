@@ -446,7 +446,7 @@ namespace Card {
 
                             ca.Card.Discard (Caller, () => {
 
-
+                                ZoomEffect ((this as SC_OffensiveMove).NonMatchHeatEffects, () => { ApplyingEffects = false; }, 1.25f);
 
                             });
 
@@ -457,18 +457,6 @@ namespace Card {
                 });
 
             }
-
-        }
-
-        void DoubleTapNext () {
-
-            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (c) => { c.Card.Discard (Caller, DoubleTapEnd); });
-
-        }
-
-        void DoubleTapEnd () {
-
-
 
         }
 
@@ -500,6 +488,26 @@ namespace Card {
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);            
 
             UICard.ToGraveyard (GM.drawSpeed, a ?? (() => { activeCard.ApplyingEffects = false; }));
+
+        }
+
+        public void ZoomEffect (Action effect, Action afterEffect, float zoom) {
+
+            UICard.RecT.SetAsLastSibling ();
+
+            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * zoom, .5f).OnComplete (() => {
+
+                effect ();
+
+                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / zoom, .5f).OnComplete (() => {
+
+                    UICard.RecT.SetAsFirstSibling ();
+
+                    afterEffect ();
+
+                });
+
+            });
 
         }
 

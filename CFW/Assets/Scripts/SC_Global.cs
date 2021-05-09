@@ -73,7 +73,9 @@ public class SC_Global {
 
         { "KnowYourOpponent", "Type a card name and press confirm" },
 
-        { "DoubleTap", "Choose two cards to discard to Double Tap" }
+        { "DoubleTap", "Choose a 1st card to discard to Double Tap" },
+
+        { "DoubleTap2", "Choose a 2nd card to discard to Double Tap" }
 
     };
 

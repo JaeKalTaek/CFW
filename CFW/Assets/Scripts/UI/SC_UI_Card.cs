@@ -73,15 +73,25 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (activeCard != Card) {
 
-            if (localPlayer.ChoosingCard == ChoosingCard.DoubleTapping && localPlayer.GetStringChoice ("DoubleTapping") == "") {
+            if (localPlayer.ChoosingCard == ChoosingCard.DoubleTapping) {
 
-                localPlayer.SetStringChoiceServerRpc ("DoubleTapping", name);
+                if (localPlayer.GetStringChoice ("DoubleTapping") == "") {
 
-            } else if (localPlayer.ChoosingCard != ChoosingCard.None && (localPlayer.ChoosingCard != ChoosingCard.DoubleTapping || name != localPlayer.GetStringChoice ("DoubleTapping"))) {
+                    UI.ShowMessage ("DoubleTap2");
 
-                OnPointerExit (new PointerEventData (EventSystem.current));
+                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping", name);
 
-                UI.messagePanel.SetActive (false);
+                } else if (name != localPlayer.GetStringChoice ("DoubleTapping")) {
+
+                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping2", name);
+
+                    activeCard.MakingChoices = false;
+
+                    StopChoosing ();
+
+                }
+
+            } else if (localPlayer.ChoosingCard != ChoosingCard.None) {
 
                 if (localPlayer.ChoosingCard == ChoosingCard.Discarding)
                     localPlayer.DiscardServerRpc (name);
@@ -91,15 +101,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                     activeCard.MakingChoices = false;
 
-                } else {
-
-                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping2", name);
-
-                    activeCard.MakingChoices = false;
-
                 }
 
-                localPlayer.ChoosingCard = ChoosingCard.None;
+                StopChoosing ();                
 
             } else if (bigCard.activeSelf && Card.CanUse ()) {
 
@@ -122,6 +126,16 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             }
 
         }
+
+    }
+
+    void StopChoosing () {
+
+        OnPointerExit (new PointerEventData (EventSystem.current));
+
+        UI.messagePanel.SetActive (false);
+
+        localPlayer.ChoosingCard = ChoosingCard.None;
 
     }
 

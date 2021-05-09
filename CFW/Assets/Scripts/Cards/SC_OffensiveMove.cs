@@ -22,9 +22,9 @@ namespace Card {
 
         }
 
-        public override IEnumerator ApplyEffects () {
+        public override void NonMatchHeatEffects () {
 
-            yield return StartCoroutine (base.ApplyEffects ());
+            base.NonMatchHeatEffects ();
 
             Other.ApplySingleEffect ("Stamina", null, effectOnOpponent);
 
@@ -32,7 +32,7 @@ namespace Card {
 
             ApplyBodyPartDamage ();
 
-        }        
+        }
 
     }
 

@@ -37,21 +37,7 @@ namespace Card {
 
         public void Maintain () {
 
-            UICard.RecT.SetAsLastSibling ();
-
-            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.enlargeCardFactor, .5f).OnComplete (() => {
-
-                ApplyBodyPartDamage ();                
-
-                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.enlargeCardFactor, .5f).OnComplete (() => {
-
-                    UICard.RecT.SetAsFirstSibling ();
-
-                    NextTurn ();
-
-                });
-
-            });               
+            ZoomEffect (ApplyBodyPartDamage, NextTurn, GM.enlargeCardFactor);    
 
         }
 

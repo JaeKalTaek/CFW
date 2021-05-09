@@ -71,6 +71,12 @@ namespace Card {
 
             GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, true);
 
+            NonMatchHeatEffects ();
+
+        }
+
+        public virtual void NonMatchHeatEffects () {
+
             Caller.ApplySingleEffect ("Stamina", null, cost);
 
             Caller.ApplySingleEffect ("Health", null, cost);
