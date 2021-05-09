@@ -50,4 +50,8 @@ MonoBehaviour:
     valueType: 2
     requirementType: 1
     requirementValue: 3
-  commonEffects: []
+  commonEffects:
+  - effectOnOpponent: 0
+    effectType: 11
+    valueName: 0
+    effectValue: 0

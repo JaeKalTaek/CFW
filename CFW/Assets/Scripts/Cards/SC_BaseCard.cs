@@ -27,10 +27,10 @@ namespace Card {
         [Tooltip ("Common requirements of this card")]
         public CommonRequirement[] commonRequirements;
 
-        [Tooltip ("Common effects of this card")]        
-        public CommonEffect[] commonEffects;
+        [Tooltip ("Common effects of this card")]     
+        public CommonEffect[] commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -106,7 +106,7 @@ namespace Card {
 
         public static SC_BaseCard activeCard, lockingCard;
 
-        void Awake () {
+        protected virtual void Awake () {
 
             UICard = transform.parent.GetComponent<SC_UI_Card> ();
 
@@ -195,68 +195,43 @@ namespace Card {
 
                 UI.ShowEndPanel (!Caller.IsLocalPlayer);
 
-            } else {
+            } else if (this != lockingCard) {
 
                 UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-                if (Is (CardType.Submission) || UICard.name.EndsWith ("Pinfall")) {
+                UICard.ToGraveyard (1, () => {
 
-                    UICard.RecT.SetAsFirstSibling ();
+                    localPlayer.Busy = false;
 
-                    lockingCard = this;
+                    if (Is (CardType.Basic)) {
 
-                    GM.count = 0;
+                        Destroy (transform.parent.gameObject);
 
-                    if (localPlayer != Caller)
-                        localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
+                        if (!Has (CommonEffectType.Break))
+                            NextTurn ();
+                        else if (localPlayer.Turn)
+                            UI.showBasicsButton.SetActive (true);
 
+                    } else if (Caller.IsLocalPlayer) {
 
-                    Vector3 oldPos = UICard.RecT.position;
+                        if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
+                            UI.pinfallPanel.SetActive (true);
+                        else if (Is (CardType.Special)) {
 
-                    UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
+                            Caller.SpecialUsed = true;
 
-                    UICard.RecT.position = oldPos;
-
-                    UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
-
-                    UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = NextTurn;
-
-                } else {
-
-                    UICard.ToGraveyard (1, () => {
-
-                        localPlayer.Busy = false;
-
-                        if (Is (CardType.Basic)) {
-
-                            Destroy (transform.parent.gameObject);
-
-                            if (!Has (CommonEffectType.Break))
-                                NextTurn ();
-                            else if (localPlayer.Turn)
-                                UI.showBasicsButton.SetActive (true);
-
-                        } else if (Caller.IsLocalPlayer) {
-
-                            if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
-                                UI.pinfallPanel.SetActive (true);
-                            else if (Is (CardType.Special)) {
-
-                                Caller.SpecialUsed = true;
-
-                                UI.showBasicsButton.SetActive (true);
-
-                            } else
-                                NextTurn ();
+                            UI.showBasicsButton.SetActive (true);
 
                         } else
-                            localPlayer.Busy = false;
+                            NextTurn ();
 
-                    }, false);
+                    } else
+                        localPlayer.Busy = false;
 
-                }
+                }, false);
 
-            }
+            } else
+                NextTurn ();
 
         }
 
@@ -376,6 +351,33 @@ namespace Card {
                 ApplyingEffects = false;
 
             }, false);          
+
+        }
+
+        public void Lock () {
+
+            ApplyingEffects = true;
+
+            UICard.RecT.SetAsFirstSibling ();
+
+            lockingCard = this;
+
+            GM.count = 0;
+
+            if (localPlayer != Caller)
+                localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
+
+            Vector3 oldPos = UICard.RecT.position;
+
+            UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
+
+            UICard.RecT.position = oldPos;
+
+            UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
+
+            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
+
+            UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = () => { ApplyingEffects = false; };
 
         }
 

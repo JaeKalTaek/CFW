@@ -30,6 +30,8 @@ namespace Card {
 
             ApplyBodyPartDamage ();
 
+            Lock ();
+
         }
 
         public void Maintain () {
