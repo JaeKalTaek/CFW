@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using static SC_Global;
 
@@ -21,9 +22,9 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect () {
+        public override IEnumerator ApplyEffects () {
 
-            base.ApplyEffect ();            
+            yield return StartCoroutine (base.ApplyEffects ());
 
             Other.ApplySingleEffect ("Stamina", null, effectOnOpponent);
 

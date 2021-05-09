@@ -410,20 +410,6 @@ public class SC_Player : NetworkBehaviour {
         (SC_BaseCard.lockingCard as SC_Submission).Maintain ();
 
     }
-
-    [ServerRpc]
-    public void FinishApplyingCardServerRpc () {
-
-        FinishApplyingCardClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void FinishApplyingCardClientRpc () {
-
-        StartCoroutine (SC_BaseCard.activeCard.FinishApplying ());
-
-    }
     #endregion
 
     #region Next turn

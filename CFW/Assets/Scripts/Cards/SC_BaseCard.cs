@@ -34,6 +34,12 @@ namespace Card {
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
+        public SC_Player Caller { get; set; }
+
+        public SC_Player Other { get; set; }
+
+        public static SC_BaseCard activeCard, lockingCard;
+
         [Serializable]
         public struct CommonEffect {
 
@@ -77,10 +83,13 @@ namespace Card {
 
         }
 
-        public SC_Player Caller { get; set; }
+        protected virtual void Awake () {
 
-        public SC_Player Other { get; set; }
+            UICard = transform.parent.GetComponent<SC_UI_Card> ();
 
+        }
+
+        #region Can use
         public virtual bool CanUse () {
 
             if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !localPlayer.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
@@ -103,14 +112,7 @@ namespace Card {
             return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
 
         }
-
-        public static SC_BaseCard activeCard, lockingCard;
-
-        protected virtual void Awake () {
-
-            UICard = transform.parent.GetComponent<SC_UI_Card> ();
-
-        }
+        #endregion     
 
         #region Start using & making choices
         public bool MakingChoices { get; set; }
@@ -154,6 +156,7 @@ namespace Card {
         }
         #endregion
 
+        #region Usage
         public virtual void Play (SC_Player c) {
 
             Caller = c;
@@ -186,10 +189,7 @@ namespace Card {
 
             yield return new WaitForSeconds (GM.responseTime);
 
-            ApplyEffect ();
-
-            while (ApplyingEffects)
-                yield return new WaitForEndOfFrame ();
+            yield return StartCoroutine (ApplyEffects ());
 
             if (GM.count == 3) {
 
@@ -234,6 +234,7 @@ namespace Card {
                 NextTurn ();
 
         }
+        #endregion
 
         protected void NextTurn () {
 
@@ -244,32 +245,32 @@ namespace Card {
 
         }
 
+        #region Applying Effects
         public CommonEffect CurrentEffect { get; set; }
 
         public bool ApplyingEffects { get; set; }
 
-        public virtual void ApplyEffect () {
+        public virtual IEnumerator ApplyEffects () {
 
             foreach (CommonEffect e in commonEffects) {
 
                 CurrentEffect = e;
 
-                typeof (SC_BaseCard).GetMethod (e.effectType.ToString ()).Invoke (this, null);
-
-                /*while (ApplyingEffects)
-                    yield return new WaitForEndOfFrame ();*/
+                yield return StartCoroutine (ApplyEffect (() => { typeof (SC_BaseCard).GetMethod (e.effectType.ToString ()).Invoke (this, null); }));
 
             }
 
         }
 
-        public virtual IEnumerator FinishApplying () {
+        protected IEnumerator ApplyEffect (Action a) {
 
-            yield return null;
+            a ();
 
-            ApplyEffect ();
+            while (ApplyingEffects)
+                yield return new WaitForEndOfFrame ();
 
         }
+        #endregion
 
         #region Common Effects
         #region Assess
@@ -388,6 +389,12 @@ namespace Card {
             Caller.ApplySingleEffect ("Health", 1);
 
         }
+
+        public void Count () {
+
+            GM.count++;
+
+        }
         #endregion
 
         #region Draw
@@ -408,13 +415,7 @@ namespace Card {
             ApplyingEffects = false;
 
         }
-        #endregion
-
-        public void Count () {
-
-            GM.count++;
-
-        }
+        #endregion        
 
         #region Alignment Choice
         public void AlignmentChoice () {
@@ -437,7 +438,23 @@ namespace Card {
 
                 ApplyingEffects = true;
 
-                Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => { c.Card.Discard (Caller, DoubleTapNext); });
+                Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => {
+
+                    c.Card.Discard (Caller, () => {
+
+                        Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (ca) => {
+
+                            ca.Card.Discard (Caller, () => {
+
+
+
+                            });
+
+                        });
+
+                    });
+
+                });
 
             }
 
@@ -486,6 +503,7 @@ namespace Card {
 
         }
 
+        #region Getters
         public bool Is (CardType t) {
 
             foreach (CardType c in types)
@@ -505,6 +523,7 @@ namespace Card {
             return false;
 
         }
+        #endregion
 
     }
 

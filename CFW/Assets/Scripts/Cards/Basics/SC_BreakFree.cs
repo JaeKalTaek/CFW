@@ -1,3 +1,5 @@
+using System.Collections;
+
 namespace Card {
 
     public class SC_BreakFree : SC_BaseCard {
@@ -8,9 +10,9 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect () {
+        public override IEnumerator ApplyEffects () {
 
-            base.ApplyEffect ();
+            yield return StartCoroutine (base.ApplyEffects ());
 
             GM.AddMatchHeat (GM.count);
 

@@ -21,9 +21,9 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect () {
+        public override IEnumerator ApplyEffects () {
 
-            base.ApplyEffect ();
+            yield return StartCoroutine (base.ApplyEffects ());
 
             string choice = Caller.GetStringChoice ("KnowYourOpponent").Replace (" ", "").ToLower ();
 
@@ -31,11 +31,15 @@ namespace Card {
 
                 if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {
 
-                    ApplyingEffects = true;
+                    yield return StartCoroutine (ApplyEffect (() => {
 
-                    c.Discard (Other);
+                        ApplyingEffects = true;
 
-                    return;
+                        c.Discard (Other);
+
+                    }));                    
+
+                    break;
 
                 }
 
@@ -43,19 +47,23 @@ namespace Card {
 
             foreach (SC_BaseCard c in Other.Deck.cards) {
 
-                if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {                    
+                if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {
 
-                    ApplyingEffects = true;
+                    yield return StartCoroutine (ApplyEffect (() => {
 
-                    SC_UI_Card card = Other.Deck.CreateCard (Other.Deck.transform, c);
+                        ApplyingEffects = true;
 
-                    card.RecT.anchoredPosition = Vector2.zero;
+                        SC_UI_Card card = Other.Deck.CreateCard (Other.Deck.transform, c);
 
-                    card.Card.Caller = Other;
+                        card.RecT.anchoredPosition = Vector2.zero;
 
-                    card.ToGraveyard (GM.drawSpeed, () => { activeCard.ApplyingEffects = false; }, true);
+                        card.Card.Caller = Other;
 
-                    return;
+                        card.ToGraveyard (GM.drawSpeed, () => { activeCard.ApplyingEffects = false; }, true);
+
+                    }));
+
+                    break;
 
                 }
 

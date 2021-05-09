@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using static SC_Global;
 using DG.Tweening;
+using System.Collections;
 
 namespace Card {
 
@@ -22,15 +23,15 @@ namespace Card {
 
         }
 
-        public override void ApplyEffect () {            
+        public override IEnumerator ApplyEffects () {
 
-            base.ApplyEffect ();
+            yield return StartCoroutine (base.ApplyEffects ());
 
             Other.ApplySingleEffect ("Stamina", -effect.stamina);
 
             ApplyBodyPartDamage ();
 
-            Lock ();
+            yield return StartCoroutine (ApplyEffect (Lock));
 
         }
 

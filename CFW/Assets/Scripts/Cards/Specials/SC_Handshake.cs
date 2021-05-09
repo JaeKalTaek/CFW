@@ -5,9 +5,13 @@ namespace Card {
 
     public class SC_Handshake : SC_BaseCard {
 
-        public override void ApplyEffect () {
+        public override IEnumerator ApplyEffects () {
+
+            yield return StartCoroutine (base.ApplyEffects ());
 
             ApplyingEffects = true;
+
+            Other.IntChoices["Handshake"] = -1;
 
             if (Other.IsLocalPlayer) {
 
@@ -19,9 +23,8 @@ namespace Card {
 
             }
 
-        }
-        
-        public override IEnumerator FinishApplying () {
+            while (Other.GetIntChoice ("Handshake") == -1)
+                yield return new WaitForEndOfFrame ();
 
             int choice = Other.GetIntChoice ("Handshake");
 
@@ -36,7 +39,7 @@ namespace Card {
 
             }
 
-            base.ApplyEffect ();
+            ApplyingEffects = false;
 
         }
 

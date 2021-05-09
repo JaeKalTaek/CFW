@@ -1,22 +1,28 @@
+using System.Collections;
+
 namespace Card {
 
     public class SC_FlipOff : SC_BaseCard {
 
-        public override void ApplyEffect () {            
+        public override IEnumerator ApplyEffects () {
 
-            base.ApplyEffect ();
+            yield return StartCoroutine (base.ApplyEffects ());
 
             if (Other.Hand.Count > 0) {
 
                 ApplyingEffects = true;
 
-                if (Other.IsLocalPlayer) {
+                StartCoroutine (ApplyEffect (() => {
 
-                    SC_Player.localPlayer.ChoosingCard = SC_Global.ChoosingCard.Discarding;
+                    if (Other.IsLocalPlayer) {
 
-                    UI.ShowMessage ("Discard");
+                        SC_Player.localPlayer.ChoosingCard = SC_Global.ChoosingCard.Discarding;
 
-                }
+                        UI.ShowMessage ("Discard");
+
+                    }
+
+                }));                
 
             }
 

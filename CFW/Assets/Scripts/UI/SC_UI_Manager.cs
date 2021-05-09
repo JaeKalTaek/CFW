@@ -95,8 +95,6 @@ public class SC_UI_Manager : MonoBehaviour {
 
         localPlayer.SetIntChoiceServerRpc ("Handshake", choice);
 
-        localPlayer.FinishApplyingCardServerRpc ();
-
     }
 
     #region Alignment choice
