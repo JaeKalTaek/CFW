@@ -24,7 +24,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     bool Local { get { return transform.parent.name.Contains ("Local"); } }
 
-    bool IsBasic { get { return Card.Is (SC_Global.CardType.Basic); } }
+    bool IsBasic { get { return Card.Is (CardType.Basic); } }
 
     void Awake () {
 
@@ -37,9 +37,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void SetImages () {
+    public void SetImages (bool faceUp = true) {
 
-        GetComponent<Image> ().sprite = bigCard.GetComponent<Image> ().sprite = Resources.Load<Sprite> (Card.Path);
+        GetComponent<Image> ().sprite = bigCard.GetComponent<Image> ().sprite = Resources.Load<Sprite> (faceUp ? Card.Path : "Sprites/CardBack");
 
     }
 
@@ -139,12 +139,12 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void Flip (bool flip, float speed) {
+    public void Flip (bool flip, float speed, bool faceUp = true) {
 
         if (flip)
-            DOTween.Sequence ().Append (transform.DORotate (Vector3.up * 90, speed)
-                .OnComplete (() => { SetImages (); }))
-                .Append (transform.DORotate (Vector3.zero, speed));
+            DOTween.Sequence ().Append (transform.DORotate (Vector3.up * 90, speed / 2)
+                .OnComplete (() => { SetImages (faceUp); }))
+                .Append (transform.DORotate (Vector3.zero, speed / 2));
 
     }
 
@@ -154,9 +154,18 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
 
-        Flip (flip ?? !Card.Caller.IsLocalPlayer, speed / 2);
+        Flip (flip ?? !Card.Caller.IsLocalPlayer, speed);
 
-        RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => { action (); });
+        RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => {
+
+            if (Card.Is (CardType.Basic))
+                Destroy (gameObject);
+            else
+                (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);
+
+            action ();
+            
+        });
 
     }
 

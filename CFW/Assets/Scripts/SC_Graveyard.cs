@@ -8,4 +8,10 @@ public class SC_Graveyard : MonoBehaviour {
 
     public RectTransform RecT { get { return GetComponent<RectTransform>(); } }
 
+    void Awake () {
+
+        Cards = new List<SC_BaseCard> ();
+
+    }
+
 }

@@ -179,7 +179,7 @@ namespace Card {
 
             DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.playedSizeMultiplicator, 1)).OnComplete (() => { StartCoroutine (Use ()); });
 
-            UICard.Flip (!Caller.IsLocalPlayer, .5f);
+            UICard.Flip (!Caller.IsLocalPlayer, 1);
 
         }        
 
@@ -203,9 +203,7 @@ namespace Card {
 
                     localPlayer.Busy = false;
 
-                    if (Is (CardType.Basic)) {
-
-                        Destroy (transform.parent.gameObject);
+                    if (Is (CardType.Basic)) {                        
 
                         if (!Has (CommonEffectType.Break))
                             NextTurn ();
@@ -288,7 +286,7 @@ namespace Card {
 
             });
 
-            Caller.Deck.Draw (1, false);
+            Caller.Deck.Draw (false);
 
         }
 
@@ -408,7 +406,7 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            p.Deck.Draw (1, false);
+            p.Deck.Draw (false);
 
             yield return new WaitForSeconds (GM.drawSpeed);
 

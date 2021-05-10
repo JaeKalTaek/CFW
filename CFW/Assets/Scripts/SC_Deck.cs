@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine.EventSystems;
 using Card;
 using static SC_Player;
+using System.Collections;
+using System;
+using UnityEngine.UI;
 
 public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
@@ -43,7 +46,14 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         cards.Remove (original);
 
-        TSize.text = Size.ToString ();
+        if (cards.Count <= 0) {
+
+            GetComponent<Image> ().enabled = false;
+
+            TSize.gameObject.SetActive (false);
+
+        } else
+            TSize.text = Size.ToString ();
 
         return c;
 
@@ -63,9 +73,17 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    void Draw (bool startTurn, bool tween = true) {
+    public void Draw (bool startTurn, bool tween = true) {
 
         if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize) {
+
+            if (cards.Count <= 0) {
+
+                StartCoroutine (Refill (() => { Draw (startTurn, tween); }));
+
+                return;
+
+            }
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
@@ -87,7 +105,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
                 c.transform.DOLocalMove (target, GM.drawSpeed, true).OnComplete (() => { FinishDrawing (c, startTurn); });
 
-                c.Flip (Local, GM.drawSpeed / 2);
+                c.Flip (Local, GM.drawSpeed);
 
             } else 
                 FinishDrawing (c, startTurn);
@@ -129,9 +147,39 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
+    IEnumerator Refill (Action a = null) {
+
+        foreach (SC_BaseCard c in (Local ? GM.localGraveyard : GM.otherGraveyard).Cards) {
+
+            cards.Add (Resources.Load<SC_BaseCard> (c.Path));
+
+            c.UICard.transform.SetParent (transform);
+
+            c.UICard.RecT.DOAnchorPos (Vector2.zero, 1);
+
+            c.UICard.Flip (true, 1, false);
+
+        }
+
+        yield return new WaitForSeconds (1);
+
+        GetComponent<Image> ().enabled = true;
+
+        TSize.text = Size.ToString ();
+
+        foreach (SC_BaseCard c in (Local ? GM.localGraveyard : GM.otherGraveyard).Cards)
+            Destroy (c.UICard.gameObject);
+
+        (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Clear ();
+
+        a?.Invoke ();
+
+    }
+
     public void OnPointerEnter (PointerEventData eventData) {
 
-        TSize.gameObject.SetActive (true);
+        if (cards.Count > 0)
+            TSize.gameObject.SetActive (true);
 
     }
 
