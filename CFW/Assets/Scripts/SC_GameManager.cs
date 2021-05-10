@@ -101,18 +101,10 @@ public class SC_GameManager : MonoBehaviour {
 
     public void ChooseStartTurn(bool yes) {
 
+        chooseTurnPanel.SetActive (false);
+
         localPlayer.StartGameServerRpc (yes);
 
     }
-
-    public void StartGame() {        
-
-        chooseTurnPanel.SetActive (false);
-        waitPanel.SetActive (false);
-
-        if (localPlayer.Turn)
-            localPlayer.DrawServerRpc (1, true);
-
-    }    
 
 }

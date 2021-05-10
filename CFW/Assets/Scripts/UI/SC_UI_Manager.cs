@@ -85,7 +85,7 @@ public class SC_UI_Manager : MonoBehaviour {
         if (yes)
             localPlayer.StartUsingBasicServerRpc (3);
         else
-            localPlayer.NextTurn ();
+            localPlayer.NextTurnServerRpc ();
 
     }
 

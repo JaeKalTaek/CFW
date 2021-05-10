@@ -92,7 +92,7 @@ namespace Card {
         #region Can use
         public virtual bool CanUse () {
 
-            if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !localPlayer.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+            if (localPlayer.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !localPlayer.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c))
@@ -236,10 +236,7 @@ namespace Card {
 
         protected void NextTurn () {
 
-            localPlayer.Busy = false;
-
-            if (Caller.IsLocalPlayer)
-                Caller.NextTurn ();
+            (Caller.IsLocalPlayer ? Caller : null)?.NextTurnServerRpc ();
 
         }
 
@@ -276,17 +273,26 @@ namespace Card {
 
             ApplyingEffects = true;
 
+            StartCoroutine (AssesCoroutine ());
+
+        }
+
+        IEnumerator AssesCoroutine () {
+
+            if (Caller.Deck.cards.Count <= 0)
+                yield return Caller.Deck.Refill ();
+
             Caller.ActionOnCard (Caller.GetStringChoice ("Assess"), (c) => {
 
-                Caller.Hand.Remove (c.Card);           
+                Caller.Hand.Remove (c.Card);
 
                 c.Card.Caller = Caller;
 
-                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; });                
+                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; });
 
             });
 
-            Caller.Deck.Draw (false);
+            yield return StartCoroutine (Caller.Deck.Draw (false));
 
         }
 
@@ -406,9 +412,7 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            p.Deck.Draw (false);
-
-            yield return new WaitForSeconds (GM.drawSpeed);
+            yield return StartCoroutine (p.Deck.Draw (false));
 
             ApplyingEffects = false;
 

@@ -29,7 +29,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         Local = local;
 
-        Draw (GM.startHandSize, false, false);
+        StartCoroutine (Draw (GM.startHandSize, false, false));
 
         if (!local)
             RectT.anchorMin = RectT.anchorMax = RectT.pivot = Vector2.up;        
@@ -59,10 +59,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    public void Draw (int nbr, bool StartTurn, bool tween = true) {
+    public IEnumerator Draw (int nbr, bool StartTurn, bool tween = true) {
 
         for (int i = 0; i < nbr; i++)
-            Draw (StartTurn, tween);
+            yield return StartCoroutine (Draw (StartTurn && i == nbr - 1, tween));
 
     }
 
@@ -73,17 +73,12 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    public void Draw (bool startTurn, bool tween = true) {
+    public IEnumerator Draw (bool startTurn, bool tween = true) {
 
         if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize) {
 
-            if (cards.Count <= 0) {
-
-                StartCoroutine (Refill (() => { Draw (startTurn, tween); }));
-
-                return;
-
-            }
+            if (cards.Count <= 0)
+                yield return StartCoroutine (Refill ());
 
             RectTransform rT = Local ? GM.localHand : GM.otherHand;
 
@@ -101,14 +96,15 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
                 Vector3 target = c.transform.localPosition;
 
-                c.transform.position = transform.position;
-
-                c.transform.DOLocalMove (target, GM.drawSpeed, true).OnComplete (() => { FinishDrawing (c, startTurn); });
+                c.transform.position = transform.position;                
 
                 c.Flip (Local, GM.drawSpeed);
 
-            } else 
-                FinishDrawing (c, startTurn);
+                yield return c.transform.DOLocalMove (target, GM.drawSpeed, true).WaitForCompletion ();
+
+            }
+
+            FinishDrawing (c, startTurn);
 
         } else
             FinishDrawing (null, startTurn);
@@ -120,8 +116,14 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
         if (c)
             (Local ? localPlayer : otherPlayer).Hand.Add (c.Card);
 
-        if (localPlayer.Turn && startTurn)
-            (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);         
+        if (startTurn) {
+
+            (Local ? localPlayer : otherPlayer).ApplySingleEffect ("Stamina", GM.staminaPerTurn);
+
+            if (Local)
+                localPlayer.StartTurn ();
+
+        }
 
     }
 
@@ -147,7 +149,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
-    IEnumerator Refill (Action a = null) {
+    public IEnumerator Refill () {
 
         foreach (SC_BaseCard c in (Local ? GM.localGraveyard : GM.otherGraveyard).Cards) {
 
@@ -171,8 +173,6 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
             Destroy (c.UICard.gameObject);
 
         (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Clear ();
-
-        a?.Invoke ();
 
     }
 

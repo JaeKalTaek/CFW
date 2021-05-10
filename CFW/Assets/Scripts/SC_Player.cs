@@ -71,6 +71,8 @@ public class SC_Player : NetworkBehaviour {
     #region Setup
     public override void NetworkStart () {
 
+        Turn = false;
+
         IntChoices = new Dictionary<string, int> ();
 
         StringChoices = new Dictionary<string, string> ();
@@ -190,25 +192,6 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion
 
-    #region Draw
-    [ServerRpc]
-    public void DrawServerRpc (int nbr, bool startTurn) {
-
-        DrawClientRpc (nbr, startTurn);
-
-    }
-
-    [ClientRpc]
-    void DrawClientRpc (int nbr, bool startTurn) {
-        
-        if (startTurn)
-            ApplySingleEffect ("Stamina", GM.staminaPerTurn);
-
-        Deck.Draw (nbr, true);
-
-    }
-    #endregion
-
     #region ShiFuMi
     [ServerRpc]
     public void ShiFuMiChoiceServerRpc (int s) {
@@ -296,11 +279,10 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartGameClientRpc (bool start) {        
 
-        (IsLocalPlayer ? localPlayer : otherPlayer).Turn = start;
+        GM.waitPanel.SetActive (false);
 
-        (IsLocalPlayer ? otherPlayer : localPlayer).Turn = !start;
-
-        GM.StartGame();
+        if ((start && !IsLocalPlayer) || (!start && IsLocalPlayer))
+            localPlayer.NextTurnServerRpc ();
 
     }
     #endregion
@@ -413,14 +395,6 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Next turn
-    public void NextTurn () {
-
-        Turn = false;
-
-        NextTurnServerRpc ();
-
-    }
-
     [ServerRpc]
     public void NextTurnServerRpc () {
 
@@ -431,15 +405,25 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void NextTurnClientRpc () {
 
-        if (!IsLocalPlayer) {
+        if (IsLocalPlayer) {
 
-            localPlayer.SpecialUsed = false;
+            localPlayer.Turn = false;
 
-            localPlayer.Turn = true;
-
-            localPlayer.DrawServerRpc (1, true);
+            localPlayer.Busy = false;
 
         }
+        
+        StartCoroutine ((IsLocalPlayer ? otherPlayer : localPlayer).Deck.Draw (true));
+
+    }
+
+    public void StartTurn () {
+
+        SpecialUsed = false;
+
+        Turn = true;
+
+        (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);
 
     }
     #endregion
