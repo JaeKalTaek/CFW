@@ -36,6 +36,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
         Instance = this;
 
+        knowYourOpponentChoice.onSubmit.AddListener (KnowYourOpponentConfirmedChoice);
+
     }
 
     public void SetValue (bool local, string id, int value) {
@@ -141,15 +143,20 @@ public class SC_UI_Manager : MonoBehaviour {
     }
     #endregion
 
-    public void KnowYourOpponentConfirmedChoice () {
+    void KnowYourOpponentConfirmedChoice (string s) {
 
         messagePanel.SetActive (false);
 
         knowYourOpponentChoice.transform.parent.gameObject.SetActive (false);
 
-        localPlayer.SetStringChoiceServerRpc ("KnowYourOpponent", knowYourOpponentChoice.text);
+        localPlayer.SetStringChoiceServerRpc ("KnowYourOpponent", s);
 
         SC_BaseCard.activeCard.MakingChoices = false;
+    }
+
+    public void KnowYourOpponentConfirmedChoice () {
+
+        KnowYourOpponentConfirmedChoice (knowYourOpponentChoice.text);
 
     }
 

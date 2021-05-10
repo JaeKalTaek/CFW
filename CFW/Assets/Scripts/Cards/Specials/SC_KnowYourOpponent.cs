@@ -17,6 +17,8 @@ namespace Card {
 
                 UI.knowYourOpponentChoice.transform.parent.gameObject.SetActive (true);
 
+                UI.knowYourOpponentChoice.Select ();
+
             }));
 
         }
