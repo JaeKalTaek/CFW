@@ -1,4 +1,4 @@
-using DG.Tweening;
+﻿using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,13 +30,13 @@ namespace Card {
         [Tooltip ("Common effects of this card")]     
         public CommonEffect[] commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
         public SC_Player Caller { get; set; }
 
-        public SC_Player Other { get; set; }
+        public SC_Player Receiver { get; set; }
 
         public static SC_BaseCard activeCard, lockingCard;
 
@@ -119,7 +119,7 @@ namespace Card {
 
         public List<Action> ChoicesActions { get; set; }
 
-        public IEnumerator StartUsing () {
+        public IEnumerator StartPlaying () {
 
             activeCard = this;
 
@@ -157,11 +157,15 @@ namespace Card {
         #endregion
 
         #region Usage
+        public static SC_BaseCard playedCard;
+
         public virtual void Play (SC_Player c) {
+
+            playedCard = this;
 
             Caller = c;
 
-            Other = c.IsLocalPlayer ? otherPlayer : localPlayer;       
+            Receiver = c.IsLocalPlayer ? otherPlayer : localPlayer;       
 
             Caller.Hand.Remove (this);
 
@@ -185,8 +189,6 @@ namespace Card {
 
         IEnumerator Use () {
 
-            activeCard = this;
-
             yield return new WaitForSeconds (GM.responseTime);
 
             yield return StartCoroutine (ApplyEffects ());
@@ -201,30 +203,34 @@ namespace Card {
 
                 UICard.ToGraveyard (1, () => {
 
-                    localPlayer.Busy = false;
+                    if (!Has (CommonEffectType.Exchange) || !HandledExchange ()) {
+                        
+                        localPlayer.Busy = false;
 
-                    if (Is (CardType.Basic)) {                        
+                        if (Is (CardType.Basic)) {
 
-                        if (!Has (CommonEffectType.Break))
-                            NextTurn ();
-                        else if (localPlayer.Turn)
-                            UI.showBasicsButton.SetActive (true);
+                            if (!Has (CommonEffectType.Break))
+                                NextTurn ();
+                            else if (localPlayer.Turn)
+                                UI.showBasicsButton.SetActive (true);
 
-                    } else if (Caller.IsLocalPlayer) {
+                        } else if (Caller.IsLocalPlayer) {
 
-                        if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
-                            UI.pinfallPanel.SetActive (true);
-                        else if (Is (CardType.Special)) {
+                            if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
+                                UI.pinfallPanel.SetActive (true);
+                            else if (Is (CardType.Special)) {
 
-                            Caller.SpecialUsed = true;
+                                Caller.SpecialUsed = true;
 
-                            UI.showBasicsButton.SetActive (true);
+                                UI.showBasicsButton.SetActive (true);
+
+                            } else
+                                NextTurn ();
 
                         } else
-                            NextTurn ();
+                            localPlayer.Busy = false;
 
-                    } else
-                        localPlayer.Busy = false;
+                    }
 
                 }, false);
 
@@ -273,22 +279,22 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            StartCoroutine (AssesCoroutine ());
+            StartCoroutine (AssessCoroutine ());
 
         }
 
-        IEnumerator AssesCoroutine () {
+        IEnumerator AssessCoroutine () {
 
             if (Caller.Deck.cards.Count <= 0)
                 yield return Caller.Deck.Refill ();
 
             Caller.ActionOnCard (Caller.GetStringChoice ("Assess"), (c) => {
 
-                Caller.Hand.Remove (c.Card);
+                Caller.Hand.Remove (c);
 
-                c.Card.Caller = Caller;
+                c.Caller = Caller;
 
-                c.ToGraveyard (GM.drawSpeed, () => { ApplyingEffects = false; });
+                c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
 
             });
 
@@ -314,13 +320,13 @@ namespace Card {
 
         public void SingleValueEffect () {
 
-            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect (CurrentEffect.valueName.ToString (), CurrentEffect.effectValue);
+            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleEffect (CurrentEffect.valueName.ToString (), CurrentEffect.effectValue);
 
         }
 
         public void BodyPartEffect () {
 
-            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetIntChoice ("BodyPart"), CurrentEffect.effectValue);
+            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetIntChoice ("BodyPart"), CurrentEffect.effectValue);
 
         } 
 
@@ -337,7 +343,7 @@ namespace Card {
         #region Simple Effects
         public void Tire () {
 
-            (CurrentEffect.effectOnOpponent ? Other : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
 
         }
 
@@ -382,7 +388,7 @@ namespace Card {
 
             UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-            UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = () => { ApplyingEffects = false; };
+            UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = AppliedEffects;
 
         }
 
@@ -404,7 +410,7 @@ namespace Card {
         #region Draw
         public void Draw () {
 
-            StartCoroutine (Draw (CurrentEffect.effectOnOpponent ? Other : Caller));
+            StartCoroutine (Draw (CurrentEffect.effectOnOpponent ? Receiver : Caller));
 
         }
 
@@ -442,13 +448,13 @@ namespace Card {
 
                 Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => {
 
-                    c.Card.Discard (Caller, () => {
+                    c.Discard (Caller, () => {
 
                         Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (ca) => {
 
-                            ca.Card.Discard (Caller, () => {
+                            ca.Discard (Caller, () => {
 
-                                ZoomEffect ((this as SC_OffensiveMove).NonMatchHeatEffects, () => { ApplyingEffects = false; }, 1.25f);
+                                ZoomEffect ((this as SC_OffensiveMove).NonMatchHeatEffects, AppliedEffects, 1.25f);
 
                             });
 
@@ -479,6 +485,91 @@ namespace Card {
 
         }
         #endregion
+
+        #region Exchange
+        SC_BaseCard exchanged;
+
+        public void Exchange () {
+
+            Receiver.StringChoices["Exchange"] = "";            
+
+            Receiver.Turn = true;
+
+            if (CanUse (Receiver)) {
+
+                ApplyingEffects = true;
+
+                if (Receiver.IsLocalPlayer)
+                    UI.ExchangeUI.SetActive (true);                
+
+                StartCoroutine (ExchangeCoroutine ());
+
+            }
+
+            Receiver.Turn = false;
+
+        }
+
+        IEnumerator ExchangeCoroutine () {
+
+            while (Receiver.GetStringChoice ("Exchange") == "")
+                yield return new WaitForEndOfFrame ();
+
+            ApplyingEffects = false;
+
+        }
+
+        bool HandledExchange () {
+
+            if (Receiver.GetStringChoice ("Exchange") == "Accept") {
+
+                if (Receiver.IsLocalPlayer)
+                    Receiver.ExchangeServerRpc ();
+
+                return true;
+
+            } else if (exchanged) {
+
+                exchanged.FinishExchange ();
+
+                Destroy (UICard.gameObject);
+
+                return true;
+
+            } else
+                return false;
+
+        }
+
+        public void Exchanged (SC_BaseCard copy) {
+
+            copy.exchanged = exchanged ?? this;
+
+            if (exchanged)
+                Destroy (UICard.gameObject);
+
+        }
+
+        void FinishExchange () {
+
+            if (Caller.IsLocalPlayer) {
+
+                if (otherPlayer.Stamina < 3)
+                    UI.pinfallPanel.SetActive (true);
+                else
+                    NextTurn ();
+
+            } else
+                localPlayer.Busy = false;
+
+        }
+        #endregion
+
+        public void AppliedEffects () {
+
+            ApplyingEffects = false;
+
+        }
         #endregion
 
         public void Discard (SC_Player owner, Action a = null) {
@@ -489,7 +580,7 @@ namespace Card {
 
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);            
 
-            UICard.ToGraveyard (GM.drawSpeed, a ?? (() => { activeCard.ApplyingEffects = false; }));
+            UICard.ToGraveyard (GM.drawSpeed, a ?? AppliedEffects);
 
         }
 

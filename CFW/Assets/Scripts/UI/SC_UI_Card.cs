@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card;
@@ -121,7 +121,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                     localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
 
                 } else
-                    StartCoroutine (Card.StartUsing ());
+                    StartCoroutine (Card.StartPlaying ());
 
             }
 
@@ -158,12 +158,12 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => {
 
+            action ();
+
             if (Card.Is (CardType.Basic))
                 Destroy (gameObject);
             else
-                (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);
-
-            action ();
+                (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);            
             
         });
 

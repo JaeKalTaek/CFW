@@ -288,15 +288,15 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Card usage
-    public delegate void CardAction (SC_UI_Card c);
+    public delegate void CardAction (SC_BaseCard c);
 
     public void ActionOnCard (string id, CardAction a) {
 
-        foreach (Transform t in IsLocalPlayer ? GM.localHand : GM.otherHand) {
+        foreach (SC_BaseCard c in IsLocalPlayer ? Hand : otherPlayer.Hand) {
 
-            if (t.name == id) {
+            if (c.UICard.name == id) {
 
-                a (t.GetComponent<SC_UI_Card> ());
+                a (c);
 
                 return;
 
@@ -344,9 +344,32 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ClientRpc]
-    void PlayCardClientRpc (string id) {   
+    void PlayCardClientRpc (string id) {
 
-        ActionOnCard (id, (c) => { c.Card.Play (this); });
+        ActionOnCard (id, (c) => { c.Play (this); });
+
+    }    
+
+    public SC_BaseCard CopyAndStartUsing (SC_UI_Card original) {
+
+        SC_UI_Card c = Instantiate (original, IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+        c.gameObject.SetActive (true);
+
+        c.name = c.Card.Path;
+
+        c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = c.BigRec.anchorMin = c.BigRec.anchorMax = c.BigRec.pivot = new Vector2 (.5f, IsLocalPlayer ? 0 : 1);
+
+        SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+        Hand.Add (c.Card);
+
+        if (!IsLocalPlayer)
+            c.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Sprites/CardBack");
+        else
+            StartCoroutine (c.Card.StartPlaying ());
+
+        return c.Card;
 
     }
 
@@ -360,20 +383,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartUsingBasicClientRpc (int id) {
 
-        SC_UI_Card c = Instantiate (UI.basicsPanel.transform.GetChild (id), IsLocalPlayer ? GM.localHand : GM.otherHand).GetComponent <SC_UI_Card> ();
-
-        c.gameObject.SetActive (true);
-
-        c.name = c.Card.Path;
-
-        c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = c.BigRec.anchorMin = c.BigRec.anchorMax = c.BigRec.pivot = new Vector2 (.5f, IsLocalPlayer ? 0 : 1);
-
-        SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
-
-        if (!IsLocalPlayer)
-            c.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Sprites/CardBack");
-        else
-            StartCoroutine (c.Card.StartUsing ());
+        CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponent<SC_UI_Card> ());
 
     }
 
@@ -392,6 +402,20 @@ public class SC_Player : NetworkBehaviour {
         (SC_BaseCard.lockingCard as SC_Submission).Maintain ();
 
     }
+
+    [ServerRpc]
+    public void ExchangeServerRpc () {
+
+        ExchangeCardClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void ExchangeCardClientRpc () {
+
+        SC_BaseCard.playedCard.Exchanged (CopyAndStartUsing (SC_BaseCard.playedCard.UICard));
+
+    }
     #endregion
 
     #region Next turn
@@ -405,14 +429,11 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void NextTurnClientRpc () {
 
-        if (IsLocalPlayer) {
+        localPlayer.Busy = false;
 
-            localPlayer.Turn = false;
+        if (IsLocalPlayer)
+            localPlayer.Turn = false;           
 
-            localPlayer.Busy = false;
-
-        }
-        
         StartCoroutine ((IsLocalPlayer ? otherPlayer : localPlayer).Deck.Draw (true));
 
     }
@@ -457,7 +478,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void DiscardClientRpc (string id) {
 
-        ActionOnCard (id, (c) => { c.Card.Discard (this); });
+        ActionOnCard (id, (c) => { c.Discard (this); });
 
     }
     #endregion    

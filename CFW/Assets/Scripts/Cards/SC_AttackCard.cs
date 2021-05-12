@@ -91,10 +91,10 @@ namespace Card {
             OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 
             if (bodyPartDamage.bodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == BodyPart.None || bodyPartDamage.bodyPart == (BodyPart) Caller.GetIntChoice ("BodyPart")))
-                Other.ApplySingleBodyEffect (bodyPartDamage.bodyPart, bodyPartDamage.damage);
+                Receiver.ApplySingleBodyEffect (bodyPartDamage.bodyPart, bodyPartDamage.damage);
 
             if (bodyPartDamage.otherBodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == (BodyPart) Caller.GetIntChoice ("BodyPart")))
-                Other.ApplySingleBodyEffect (bodyPartDamage.otherBodyPart, bodyPartDamage.damage);
+                Receiver.ApplySingleBodyEffect (bodyPartDamage.otherBodyPart, bodyPartDamage.damage);
 
         }
 

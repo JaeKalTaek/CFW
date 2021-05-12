@@ -9,14 +9,14 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            if (Other.Hand.Count > 0) {
+            if (Receiver.Hand.Count > 0) {
 
                 ApplyingEffects = true;
 
                 yield return StartCoroutine (ApplyEffect (() => {
 
-                    if (Other.IsLocalPlayer)
-                        SC_Player.localPlayer.DiscardServerRpc (Other.Hand[Random.Range (0, Other.Hand.Count)].Path);
+                    if (Receiver.IsLocalPlayer)
+                        SC_Player.localPlayer.DiscardServerRpc (Receiver.Hand[Random.Range (0, Receiver.Hand.Count)].Path);
 
                 }));                
 

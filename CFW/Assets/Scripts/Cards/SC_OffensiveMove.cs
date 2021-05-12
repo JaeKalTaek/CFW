@@ -25,9 +25,9 @@ namespace Card {
 
             base.NonMatchHeatEffects ();
 
-            Other.ApplySingleEffect ("Stamina", null, effectOnOpponent);
+            Receiver.ApplySingleEffect ("Stamina", null, effectOnOpponent);
 
-            Other.ApplySingleEffect ("Health", null, effectOnOpponent);
+            Receiver.ApplySingleEffect ("Health", null, effectOnOpponent);
 
             ApplyBodyPartDamage ();
 

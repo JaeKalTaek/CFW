@@ -3,6 +3,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
+using static Card.SC_BaseCard;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -31,6 +32,8 @@ public class SC_UI_Manager : MonoBehaviour {
     public AlignmentChoiceUI alignmentChoiceUI;
 
     public TMP_InputField knowYourOpponentChoice;
+
+    public GameObject ExchangeUI;
 
     void Awake () {
 
@@ -114,9 +117,9 @@ public class SC_UI_Manager : MonoBehaviour {
 
         alignmentChoiceUI.panel.SetActive (false);
 
-        localPlayer.SetIntChoiceServerRpc ("AlignmentChoice", SC_BaseCard.activeCard.CurrentEffect.effectValue * value);
+        localPlayer.SetIntChoiceServerRpc ("AlignmentChoice", activeCard.CurrentEffect.effectValue * value);
 
-        SC_BaseCard.activeCard.MakingChoices = false;
+        activeCard.MakingChoices = false;
 
     }
     #endregion
@@ -138,11 +141,12 @@ public class SC_UI_Manager : MonoBehaviour {
 
         localPlayer.SetIntChoiceServerRpc ("BodyPart", bodyPart);
 
-        SC_BaseCard.activeCard.MakingChoices = false;
+        activeCard.MakingChoices = false;
 
     }
     #endregion
 
+    #region Know Your Opponent choice
     void KnowYourOpponentConfirmedChoice (string s) {
 
         messagePanel.SetActive (false);
@@ -151,7 +155,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
         localPlayer.SetStringChoiceServerRpc ("KnowYourOpponent", s);
 
-        SC_BaseCard.activeCard.MakingChoices = false;
+        activeCard.MakingChoices = false;
     }
 
     public void KnowYourOpponentConfirmedChoice () {
@@ -159,6 +163,17 @@ public class SC_UI_Manager : MonoBehaviour {
         KnowYourOpponentConfirmedChoice (knowYourOpponentChoice.text);
 
     }
+    #endregion
+
+    #region Exchange choice
+    public void ExchangeChoice (bool accept) {
+
+        ExchangeUI.SetActive (false);
+
+        localPlayer.SetStringChoiceServerRpc ("Exchange", accept ? "Accept" : "Refuse");
+
+    }
+    #endregion
 
     public void ShowEndPanel (bool won) {
 

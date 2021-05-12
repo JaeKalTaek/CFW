@@ -27,7 +27,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            Other.ApplySingleEffect ("Stamina", -effect.stamina);
+            Receiver.ApplySingleEffect ("Stamina", -effect.stamina);
 
             ApplyBodyPartDamage ();
 

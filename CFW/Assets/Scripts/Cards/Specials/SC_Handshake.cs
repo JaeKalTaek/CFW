@@ -11,29 +11,29 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            Other.IntChoices["Handshake"] = -1;
+            Receiver.IntChoices["Handshake"] = -1;
 
-            if (Other.IsLocalPlayer) {
+            if (Receiver.IsLocalPlayer) {
 
-                UI.handshakeUI.heelChoice.SetActive (Other.Alignment <= 0);
+                UI.handshakeUI.heelChoice.SetActive (Receiver.Alignment <= 0);
 
-                UI.handshakeUI.faceChoice.SetActive (Other.Alignment >= 0);
+                UI.handshakeUI.faceChoice.SetActive (Receiver.Alignment >= 0);
 
                 UI.handshakeUI.panel.SetActive (true);
 
             }
 
-            while (Other.GetIntChoice ("Handshake") == -1)
+            while (Receiver.GetIntChoice ("Handshake") == -1)
                 yield return new WaitForEndOfFrame ();
 
-            int choice = Other.GetIntChoice ("Handshake");
+            int choice = Receiver.GetIntChoice ("Handshake");
 
             if (choice != 1) {
 
                 if (choice == 0)
                     Caller.ApplySingleEffect ("Health", -2);
                 else if (choice == 2)
-                    yield return Draw (Other);
+                    yield return Draw (Receiver);
 
                 yield return Draw (Caller);
 

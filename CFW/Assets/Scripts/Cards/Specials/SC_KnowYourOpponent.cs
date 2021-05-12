@@ -29,7 +29,7 @@ namespace Card {
 
             string choice = Caller.GetStringChoice ("KnowYourOpponent").Replace (" ", "").ToLower ();
 
-            foreach (SC_BaseCard c in Other.Hand) {
+            foreach (SC_BaseCard c in Receiver.Hand) {
 
                 if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {
 
@@ -37,7 +37,7 @@ namespace Card {
 
                         ApplyingEffects = true;
 
-                        c.Discard (Other);
+                        c.Discard (Receiver);
 
                     }));                    
 
@@ -47,7 +47,7 @@ namespace Card {
 
             }
 
-            foreach (SC_BaseCard c in Other.Deck.cards) {
+            foreach (SC_BaseCard c in Receiver.Deck.cards) {
 
                 if (c.name.Replace ("(Clone)", "").Replace (" ", "").ToLower () == choice) {
 
@@ -55,13 +55,13 @@ namespace Card {
 
                         ApplyingEffects = true;
 
-                        SC_UI_Card card = Other.Deck.CreateCard (Other.Deck.transform, c);
+                        SC_UI_Card card = Receiver.Deck.CreateCard (Receiver.Deck.transform, c);
 
                         card.RecT.anchoredPosition = Vector2.zero;
 
-                        card.Card.Caller = Other;
+                        card.Card.Caller = Receiver;
 
-                        card.ToGraveyard (GM.drawSpeed, () => { activeCard.ApplyingEffects = false; }, true);
+                        card.ToGraveyard (GM.drawSpeed, AppliedEffects, true);
 
                     }));
 

@@ -8,13 +8,13 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            if (Other.Hand.Count > 0) {
+            if (Receiver.Hand.Count > 0) {
 
                 ApplyingEffects = true;
 
                 StartCoroutine (ApplyEffect (() => {
 
-                    if (Other.IsLocalPlayer) {
+                    if (Receiver.IsLocalPlayer) {
 
                         SC_Player.localPlayer.ChoosingCard = SC_Global.ChoosingCard.Discarding;
 
