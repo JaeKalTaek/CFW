@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -90,12 +90,12 @@ namespace Card {
         }
 
         #region Can use
-        public virtual bool CanUse () {
+        public virtual bool CanUse (SC_Player user) {
 
-            if (localPlayer.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !localPlayer.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+            if (user.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
 
                 foreach (CommonRequirement c in commonRequirements)
-                    if (!Test (c))
+                    if (!Test (c, user))
                         return false;
 
                 return true;
@@ -105,9 +105,9 @@ namespace Card {
 
         }
 
-        bool Test (CommonRequirement c) {
+        bool Test (CommonRequirement c, SC_Player user) {
 
-            int value = (int) typeof (SC_Player).GetProperty (c.valueType.ToString ()).GetValue (c.opponent ? otherPlayer : localPlayer);
+            int value = (int) typeof (SC_Player).GetProperty (c.valueType.ToString ()).GetValue ((c.opponent && user.IsLocalPlayer) || (!c.opponent && !user.IsLocalPlayer) ? otherPlayer : localPlayer);
 
             return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
 

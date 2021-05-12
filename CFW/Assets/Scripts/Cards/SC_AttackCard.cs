@@ -29,12 +29,12 @@ namespace Card {
 
         }
 
-        public override bool CanUse () {
+        public override bool CanUse (SC_Player user) {
 
-            if (base.CanUse () && localPlayer.Health > cost.health && localPlayer.Stamina >= cost.stamina) {
+            if (base.CanUse (user) && user.Health > cost.health && user.Stamina >= cost.stamina) {
 
-                foreach (BodyPart b in localPlayer.BodyPartsHealth.Keys)
-                    if (b == cost.bodyPartDamage.bodyPart && localPlayer.BodyPartsHealth[b] < cost.bodyPartDamage.damage)
+                foreach (BodyPart b in user.BodyPartsHealth.Keys)
+                    if (b == cost.bodyPartDamage.bodyPart && user.BodyPartsHealth[b] < cost.bodyPartDamage.damage)
                         return false;
 
                 return true;

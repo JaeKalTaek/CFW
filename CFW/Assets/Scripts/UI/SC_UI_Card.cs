@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card;
@@ -105,7 +105,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 StopChoosing ();                
 
-            } else if (bigCard.activeSelf && Card.CanUse ()) {
+            } else if (bigCard.activeSelf && Card.CanUse (localPlayer)) {
 
                 OnPointerExit (new PointerEventData (EventSystem.current));
 
