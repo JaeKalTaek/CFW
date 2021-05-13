@@ -75,7 +75,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public IEnumerator Draw (bool startTurn, bool tween = true) {
 
-        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize) {
+        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize && (cards.Count > 0 || (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Count > 0)) {
 
             if (cards.Count <= 0)
                 yield return StartCoroutine (Refill ());
