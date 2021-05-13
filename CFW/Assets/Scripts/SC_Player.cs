@@ -352,11 +352,11 @@ public class SC_Player : NetworkBehaviour {
 
     public SC_BaseCard CopyAndStartUsing (SC_UI_Card original) {
 
-        SC_UI_Card c = Instantiate (original, IsLocalPlayer ? GM.localHand : GM.otherHand);
-
-        c.Card.Ephemeral = true;
+        SC_UI_Card c = Instantiate (original, IsLocalPlayer ? GM.localHand : GM.otherHand);        
 
         c.gameObject.SetActive (true);
+
+        c.Card.Ephemeral = true;
 
         c.name = c.Card.Path;
 
