@@ -71,9 +71,9 @@ public class SC_GameManager : MonoBehaviour {
 
     }
 
-    public void AddMatchHeat (int gain, bool attack = false) {
+    public void AddMatchHeat (int gain, bool canReset = false) {
 
-        MatchHeat = attack && MatchHeat == maxMatchHeat ? resetMatchHeat : Mathf.Min (maxMatchHeat, MatchHeat + gain);
+        MatchHeat = canReset && MatchHeat == maxMatchHeat ? resetMatchHeat : Mathf.Min (maxMatchHeat, MatchHeat + gain);
 
         matchHeatText.text = MatchHeat.ToString();
 

@@ -67,7 +67,7 @@ namespace Card {
 
         public override IEnumerator ApplyEffects () {            
 
-            GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, true);
+            GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
 
             NonMatchHeatEffects ();
 
