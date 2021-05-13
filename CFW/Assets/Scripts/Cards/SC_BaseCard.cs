@@ -157,11 +157,7 @@ namespace Card {
         #endregion
 
         #region Usage
-        public static SC_BaseCard playedCard;
-
         public virtual void Play (SC_Player c) {
-
-            playedCard = this;
 
             Caller = c;
 
@@ -201,41 +197,60 @@ namespace Card {
 
                 UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-                UICard.ToGraveyard (1, () => {
-
-                    if (!Has (CommonEffectType.Exchange) || !HandledExchange ()) {
-                        
-                        localPlayer.Busy = false;
-
-                        if (Is (CardType.Basic)) {
-
-                            if (!Has (CommonEffectType.Break))
-                                NextTurn ();
-                            else if (localPlayer.Turn)
-                                UI.showBasicsButton.SetActive (true);
-
-                        } else if (Caller.IsLocalPlayer) {
-
-                            if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
-                                UI.pinfallPanel.SetActive (true);
-                            else if (Is (CardType.Special)) {
-
-                                Caller.SpecialUsed = true;
-
-                                UI.showBasicsButton.SetActive (true);
-
-                            } else
-                                NextTurn ();
-
-                        } else
-                            localPlayer.Busy = false;
-
-                    }
-
-                }, false);
+                UICard.ToGraveyard (1, FinishedUsing, false);
 
             } else
                 NextTurn ();
+
+        }
+
+        void FinishedUsing () {
+
+            foreach (CommonEffect c in commonEffects) {
+
+                CurrentEffect = c;
+
+                MethodInfo mi = typeof (SC_BaseCard).GetMethod (c.effectType.ToString () + "Finished");
+
+                if (mi != null) {
+
+                    mi.Invoke (this, null);
+
+                    return;
+
+                }                
+
+            }
+
+            BaseFinishedUsing ();
+
+        }
+
+        void BaseFinishedUsing () {
+
+            localPlayer.Busy = false;
+
+            if (Is (CardType.Basic)) {
+
+                if (!Has (CommonEffectType.Break))
+                    NextTurn ();
+                else if (localPlayer.Turn)
+                    UI.showBasicsButton.SetActive (true);
+
+            } else if (Caller.IsLocalPlayer) {
+
+                if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
+                    UI.pinfallPanel.SetActive (true);
+                else if (Is (CardType.Special)) {
+
+                    Caller.SpecialUsed = true;
+
+                    UI.showBasicsButton.SetActive (true);
+
+                } else
+                    NextTurn ();
+
+            }
 
         }
         #endregion
@@ -487,7 +502,7 @@ namespace Card {
         #endregion
 
         #region Exchange
-        SC_BaseCard exchanged;
+        public static SC_BaseCard exchangedCard;
 
         public void Exchange () {
 
@@ -519,50 +534,25 @@ namespace Card {
 
         }
 
-        bool HandledExchange () {
+        public void ExchangeFinished () {
 
             if (Receiver.GetStringChoice ("Exchange") == "Accept") {
+
+                exchangedCard = exchangedCard ?? this;
 
                 if (Receiver.IsLocalPlayer)
                     Receiver.ExchangeServerRpc ();
 
-                return true;
+            } else if (exchangedCard) {                
 
-            } else if (exchanged) {
+                exchangedCard.BaseFinishedUsing ();
 
-                exchanged.FinishExchange ();
-
-                Destroy (UICard.gameObject);
-
-                return true;
+                exchangedCard = null;
 
             } else
-                return false;
+                BaseFinishedUsing ();
 
-        }
-
-        public void Exchanged (SC_BaseCard copy) {
-
-            copy.exchanged = exchanged ?? this;
-
-            if (exchanged)
-                Destroy (UICard.gameObject);
-
-        }
-
-        void FinishExchange () {
-
-            if (Caller.IsLocalPlayer) {
-
-                if (otherPlayer.Stamina < 3)
-                    UI.pinfallPanel.SetActive (true);
-                else
-                    NextTurn ();
-
-            } else
-                localPlayer.Busy = false;
-
-        }
+        }        
         #endregion
 
         public void AppliedEffects () {
@@ -622,6 +612,14 @@ namespace Card {
                     return true;
 
             return false;
+
+        }
+
+        public bool Ephemeral { get; set; }
+
+        public bool IsEphemeral () {
+
+            return Ephemeral || Is (CardType.Basic);
 
         }
         #endregion

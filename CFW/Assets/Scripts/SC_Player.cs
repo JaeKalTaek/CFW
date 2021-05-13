@@ -354,6 +354,8 @@ public class SC_Player : NetworkBehaviour {
 
         SC_UI_Card c = Instantiate (original, IsLocalPlayer ? GM.localHand : GM.otherHand);
 
+        c.Card.Ephemeral = true;
+
         c.gameObject.SetActive (true);
 
         c.name = c.Card.Path;
@@ -413,7 +415,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void ExchangeCardClientRpc () {
 
-        SC_BaseCard.playedCard.Exchanged (CopyAndStartUsing (SC_BaseCard.playedCard.UICard));
+        CopyAndStartUsing (SC_BaseCard.exchangedCard.UICard);
 
     }
     #endregion

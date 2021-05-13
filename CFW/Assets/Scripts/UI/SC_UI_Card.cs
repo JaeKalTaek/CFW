@@ -160,7 +160,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             action ();
 
-            if (Card.Is (CardType.Basic))
+            if (Card.IsEphemeral ())
                 Destroy (gameObject);
             else
                 (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);            
