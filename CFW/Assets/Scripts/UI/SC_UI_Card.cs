@@ -77,15 +77,17 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 if (localPlayer.GetStringChoice ("DoubleTapping") == "") {
 
-                    UI.ShowMessage ("DoubleTap2");
+                    UI.ShowMessage ("DoubleTapping2");
 
                     localPlayer.SetStringChoiceServerRpc ("DoubleTapping", name);
 
                 } else if (name != localPlayer.GetStringChoice ("DoubleTapping")) {
 
+                    localPlayer.Busy = true;
+
                     localPlayer.SetStringChoiceServerRpc ("DoubleTapping2", name);
 
-                    activeCard.MakingChoices = false;
+                    localPlayer.DoubleTapServerRpc ();
 
                     StopChoosing ();
 

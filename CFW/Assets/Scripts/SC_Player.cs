@@ -418,6 +418,20 @@ public class SC_Player : NetworkBehaviour {
         CopyAndStartUsing (SC_BaseCard.exchangedCard.UICard);
 
     }
+
+    [ServerRpc]
+    public void DoubleTapServerRpc () {
+
+        DoubleTapClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void DoubleTapClientRpc () {
+
+        SC_BaseCard.activeCard.DoubleTapEffect ();
+
+    }
     #endregion
 
     #region Next turn

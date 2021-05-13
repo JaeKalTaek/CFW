@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using static SC_Player;
 using static Card.SC_BaseCard;
+using static SC_Global;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -33,7 +34,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TMP_InputField knowYourOpponentChoice;
 
-    public GameObject ExchangeUI;
+    public GameObject ExchangeUI, DoubleTapUI;
 
     void Awake () {
 
@@ -171,6 +172,25 @@ public class SC_UI_Manager : MonoBehaviour {
         ExchangeUI.SetActive (false);
 
         localPlayer.SetStringChoiceServerRpc ("Exchange", accept ? "Accept" : "Refuse");
+
+    }
+    #endregion
+
+    #region Double Tap choice
+    public void DoubleTapChoice (bool yes) {
+
+        DoubleTapUI.SetActive (false);
+
+        localPlayer.Turn = true;
+
+        if (yes) {
+
+            localPlayer.ChoosingCard = ChoosingCard.DoubleTapping;
+
+            ShowMessage ("DoubleTapping");
+
+        } else
+            localPlayer.NextTurnServerRpc ();       
 
     }
     #endregion

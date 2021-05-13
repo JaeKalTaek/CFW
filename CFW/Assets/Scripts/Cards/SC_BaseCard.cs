@@ -272,7 +272,10 @@ namespace Card {
 
                 CurrentEffect = e;
 
-                yield return StartCoroutine (ApplyEffect (() => { typeof (SC_BaseCard).GetMethod (e.effectType.ToString ()).Invoke (this, null); }));
+                MethodInfo mi = typeof (SC_BaseCard).GetMethod (e.effectType.ToString ());
+
+                if (mi != null)
+                    yield return StartCoroutine (ApplyEffect (() => { mi.Invoke (this, null); }));
 
             }
 
@@ -457,21 +460,24 @@ namespace Card {
         #region Double Tap
         public void DoubleTap () {
 
-            if (Caller.GetStringChoice ("DoubleTapping") != "") {
+            activeCard = this;
 
-                ApplyingEffects = true;
+        }
 
-                Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => {
+        public void DoubleTapEffect () {
 
-                    c.Discard (Caller, () => {
+            localPlayer.Busy = true;
 
-                        Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (ca) => {
+            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => {
 
-                            ca.Discard (Caller, () => {
+                c.Discard (Caller, () => {
 
-                                ZoomEffect ((this as SC_OffensiveMove).NonMatchHeatEffects, AppliedEffects, 1.25f);
+                    Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (ca) => {
 
-                            });
+                        ca.Discard (Caller, () => {
+
+                            Caller.CopyAndStartUsing (UICard);
+                                
 
                         });
 
@@ -479,26 +485,38 @@ namespace Card {
 
                 });
 
+            });
+            
+        }
+
+        public void DoubleTapFinished () {
+
+            if (Ephemeral) {
+
+                BaseFinishedUsing ();
+
+            } else {
+
+                if (Caller.Hand.Count >= 3 && CanUse (Caller)) {
+
+                    localPlayer.Busy = false;
+
+                    if (Caller.IsLocalPlayer) {
+
+                        localPlayer.Turn = false;
+
+                        Caller.StringChoices["DoubleTapping"] = "";
+
+                        UI.DoubleTapUI.SetActive (true);
+
+                    }
+
+                } else
+                    BaseFinishedUsing ();
+
             }
 
-        }
-
-        public void DoubleTapChoice () {
-
-            localPlayer.SetStringChoiceServerRpc ("DoubleTapping", "");
-
-            if (localPlayer.Hand.Count >= 3) {
-
-                localPlayer.ChoosingCard = ChoosingCard.DoubleTapping;
-
-                localPlayer.StringChoices["DoubleTap2"] = "";
-
-                UI.ShowMessage ("DoubleTap");
-
-            } else
-                MakingChoices = false;
-
-        }
+        }        
         #endregion
 
         #region Exchange
