@@ -23,13 +23,13 @@ namespace Card {
 
         }
 
-        public override IEnumerator ApplyEffects () {
-
-            yield return StartCoroutine (base.ApplyEffects ());
+        public override IEnumerator ApplyEffects () {            
 
             Receiver.ApplySingleEffect ("Stamina", -effect.stamina);
 
             ApplyBodyPartDamage ();
+
+            yield return StartCoroutine (base.ApplyEffects ());
 
             yield return StartCoroutine (ApplyEffect (Lock));
 

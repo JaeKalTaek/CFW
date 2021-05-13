@@ -65,13 +65,13 @@ namespace Card {
 
         }
 
-        public override IEnumerator ApplyEffects () {
-
-            yield return StartCoroutine (base.ApplyEffects ());
+        public override IEnumerator ApplyEffects () {            
 
             GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, true);
 
             NonMatchHeatEffects ();
+
+            yield return StartCoroutine (base.ApplyEffects ());
 
         }
 
