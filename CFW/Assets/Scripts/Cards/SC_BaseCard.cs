@@ -189,7 +189,7 @@ namespace Card {
 
             yield return StartCoroutine (ApplyEffects ());
 
-            if (GM.count == 3) {
+            if (GM.Count == 3) {
 
                 UI.ShowEndPanel (!Caller.IsLocalPlayer);
 
@@ -391,7 +391,7 @@ namespace Card {
 
             lockingCard = this;
 
-            GM.count = 0;
+            GM.Count = 0;
 
             if (localPlayer != Caller)
                 localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
@@ -420,7 +420,7 @@ namespace Card {
 
         public void Count () {
 
-            GM.count++;
+            GM.Count++;
 
         }
         #endregion

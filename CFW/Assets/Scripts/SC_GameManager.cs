@@ -54,7 +54,7 @@ public class SC_GameManager : MonoBehaviour {
 
     SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
-    public int count { get; set; }
+    public int Count { get; set; }
 
     void Start () {
 

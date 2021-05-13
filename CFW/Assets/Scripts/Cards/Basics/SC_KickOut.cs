@@ -8,7 +8,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            GM.AddMatchHeat (GM.count);
+            GM.AddMatchHeat (GM.Count);
 
         }
 

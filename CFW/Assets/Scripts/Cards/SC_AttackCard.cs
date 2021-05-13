@@ -2,7 +2,6 @@
 using System.Collections;
 using UnityEngine;
 using static SC_Global;
-using static SC_Player;
 
 namespace Card {
 
