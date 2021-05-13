@@ -497,7 +497,7 @@ namespace Card {
 
             } else {
 
-                if (Caller.Hand.Count >= 3 && CanUse (Caller)) {
+                if (Caller.Hand.Count >= 2 && CanUse (Caller)) {
 
                     localPlayer.Busy = false;
 
