@@ -67,7 +67,7 @@ public class SC_GameManager : MonoBehaviour {
         SetAllValues (true);
         SetAllValues (false);
 
-        DOTween.Init (false, true, LogBehaviour.Verbose);
+        DOTween.Init (false, false, LogBehaviour.Verbose);
 
     }
 

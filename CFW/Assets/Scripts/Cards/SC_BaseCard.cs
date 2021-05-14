@@ -1,4 +1,4 @@
-﻿using DG.Tweening;
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +30,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]     
         public CommonEffect[] commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -38,7 +38,7 @@ namespace Card {
 
         public SC_Player Receiver { get; set; }
 
-        public static SC_BaseCard activeCard, lockingCard;
+        public static SC_BaseCard activeCard, lockingCard, originalCard;
 
         [Serializable]
         public struct CommonEffect {
@@ -158,6 +158,8 @@ namespace Card {
 
         #region Usage
         public virtual void Play (SC_Player c) {
+
+            originalCard = Ephemeral ? originalCard : this;
 
             Caller = c;
 
@@ -393,8 +395,8 @@ namespace Card {
 
             GM.Count = 0;
 
-            if (localPlayer != Caller)
-                localPlayer.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
+            if (Receiver.IsLocalPlayer)
+                Receiver.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
 
             Vector3 oldPos = UICard.RecT.position;
 
@@ -458,12 +460,6 @@ namespace Card {
         #endregion
 
         #region Double Tap
-        public void DoubleTap () {
-
-            activeCard = this;
-
-        }
-
         public void DoubleTapEffect () {
 
             localPlayer.Busy = true;
@@ -476,8 +472,8 @@ namespace Card {
 
                         ca.Discard (Caller, () => {
 
-                            Caller.CopyAndStartUsing (UICard);
-                                
+                            if (Caller.IsLocalPlayer)
+                                Caller.CopyAndStartUsingServerRpc ();                               
 
                         });
 
@@ -503,11 +499,11 @@ namespace Card {
 
                     if (Caller.IsLocalPlayer) {
 
-                        localPlayer.Turn = false;
+                        Caller.Turn = false;
 
                         Caller.StringChoices["DoubleTapping"] = "";
 
-                        UI.DoubleTapUI.SetActive (true);
+                        UI.doubleTapUI.SetActive (true);
 
                     }
 
@@ -520,8 +516,6 @@ namespace Card {
         #endregion
 
         #region Exchange
-        public static SC_BaseCard exchangedCard;
-
         public void Exchange () {
 
             Receiver.StringChoices["Exchange"] = "";            
@@ -533,7 +527,7 @@ namespace Card {
                 ApplyingEffects = true;
 
                 if (Receiver.IsLocalPlayer)
-                    UI.ExchangeUI.SetActive (true);                
+                    UI.exchangeUI.SetActive (true);                
 
                 StartCoroutine (ExchangeCoroutine ());
 
@@ -556,21 +550,68 @@ namespace Card {
 
             if (Receiver.GetStringChoice ("Exchange") == "Accept") {
 
-                exchangedCard = exchangedCard ?? this;
-
                 if (Receiver.IsLocalPlayer)
-                    Receiver.ExchangeServerRpc ();
-
-            } else if (exchangedCard) {                
-
-                exchangedCard.BaseFinishedUsing ();
-
-                exchangedCard = null;
+                    Receiver.CopyAndStartUsingServerRpc ();
 
             } else
+                activeCard.BaseFinishedUsing ();
+
+        }
+        #endregion
+
+        #region Chain
+        public int MaxChain { get; set; }
+
+        public void Chain () {
+
+            if (!Ephemeral && CanUse (Caller)) {
+
+                ApplyingEffects = true;
+
+                Caller.IntChoices["Chain"] = -1;
+
+                if (Caller.IsLocalPlayer) {
+
+                    MaxChain = 1;
+
+                    while (MaxChain < CurrentEffect.effectValue && (this as SC_AttackCard).CanUse (Caller, MaxChain + 1))
+                        MaxChain++;
+
+                    UI.ShowChainUI ();
+
+                }
+
+                StartCoroutine (WaitChainChoice ());
+
+            } else if (!Ephemeral)
+                Caller.IntChoices["Chain"] = 0;
+
+        }
+
+        IEnumerator WaitChainChoice () {
+
+            while (Caller.GetIntChoice ("Chain") == -1)
+                yield return new WaitForEndOfFrame ();
+
+            ApplyingEffects = false;
+
+        }
+
+        public void ChainFinished () {
+
+            if (Caller.GetIntChoice ("Chain") == 0) {
+
                 BaseFinishedUsing ();
 
-        }        
+            } else if (Caller.IsLocalPlayer) {
+
+                Caller.IntChoices["Chain"]--;
+
+                Caller.CopyAndStartUsingServerRpc ();
+
+            }
+
+        }
         #endregion
 
         public void AppliedEffects () {

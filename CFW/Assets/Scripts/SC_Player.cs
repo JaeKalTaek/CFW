@@ -1,4 +1,4 @@
-﻿using Card;
+using Card;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +8,7 @@ using MLAPI.Messaging;
 using System.Collections;
 using MLAPI.NetworkVariable;
 using UnityEngine.UI;
+using static Card.SC_BaseCard;
 
 public class SC_Player : NetworkBehaviour {
 
@@ -304,6 +305,8 @@ public class SC_Player : NetworkBehaviour {
 
         }
 
+        Debug.LogError ("CARD NOT FOUND FOR ACTION");
+
     }
 
     #region Set choices
@@ -376,6 +379,20 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ServerRpc]
+    public void CopyAndStartUsingServerRpc () {
+
+        CopyAndStartUsingClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void CopyAndStartUsingClientRpc () {
+
+        CopyAndStartUsing (originalCard.UICard);
+
+    }
+
+    [ServerRpc]
     public void StartUsingBasicServerRpc (int id) {
 
         StartUsingBasicClientRpc (id);
@@ -401,21 +418,7 @@ public class SC_Player : NetworkBehaviour {
 
         localPlayer.Busy = true;
 
-        (SC_BaseCard.lockingCard as SC_Submission).Maintain ();
-
-    }
-
-    [ServerRpc]
-    public void ExchangeServerRpc () {
-
-        ExchangeCardClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void ExchangeCardClientRpc () {
-
-        CopyAndStartUsing (SC_BaseCard.exchangedCard.UICard);
+        (lockingCard as SC_Submission).Maintain ();
 
     }
 
@@ -429,7 +432,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void DoubleTapClientRpc () {
 
-        SC_BaseCard.activeCard.DoubleTapEffect ();
+        originalCard.DoubleTapEffect ();
 
     }
     #endregion
@@ -460,7 +463,8 @@ public class SC_Player : NetworkBehaviour {
 
         Turn = true;
 
-        (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);
+        if (IsLocalPlayer)
+            (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);
 
     }
     #endregion

@@ -16,7 +16,7 @@ namespace Card {
 
                     if (Receiver.IsLocalPlayer) {
 
-                        SC_Player.localPlayer.ChoosingCard = SC_Global.ChoosingCard.Discarding;
+                        Receiver.ChoosingCard = SC_Global.ChoosingCard.Discarding;
 
                         UI.ShowMessage ("Discard");
 

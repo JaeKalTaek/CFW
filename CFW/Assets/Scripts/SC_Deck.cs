@@ -120,8 +120,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
             (Local ? localPlayer : otherPlayer).ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
-            if (Local)
-                localPlayer.StartTurn ();
+            (Local ? localPlayer : otherPlayer).StartTurn ();
 
         }
 

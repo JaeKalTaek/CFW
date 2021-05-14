@@ -34,7 +34,12 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TMP_InputField knowYourOpponentChoice;
 
-    public GameObject ExchangeUI, DoubleTapUI;
+    public GameObject exchangeUI, doubleTapUI;
+
+    [Serializable]
+    public struct ChainUI { public GameObject panel; public TextMeshProUGUI text; public GameObject upButton, downButton; public int Chain { get; set; } }
+
+    public ChainUI chainUI;
 
     void Awake () {
 
@@ -52,7 +57,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public void ShowMessage (string id) {
 
-        SC_Global.Messages.TryGetValue (id, out string m);
+        Messages.TryGetValue (id, out string m);
 
         messagePanel.GetComponentInChildren<TextMeshProUGUI> ().text = m;
 
@@ -169,7 +174,7 @@ public class SC_UI_Manager : MonoBehaviour {
     #region Exchange choice
     public void ExchangeChoice (bool accept) {
 
-        ExchangeUI.SetActive (false);
+        exchangeUI.SetActive (false);
 
         localPlayer.SetStringChoiceServerRpc ("Exchange", accept ? "Accept" : "Refuse");
 
@@ -179,7 +184,7 @@ public class SC_UI_Manager : MonoBehaviour {
     #region Double Tap choice
     public void DoubleTapChoice (bool yes) {
 
-        DoubleTapUI.SetActive (false);
+        doubleTapUI.SetActive (false);
 
         localPlayer.Turn = true;
 
@@ -191,6 +196,44 @@ public class SC_UI_Manager : MonoBehaviour {
 
         } else
             localPlayer.NextTurnServerRpc ();       
+
+    }
+    #endregion
+
+    #region Chain
+    public void ShowChainUI () {
+
+        chainUI.Chain = activeCard.MaxChain;
+
+        UpdateChainUI ();
+
+        chainUI.panel.SetActive (true);
+
+    }
+
+    public void ChangeChain (bool add) {
+
+        chainUI.Chain += add ? 1 : -1;
+
+        UpdateChainUI ();
+
+    }
+
+    void UpdateChainUI () {
+
+        chainUI.text.text = chainUI.Chain.ToString ();
+
+        chainUI.upButton.SetActive (chainUI.Chain < activeCard.MaxChain);
+
+        chainUI.downButton.SetActive (chainUI.Chain > 1);
+
+    }
+
+    public void ChainChoice (bool yes) {
+
+        chainUI.panel.SetActive (false);
+
+        localPlayer.SetIntChoiceServerRpc ("Chain", yes ? chainUI.Chain : 0);
 
     }
     #endregion

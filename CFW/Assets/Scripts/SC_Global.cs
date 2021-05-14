@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class SC_Global {
 
@@ -78,5 +79,11 @@ public class SC_Global {
         { "DoubleTapping2", "Choose a 2nd card to discard to Double Tap" }
 
     };
+
+    public static void DebugWithTime (string s) {
+
+        Debug.Log (s + ": " + DateTime.Now + ":" + DateTime.Now.Millisecond);
+
+    }
 
 }
