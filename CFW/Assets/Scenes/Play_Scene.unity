@@ -1947,7 +1947,7 @@ GameObject:
   - component: {fileID: 264302427}
   - component: {fileID: 264302426}
   m_Layer: 5
-  m_Name: UpChainButton
+  m_Name: UpButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1999,7 +1999,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: ChangeChain
+        m_MethodName: ChangeNumberChoice
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6772,7 +6772,7 @@ GameObject:
   m_Component:
   - component: {fileID: 874271635}
   m_Layer: 5
-  m_Name: ChainUI
+  m_Name: NumberChoiceUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6814,7 +6814,7 @@ GameObject:
   - component: {fileID: 899808154}
   - component: {fileID: 899808153}
   m_Layer: 5
-  m_Name: ChainText
+  m_Name: Number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9389,7 +9389,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: ChainChoice
+        m_MethodName: ConfirmNumberChoice
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10565,7 +10565,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: ChainChoice
+        m_MethodName: ConfirmNumberChoice
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11824,7 +11824,7 @@ GameObject:
   - component: {fileID: 1433540222}
   - component: {fileID: 1433540221}
   m_Layer: 5
-  m_Name: DownWhainButton
+  m_Name: DownButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11876,7 +11876,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: ChangeChain
+        m_MethodName: ChangeNumberChoice
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14507,7 +14507,7 @@ MonoBehaviour:
   knowYourOpponentChoice: {fileID: 517803463}
   exchangeUI: {fileID: 1279934101}
   doubleTapUI: {fileID: 1259199405}
-  chainUI:
+  numberChoiceUI:
     panel: {fileID: 874271634}
     text: {fileID: 899808153}
     upButton: {fileID: 264302425}

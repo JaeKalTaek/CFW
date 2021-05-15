@@ -570,7 +570,7 @@ namespace Card {
 
                 ApplyingEffects = true;
 
-                Caller.IntChoices["Chain"] = -1;
+                Caller.IntChoices["NumberChoice"] = -1;
 
                 if (Caller.IsLocalPlayer) {
 
@@ -579,20 +579,20 @@ namespace Card {
                     while (MaxChain < CurrentEffect.effectValue && (this as SC_AttackCard).CanUse (Caller, MaxChain + 1))
                         MaxChain++;
 
-                    UI.ShowChainUI ();
+                    UI.ShowNumberChoiceUI (MaxChain);
 
                 }
 
                 StartCoroutine (WaitChainChoice ());
 
             } else if (!Ephemeral)
-                Caller.IntChoices["Chain"] = 0;
+                Caller.IntChoices["NumberChoice"] = 0;
 
         }
 
         IEnumerator WaitChainChoice () {
 
-            while (Caller.GetIntChoice ("Chain") == -1)
+            while (Caller.GetIntChoice ("NumberChoice") == -1)
                 yield return new WaitForEndOfFrame ();
 
             ApplyingEffects = false;
@@ -601,13 +601,13 @@ namespace Card {
 
         public void ChainFinished () {
 
-            if (Caller.GetIntChoice ("Chain") == 0) {
+            if (Caller.GetIntChoice ("NumberChoice") == 0) {
 
                 BaseFinishedUsing ();
 
             } else if (Caller.IsLocalPlayer) {
 
-                Caller.IntChoices["Chain"]--;
+                Caller.IntChoices["NumberChoice"]--;
 
                 Caller.CopyAndStartUsingServerRpc ();
 

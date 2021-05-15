@@ -37,9 +37,18 @@ public class SC_UI_Manager : MonoBehaviour {
     public GameObject exchangeUI, doubleTapUI;
 
     [Serializable]
-    public struct ChainUI { public GameObject panel; public TextMeshProUGUI text; public GameObject upButton, downButton; public int Chain { get; set; } }
+    public struct NumberChoiceUI {
 
-    public ChainUI chainUI;
+        public GameObject panel;
+        public TextMeshProUGUI text;
+        public GameObject upButton, downButton;
+
+        public int Max { get; set; }
+        public int Number { get; set; }
+
+    }
+
+    public NumberChoiceUI numberChoiceUI;
 
     void Awake () {
 
@@ -200,40 +209,40 @@ public class SC_UI_Manager : MonoBehaviour {
     }
     #endregion
 
-    #region Chain
-    public void ShowChainUI () {
+    #region Number Choice
+    public void ShowNumberChoiceUI (int max) {
 
-        chainUI.Chain = activeCard.MaxChain;
+        numberChoiceUI.Number = numberChoiceUI.Max = max;
 
-        UpdateChainUI ();
+        UpdateNumberChoice ();
 
-        chainUI.panel.SetActive (true);
-
-    }
-
-    public void ChangeChain (bool add) {
-
-        chainUI.Chain += add ? 1 : -1;
-
-        UpdateChainUI ();
+        numberChoiceUI.panel.SetActive (true);
 
     }
 
-    void UpdateChainUI () {
+    public void ChangeNumberChoice (bool add) {
 
-        chainUI.text.text = chainUI.Chain.ToString ();
+        numberChoiceUI.Number += add ? 1 : -1;
 
-        chainUI.upButton.SetActive (chainUI.Chain < activeCard.MaxChain);
-
-        chainUI.downButton.SetActive (chainUI.Chain > 1);
+        UpdateNumberChoice ();
 
     }
 
-    public void ChainChoice (bool yes) {
+    void UpdateNumberChoice () {
 
-        chainUI.panel.SetActive (false);
+        numberChoiceUI.text.text = numberChoiceUI.Number.ToString ();
 
-        localPlayer.SetIntChoiceServerRpc ("Chain", yes ? chainUI.Chain : 0);
+        numberChoiceUI.upButton.SetActive (numberChoiceUI.Number < numberChoiceUI.Max);
+
+        numberChoiceUI.downButton.SetActive (numberChoiceUI.Number > 1);
+
+    }
+
+    public void ConfirmNumberChoice (bool yes) {
+
+        numberChoiceUI.panel.SetActive (false);
+
+        localPlayer.SetIntChoiceServerRpc ("NumberChoice", yes ? numberChoiceUI.Number : 0);
 
     }
     #endregion
