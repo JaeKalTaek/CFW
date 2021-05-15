@@ -69,8 +69,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public static Action DoubleDiscardEffect;
-
     public void OnPointerClick (PointerEventData eventData) {
 
         if (activeCard != Card) {
@@ -89,7 +87,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                     localPlayer.SetStringChoiceServerRpc ("DoubleDiscard2", name);
 
-                    DoubleDiscardEffect ();
+                    localPlayer.DoubleDiscardServerRpc ();
 
                     StopChoosing ();
 

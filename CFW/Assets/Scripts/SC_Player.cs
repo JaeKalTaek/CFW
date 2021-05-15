@@ -420,21 +420,7 @@ public class SC_Player : NetworkBehaviour {
 
         (lockingCard as SC_Submission).Maintain ();
 
-    }
-
-    [ServerRpc]
-    public void DoubleTapServerRpc () {
-
-        DoubleTapClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void DoubleTapClientRpc () {
-
-        originalCard.DoubleTapEffect ();
-
-    }
+    }    
     #endregion
 
     #region Next turn
@@ -488,6 +474,55 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Discard
+    Action DoubleDiscardEffect;
+
+    public void StartDoubleDiscard (Action a) {
+
+        DoubleDiscardEffect = a;
+
+        StringChoices["DoubleDiscard"] = "";
+
+        ChoosingCard = ChoosingCard.DoubleDiscard;        
+
+        UI.ShowMessage ("DoubleDiscard");
+
+    }
+
+    [ServerRpc]
+    public void DoubleDiscardServerRpc () {
+
+        DoubleDiscardClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void DoubleDiscardClientRpc () {
+
+        localPlayer.Busy = true;
+
+        ActionOnCard (GetStringChoice ("DoubleDiscard"), (c) => {
+
+            c.Discard (this, () => {
+
+                ActionOnCard (GetStringChoice ("DoubleDiscard2"), (ca) => {
+
+                    ca.Discard (this, () => {
+
+                        localPlayer.Busy = false;
+
+                        if (IsLocalPlayer)
+                            DoubleDiscardEffect ();
+
+                    });
+
+                });
+
+            });
+
+        });
+
+    }
+
     [ServerRpc]
     public void DiscardServerRpc (string id) {
 

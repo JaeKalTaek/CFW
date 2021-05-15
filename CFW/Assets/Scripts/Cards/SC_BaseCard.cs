@@ -462,31 +462,6 @@ namespace Card {
         #endregion
 
         #region Double Tap
-        public void DoubleTapEffect () {
-
-            localPlayer.Busy = true;
-
-            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleDiscard"), (c) => {
-
-                c.Discard (Caller, () => {
-
-                    Caller.ActionOnCard (Caller.GetStringChoice ("DoubleDiscard2"), (ca) => {
-
-                        ca.Discard (Caller, () => {
-
-                            if (Caller.IsLocalPlayer)
-                                Caller.CopyAndStartUsingServerRpc ();                               
-
-                        });
-
-                    });
-
-                });
-
-            });
-            
-        }
-
         public void DoubleTapFinished () {
 
             if (Ephemeral) {
@@ -501,23 +476,15 @@ namespace Card {
 
                     if (Caller.IsLocalPlayer) {
 
-                        Caller.Turn = false;
-
-                        Caller.StringChoices["DoubleDiscard"] = "";
+                        Caller.Turn = false;                        
 
                         UI.ShowBooleanChoiceUI ("Double Tap", "Skip", (b) => {
 
                             Caller.Turn = true;
 
-                            if (b) {
-
-                                Caller.ChoosingCard = ChoosingCard.DoubleDiscard;
-
-                                SC_UI_Card.DoubleDiscardEffect = localPlayer.DoubleTapServerRpc;
-
-                                UI.ShowMessage ("DoubleDiscard");
-
-                            } else
+                            if (b)
+                                Caller.StartDoubleDiscard (Caller.CopyAndStartUsingServerRpc);
+                            else
                                 Caller.NextTurnServerRpc ();
 
                         });
@@ -579,7 +546,7 @@ namespace Card {
         #region Chain
         public int MaxChain { get; set; }
 
-        public void Chain () {
+        public virtual void Chain () {
 
             if (!Ephemeral && CanUse (Caller)) {
 

@@ -5121,7 +5121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 716d6e0007f095347a852714cf5743da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startMatchHeat: 10
+  startMatchHeat: 19
   maxMatchHeat: 20
   resetMatchHeat: 11
   matchHeatText: {fileID: 1435033152}
@@ -14041,8 +14041,6 @@ MonoBehaviour:
     heelChoice: {fileID: 1922001114}
     faceChoice: {fileID: 901143674}
   knowYourOpponentChoice: {fileID: 517803463}
-  exchangeUI: {fileID: 0}
-  doubleTapUI: {fileID: 0}
   booleanChoiceUI: {fileID: 1213828886}
   numberChoiceUI:
     panel: {fileID: 874271634}
