@@ -159,6 +159,8 @@ namespace Card {
         #region Usage
         public virtual void Play (SC_Player c) {
 
+            activeCard = this;
+
             originalCard = Ephemeral ? originalCard : this;
 
             Caller = c;
@@ -554,7 +556,7 @@ namespace Card {
                     Receiver.CopyAndStartUsingServerRpc ();
 
             } else
-                activeCard.BaseFinishedUsing ();
+                originalCard.BaseFinishedUsing ();
 
         }
         #endregion
@@ -616,7 +618,7 @@ namespace Card {
 
         public void AppliedEffects () {
 
-            ApplyingEffects = false;
+            activeCard.ApplyingEffects = false;
 
         }
         #endregion

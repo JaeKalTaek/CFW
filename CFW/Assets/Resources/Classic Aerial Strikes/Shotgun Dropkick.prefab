@@ -47,7 +47,7 @@ MonoBehaviour:
   types: 010000000000000003000000
   commonRequirements: []
   commonEffects:
-  - effectOnOpponent: 0
+  - effectOnOpponent: 1
     effectType: 4
     valueName: 0
     effectValue: 0
