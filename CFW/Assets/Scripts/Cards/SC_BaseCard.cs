@@ -520,8 +520,6 @@ namespace Card {
 
                         });
 
-                        //UI.doubleTapUI.SetActive (true);
-
                     }
 
                 } else
@@ -544,8 +542,7 @@ namespace Card {
                 ApplyingEffects = true;
 
                 if (Receiver.IsLocalPlayer)
-                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetStringChoiceServerRpc ("Exchange", b ? "Accept" : "Refuse"); });
-                    //UI.exchangeUI.SetActive (true);                
+                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetStringChoiceServerRpc ("Exchange", b ? "Accept" : "Refuse"); });               
 
                 StartCoroutine (ExchangeCoroutine ());
 
