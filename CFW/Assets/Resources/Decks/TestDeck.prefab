@@ -91,9 +91,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cards:
   - {fileID: -5675953350091057158, guid: 40b58f90440a4a6439beb3511ae42c32, type: 3}
-  - {fileID: 114546212900940202, guid: 7d73a3caab431e04eb925080f82481ac, type: 3}
+  - {fileID: 114847427825739746, guid: 6e062f449bb30194cb68e36ed949a0a7, type: 3}
   - {fileID: 114000910370380806, guid: 537502ae1bfd8cd42a1d86a772e9ed84, type: 3}
-  - {fileID: 114647198721149764, guid: 331e167b07e3cd94ea278eb8b0f5dc06, type: 3}
+  - {fileID: 114905495244997832, guid: c0e7215954f8ab2499082dd095262746, type: 3}
   - {fileID: 114920436494339884, guid: 4a7f9bea851b9304c89750043fb727ba, type: 3}
   TSize: {fileID: 114388113091052528}
 --- !u!1 &1561726606249410
