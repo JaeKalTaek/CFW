@@ -50,7 +50,7 @@ public class SC_Global {
 
     public enum ChoosingCard {
 
-        None, Discarding, Assessing, DoubleTapping
+        None, Discarding, Assessing, DoubleDiscard
 
     }
 
@@ -74,9 +74,9 @@ public class SC_Global {
 
         { "KnowYourOpponent", "Type a card name and press confirm" },
 
-        { "DoubleTapping", "Choose a 1st card to discard to Double Tap" },
+        { "DoubleDiscard", "Choose a 1st card to discard" },
 
-        { "DoubleTapping2", "Choose a 2nd card to discard to Double Tap" }
+        { "DoubleDiscard2", "Choose a 2nd card to discard" }
 
     };
 

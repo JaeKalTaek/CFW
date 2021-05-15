@@ -69,25 +69,27 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public static Action DoubleDiscardEffect;
+
     public void OnPointerClick (PointerEventData eventData) {
 
         if (activeCard != Card) {
 
-            if (localPlayer.ChoosingCard == ChoosingCard.DoubleTapping) {
+            if (localPlayer.ChoosingCard == ChoosingCard.DoubleDiscard) {
 
-                if (localPlayer.GetStringChoice ("DoubleTapping") == "") {
+                if (localPlayer.GetStringChoice ("DoubleDiscard") == "") {
 
-                    UI.ShowMessage ("DoubleTapping2");
+                    UI.ShowMessage ("DoubleDiscard2");
 
-                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping", name);
+                    localPlayer.SetStringChoiceServerRpc ("DoubleDiscard", name);
 
-                } else if (name != localPlayer.GetStringChoice ("DoubleTapping")) {
+                } else if (name != localPlayer.GetStringChoice ("DoubleDiscard")) {
 
                     localPlayer.Busy = true;
 
-                    localPlayer.SetStringChoiceServerRpc ("DoubleTapping2", name);
+                    localPlayer.SetStringChoiceServerRpc ("DoubleDiscard2", name);
 
-                    localPlayer.DoubleTapServerRpc ();
+                    DoubleDiscardEffect ();
 
                     StopChoosing ();
 

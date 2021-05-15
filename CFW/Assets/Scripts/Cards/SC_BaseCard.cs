@@ -466,11 +466,11 @@ namespace Card {
 
             localPlayer.Busy = true;
 
-            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping"), (c) => {
+            Caller.ActionOnCard (Caller.GetStringChoice ("DoubleDiscard"), (c) => {
 
                 c.Discard (Caller, () => {
 
-                    Caller.ActionOnCard (Caller.GetStringChoice ("DoubleTapping2"), (ca) => {
+                    Caller.ActionOnCard (Caller.GetStringChoice ("DoubleDiscard2"), (ca) => {
 
                         ca.Discard (Caller, () => {
 
@@ -503,7 +503,7 @@ namespace Card {
 
                         Caller.Turn = false;
 
-                        Caller.StringChoices["DoubleTapping"] = "";
+                        Caller.StringChoices["DoubleDiscard"] = "";
 
                         UI.ShowBooleanChoiceUI ("Double Tap", "Skip", (b) => {
 
@@ -511,9 +511,11 @@ namespace Card {
 
                             if (b) {
 
-                                Caller.ChoosingCard = ChoosingCard.DoubleTapping;
+                                Caller.ChoosingCard = ChoosingCard.DoubleDiscard;
 
-                                UI.ShowMessage ("DoubleTapping");
+                                SC_UI_Card.DoubleDiscardEffect = localPlayer.DoubleTapServerRpc;
+
+                                UI.ShowMessage ("DoubleDiscard");
 
                             } else
                                 Caller.NextTurnServerRpc ();
