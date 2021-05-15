@@ -244,6 +244,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
         localPlayer.SetIntChoiceServerRpc ("NumberChoice", yes ? numberChoiceUI.Number : 0);
 
+        activeCard.MakingChoices = false;
+
     }
     #endregion
 
