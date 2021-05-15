@@ -126,6 +126,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     }
 
+    bool shuffled;
+
     public void Shuffle () {
 
         int[] newOrder = new int[cards.Count];
@@ -145,6 +147,8 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         for (int i = 0; i < newOrder.Length; i++)
             cards[i] = oldCards[newOrder[i]];
+
+        shuffled = true;
 
     }
 
@@ -172,6 +176,14 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
             Destroy (c.UICard.gameObject);
 
         (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Clear ();
+
+        shuffled = false;
+
+        if (Local)
+            Shuffle ();
+
+        while (!shuffled)
+            yield return new WaitForEndOfFrame ();
 
     }
 
