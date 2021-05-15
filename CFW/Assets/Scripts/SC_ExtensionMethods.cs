@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using static SC_UI_Manager;
 
 public static class SC_ExtensionMethods {
 
@@ -17,7 +19,7 @@ public static class SC_ExtensionMethods {
 
             do
                 provider.GetBytes(box);
-            while (!(box[0] < n * (Byte.MaxValue / n)));
+            while (!(box[0] < n * (byte.MaxValue / n)));
 
             int k = (box[0] % n);
 
@@ -46,6 +48,15 @@ public static class SC_ExtensionMethods {
     public static int ReduceWithMin (this int value, int reduction) {
 
         return Mathf.Max(0, value - reduction);
+
+    }
+
+    public static void SetupChoiceButton (this Button b, bool v, string a, BooleanChoice c) {
+
+        b.GetComponentInChildren<TextMeshProUGUI> ().text = a;
+        b.onClick.RemoveAllListeners ();
+        b.onClick.AddListener (() => { c (v); });
+        b.onClick.AddListener (() => { Instance.booleanChoiceUI.SetActive (false); });
 
     }
 

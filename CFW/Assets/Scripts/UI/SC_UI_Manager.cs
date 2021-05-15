@@ -5,6 +5,7 @@ using UnityEngine;
 using static SC_Player;
 using static Card.SC_BaseCard;
 using static SC_Global;
+using UnityEngine.UI;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -34,7 +35,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TMP_InputField knowYourOpponentChoice;
 
-    public GameObject exchangeUI, doubleTapUI;
+    public GameObject booleanChoiceUI;
 
     [Serializable]
     public struct NumberChoiceUI {
@@ -49,6 +50,8 @@ public class SC_UI_Manager : MonoBehaviour {
     }
 
     public NumberChoiceUI numberChoiceUI;
+
+    public delegate void BooleanChoice (bool b);
 
     void Awake () {
 
@@ -106,6 +109,14 @@ public class SC_UI_Manager : MonoBehaviour {
             localPlayer.StartUsingBasicServerRpc (3);
         else
             localPlayer.NextTurnServerRpc ();
+
+    }
+
+    public void ShowBooleanChoiceUI (string a, string b, BooleanChoice c) {
+
+        booleanChoiceUI.transform.GetChild (0).GetComponent<Button> ().SetupChoiceButton (true, a, c);
+        booleanChoiceUI.transform.GetChild (1).GetComponent<Button> ().SetupChoiceButton (false, b, c);
+        booleanChoiceUI.SetActive (true);
 
     }
 
@@ -176,35 +187,6 @@ public class SC_UI_Manager : MonoBehaviour {
     public void KnowYourOpponentConfirmedChoice () {
 
         KnowYourOpponentConfirmedChoice (knowYourOpponentChoice.text);
-
-    }
-    #endregion
-
-    #region Exchange choice
-    public void ExchangeChoice (bool accept) {
-
-        exchangeUI.SetActive (false);
-
-        localPlayer.SetStringChoiceServerRpc ("Exchange", accept ? "Accept" : "Refuse");
-
-    }
-    #endregion
-
-    #region Double Tap choice
-    public void DoubleTapChoice (bool yes) {
-
-        doubleTapUI.SetActive (false);
-
-        localPlayer.Turn = true;
-
-        if (yes) {
-
-            localPlayer.ChoosingCard = ChoosingCard.DoubleTapping;
-
-            ShowMessage ("DoubleTapping");
-
-        } else
-            localPlayer.NextTurnServerRpc ();       
 
     }
     #endregion

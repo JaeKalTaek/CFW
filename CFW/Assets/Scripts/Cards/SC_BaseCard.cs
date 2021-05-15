@@ -505,7 +505,22 @@ namespace Card {
 
                         Caller.StringChoices["DoubleTapping"] = "";
 
-                        UI.doubleTapUI.SetActive (true);
+                        UI.ShowBooleanChoiceUI ("Double Tap", "Skip", (b) => {
+
+                            Caller.Turn = true;
+
+                            if (b) {
+
+                                Caller.ChoosingCard = ChoosingCard.DoubleTapping;
+
+                                UI.ShowMessage ("DoubleTapping");
+
+                            } else
+                                Caller.NextTurnServerRpc ();
+
+                        });
+
+                        //UI.doubleTapUI.SetActive (true);
 
                     }
 
@@ -529,7 +544,8 @@ namespace Card {
                 ApplyingEffects = true;
 
                 if (Receiver.IsLocalPlayer)
-                    UI.exchangeUI.SetActive (true);                
+                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetStringChoiceServerRpc ("Exchange", b ? "Accept" : "Refuse"); });
+                    //UI.exchangeUI.SetActive (true);                
 
                 StartCoroutine (ExchangeCoroutine ());
 
