@@ -30,7 +30,7 @@ namespace Card {
         [Tooltip ("Common effects of this card")]     
         public CommonEffect[] commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom, DiscardChosen }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -270,11 +270,15 @@ namespace Card {
 
         public bool ApplyingEffects { get; set; }
 
+        SC_Player effectTarget;
+
         public virtual IEnumerator ApplyEffects () {
 
             foreach (CommonEffect e in commonEffects) {
 
                 CurrentEffect = e;
+
+                effectTarget = CurrentEffect.effectOnOpponent ? Receiver : Caller;
 
                 MethodInfo mi = typeof (SC_BaseCard).GetMethod (e.effectType.ToString ());
 
@@ -342,13 +346,13 @@ namespace Card {
 
         public void SingleValueEffect () {
 
-            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleEffect (CurrentEffect.valueName.ToString (), CurrentEffect.effectValue);
+            effectTarget.ApplySingleEffect (CurrentEffect.valueName.ToString (), CurrentEffect.effectValue);
 
         }
 
         public void BodyPartEffect () {
 
-            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleBodyEffect ((BodyPart) Caller.GetIntChoice ("BodyPart"), CurrentEffect.effectValue);
+            effectTarget.ApplySingleBodyEffect ((BodyPart) Caller.GetIntChoice ("BodyPart"), CurrentEffect.effectValue);
 
         } 
 
@@ -365,7 +369,7 @@ namespace Card {
         #region Simple Effects
         public void Tire () {
 
-            (CurrentEffect.effectOnOpponent ? Receiver : Caller).ApplySingleEffect ("Stamina", -GM.baseStamina);
+            effectTarget.ApplySingleEffect ("Stamina", -GM.baseStamina);
 
         }
 
@@ -428,13 +432,13 @@ namespace Card {
 
             GM.Count++;
 
-        }
+        }        
         #endregion
 
         #region Draw
         public void Draw () {
 
-            StartCoroutine (Draw (CurrentEffect.effectOnOpponent ? Receiver : Caller));
+            StartCoroutine (Draw (effectTarget));
 
         }
 
@@ -598,6 +602,59 @@ namespace Card {
             }
 
         }
+        #endregion
+
+        #region Discard
+        void Discard (IEnumerator a) {
+
+            if (effectTarget.Hand.Count > 0) {
+
+                ApplyingEffects = true;
+
+                if (effectTarget.IsLocalPlayer)
+                    StartCoroutine (a);
+
+            }
+
+        }
+
+        #region Discard random
+        public void DiscardRandom () {
+
+            Discard (WaitDiscardRandom ());
+
+        }
+
+        IEnumerator WaitDiscardRandom () {
+
+            yield return StartCoroutine (ApplyEffect (() => {
+
+                effectTarget.DiscardServerRpc (effectTarget.Hand[UnityEngine.Random.Range (0, effectTarget.Hand.Count)].Path);
+
+            }));
+
+        }
+        #endregion
+
+        #region Discard Chosen
+        public void DiscardChosen () {
+
+            Discard (WaitDiscardChosen ());
+
+        }
+
+        IEnumerator WaitDiscardChosen () {
+
+            yield return StartCoroutine (ApplyEffect (() => {
+
+                effectTarget.ChoosingCard = ChoosingCard.Discarding;
+
+                UI.ShowMessage ("Discard");                
+
+            }));
+
+        }
+        #endregion
         #endregion
 
         public void AppliedEffects () {
