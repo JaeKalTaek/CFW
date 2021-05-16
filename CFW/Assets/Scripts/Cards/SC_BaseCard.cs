@@ -381,6 +381,8 @@ namespace Card {
                 if (!localPlayer.Unlocked)
                     localPlayer.locked.Value = Locked.Unlocked;
 
+                lockingCard = null;
+
                 ApplyingEffects = false;
 
             }, false);          
