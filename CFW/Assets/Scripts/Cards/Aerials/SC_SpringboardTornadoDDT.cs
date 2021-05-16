@@ -1,39 +1,42 @@
 using System.Collections;
-using Card;
 using UnityEngine;
 using static SC_Player;
 
-public class SC_SpringboardTornadoDDT : SC_OffensiveMove {
+namespace Card {
 
-    protected override IEnumerator MakeChoices () {
+    public class SC_SpringboardTornadoDDT : SC_OffensiveMove {
 
-        yield return StartCoroutine (base.MakeChoices ());
+        protected override IEnumerator MakeChoices () {
 
-        yield return StartCoroutine (MakeChoice (() => {
+            yield return StartCoroutine (base.MakeChoices ());
 
-            if (localPlayer.Stamina > cost.stamina)
-                UI.ShowNumberChoiceUI (Mathf.Min (3, localPlayer.Stamina - cost.stamina));
-            else {
+            yield return StartCoroutine (MakeChoice (() => {
 
-                localPlayer.SetIntChoiceServerRpc ("NumberChoice", 0);
+                if (localPlayer.Stamina > cost.stamina)
+                    UI.ShowNumberChoiceUI (Mathf.Min (3, localPlayer.Stamina - cost.stamina));
+                else {
 
-                MakingChoices = false;
+                    localPlayer.SetIntChoiceServerRpc ("NumberChoice", 0);
+
+                    MakingChoices = false;
+
+                }
+
+            }));
+
+        }
+
+        public override IEnumerator ApplyEffects () {
+
+            yield return StartCoroutine (base.ApplyEffects ());
+
+            if (Caller.GetIntChoice ("NumberChoice") != 0) {
+
+                Caller.ApplySingleEffect ("Stamina", -Caller.GetIntChoice ("NumberChoice"));
+
+                Receiver.ApplySingleEffect ("Health", -Caller.GetIntChoice ("NumberChoice"));
 
             }
-
-        }));
-
-    }
-
-    public override IEnumerator ApplyEffects () {
-
-        yield return StartCoroutine (base.ApplyEffects ());
-
-        if (Caller.GetIntChoice ("NumberChoice") != 0) {
-
-            Caller.ApplySingleEffect ("Stamina", -Caller.GetIntChoice ("NumberChoice"));
-
-            Receiver.ApplySingleEffect ("Health", -Caller.GetIntChoice ("NumberChoice"));
 
         }
 

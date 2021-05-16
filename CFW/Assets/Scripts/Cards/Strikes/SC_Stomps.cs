@@ -1,56 +1,59 @@
 using System.Collections;
-using Card;
 using static SC_Player;
 
-public class SC_Stomps : SC_OffensiveMove {
+namespace Card {
 
-    protected override IEnumerator MakeChoices () {
+    public class SC_Stomps : SC_OffensiveMove {
 
-        yield return StartCoroutine (base.MakeChoices ());
+        protected override IEnumerator MakeChoices () {
 
-        if (!Ephemeral) {
+            yield return StartCoroutine (base.MakeChoices ());
 
-            if (localPlayer.Hand.Count > 2 && CanUse (localPlayer, 2)) {
+            if (!Ephemeral) {
 
-                yield return StartCoroutine (MakeChoice (() => {
+                if (localPlayer.Hand.Count > 2 && CanUse (localPlayer, 2)) {
 
-                    UI.ShowBooleanChoiceUI ("Discard 2 to Chain 4", "Skip", (b) => {
+                    yield return StartCoroutine (MakeChoice (() => {
 
-                        if (b) {
+                        UI.ShowBooleanChoiceUI ("Discard 2 to Chain 4", "Skip", (b) => {
 
-                            localPlayer.StartDoubleDiscard (() => {
+                            if (b) {
 
-                                localPlayer.SetIntChoiceServerRpc ("Stomps", 1);
+                                localPlayer.StartDoubleDiscard (() => {
 
-                                activeCard.MakingChoices = false;
+                                    localPlayer.SetIntChoiceServerRpc ("Stomps", 1);
 
-                            });
+                                    activeCard.MakingChoices = false;
 
-                        } else {
+                                });
 
-                            localPlayer.SetIntChoiceServerRpc ("Stomps", 0);
+                            } else {
 
-                            MakingChoices = false;
+                                localPlayer.SetIntChoiceServerRpc ("Stomps", 0);
 
-                        }
+                                MakingChoices = false;
 
-                    });
+                            }
 
-                }));
+                        });
 
-            } else
-                Caller.SetIntChoiceServerRpc ("Stomps", 0);
+                    }));
+
+                } else
+                    Caller.SetIntChoiceServerRpc ("Stomps", 0);
+
+            }
 
         }
 
-    }
+        public override void Chain () {
 
-    public override void Chain () {
+            if (Ephemeral || Caller.GetIntChoice ("Stomps") != 0)
+                base.Chain ();
+            else
+                Caller.IntChoices["NumberChoice"] = 0;
 
-        if (Ephemeral || Caller.GetIntChoice ("Stomps") != 0)
-            base.Chain ();
-        else
-            Caller.IntChoices["NumberChoice"] = 0;
+        }
 
     }
 

@@ -619,26 +619,6 @@ namespace Card {
 
         }
 
-        public void ZoomEffect (Action effect, Action afterEffect, float zoom) {
-
-            UICard.RecT.SetAsLastSibling ();
-
-            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * zoom, .5f).OnComplete (() => {
-
-                effect ();
-
-                UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / zoom, .5f).OnComplete (() => {
-
-                    UICard.RecT.SetAsFirstSibling ();
-
-                    afterEffect ();
-
-                });
-
-            });
-
-        }
-
         #region Getters
         public bool Is (CardType t) {
 

@@ -404,23 +404,7 @@ public class SC_Player : NetworkBehaviour {
 
         CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponent<SC_UI_Card> ());
 
-    }
-
-    [ServerRpc]
-    public void MaintainSubmissionServerRpc () {
-
-        MaintainSubmissionClientRpc ();
-
-    }
-
-    [ClientRpc]
-    void MaintainSubmissionClientRpc () {
-
-        localPlayer.Busy = true;
-
-        (lockingCard as SC_Submission).Maintain ();
-
-    }    
+    }   
     #endregion
 
     #region Next turn
@@ -450,7 +434,7 @@ public class SC_Player : NetworkBehaviour {
         Turn = true;
 
         if (IsLocalPlayer)
-            (NoLock ? UI.showBasicsButton : (otherPlayer.Submitted ? UI.maintainSubmissionButton : UI.showLockedBasicsButton)).SetActive (true);
+            (NoLock ? UI.showBasicsButton : UI.showLockedBasicsButton).SetActive (true);
 
     }
     #endregion

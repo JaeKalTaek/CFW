@@ -35,12 +35,6 @@ namespace Card {
 
         }
 
-        public void Maintain () {
-
-            ZoomEffect (ApplyBodyPartDamage, NextTurn, GM.enlargeCardFactor);    
-
-        }
-
     }
 
 }

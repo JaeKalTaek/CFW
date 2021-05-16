@@ -92,7 +92,7 @@ namespace Card {
 
         }
 
-        protected void ApplyBodyPartDamage () {
+        public void ApplyBodyPartDamage () {
 
             OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 

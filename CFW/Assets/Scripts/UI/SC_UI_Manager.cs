@@ -21,7 +21,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TextMeshProUGUI endText;
 
-    public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton, maintainSubmissionButton;           
+    public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton;           
 
     [Serializable]
     public struct HandshakeUI { public GameObject panel, heelChoice, faceChoice; }
@@ -84,20 +84,12 @@ public class SC_UI_Manager : MonoBehaviour {
         (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
 
         if (show)
-            for (int i = 0; i < 10; i++)
-                basicsPanel.transform.GetChild (i).gameObject.SetActive (otherPlayer.Unlocked ? (localPlayer.Unlocked ? (0 <= i && i < 3) : (localPlayer.Pinned ? (4 <= i && i < 6) : (6 <= i && i < 9))) : i == 9);        
+            for (int i = 0; i < 11; i++)
+                basicsPanel.transform.GetChild (i).gameObject.SetActive (NoLock ? (0 <= i && i <= 2) : (localPlayer.Unlocked ? (otherPlayer.Pinned ? i == 9 : i == 10) : (localPlayer.Pinned ? (4 == i || i == 5) : (6 <= i && i <= 8))));      
 
         basicsPanel.SetActive (show);        
 
         GM.localHand.gameObject.SetActive (!show);
-
-    }
-
-    public void MaintainSubmission () {
-
-        maintainSubmissionButton.SetActive (false);
-
-        localPlayer.MaintainSubmissionServerRpc ();
 
     }
 
