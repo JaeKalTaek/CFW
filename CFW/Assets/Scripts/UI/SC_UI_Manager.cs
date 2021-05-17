@@ -129,6 +129,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
         threeChoicesUI.panel.SetActive (false);
 
+        activeCard.MakingChoices = false;
+
         localPlayer.SetIntChoiceServerRpc ("ThreeChoices", choice);
 
     }
