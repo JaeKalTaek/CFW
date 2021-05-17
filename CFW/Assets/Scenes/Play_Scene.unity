@@ -5192,10 +5192,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startMatchHeat: 19
   maxMatchHeat: 20
-  resetMatchHeat: 11
+  resetMatchHeat: 10
   matchHeatText: {fileID: 1435033152}
   startHandSize: 4
-  maxHandSize: 8
+  maxHandSize: 7
   background: {fileID: 1762723857}
   waitingPanel: {fileID: 456157239}
   shifumiPanel: {fileID: 1333918836}
