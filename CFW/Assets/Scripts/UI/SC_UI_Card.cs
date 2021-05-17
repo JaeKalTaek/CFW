@@ -47,6 +47,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if ((IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) && (!localPlayer.Busy || localPlayer.ChoosingCard != ChoosingCard.None)) {
 
+            Card.CardHovered (true);
+
             bigCard.transform.SetParent (transform.parent.parent);
 
             bigCard.transform.SetAsLastSibling ();
@@ -60,6 +62,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnPointerExit (PointerEventData eventData) {
 
         if (bigCard.activeSelf) {
+
+            Card.CardHovered (false);
 
             bigCard.transform.SetParent (transform);
 

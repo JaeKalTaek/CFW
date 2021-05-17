@@ -50,6 +50,18 @@ namespace Card {
             public ValueName valueName;
 
             public int effectValue;
+
+            public CommonEffect (CommonEffectType t) {
+
+                effectOnOpponent = false;
+
+                effectType = t;
+
+                valueName = ValueName.None;
+
+                effectValue = 0;
+
+            }
         
         }
 
@@ -86,6 +98,16 @@ namespace Card {
         protected virtual void Awake () {
 
             UICard = transform.parent.GetComponent<SC_UI_Card> ();
+
+        }
+
+        public delegate void OnCardHovered (SC_BaseCard c, bool on);
+        
+        public event OnCardHovered OnCardHoveredEvent;
+
+        public void CardHovered (bool on) {
+
+            OnCardHoveredEvent (this, on);
 
         }
 
@@ -381,6 +403,8 @@ namespace Card {
 
                 if (lockingCard.Is (CardType.Basic))
                     Destroy (lockingCard.UICard.gameObject);
+                else
+                    lockingCard.Broken ();
 
                 if (!localPlayer.Unlocked)
                     localPlayer.locked.Value = Locked.Unlocked;
@@ -392,6 +416,8 @@ namespace Card {
             }, false);          
 
         }
+
+        public virtual void Broken () { }
 
         public void Lock () {
 
