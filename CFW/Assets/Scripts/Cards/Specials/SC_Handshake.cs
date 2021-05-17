@@ -5,9 +5,7 @@ namespace Card {
 
     public class SC_Handshake : SC_BaseCard {
 
-        protected override IEnumerator ApplyEffects () {
-
-            yield return StartCoroutine (base.ApplyEffects ());
+        protected override IEnumerator ApplyEffects () {            
 
             ApplyingEffects = true;
 
@@ -40,6 +38,8 @@ namespace Card {
             }
 
             ApplyingEffects = false;
+
+            yield return StartCoroutine (base.ApplyEffects ());
 
         }
 
