@@ -528,4 +528,31 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion    
 
+    /*bool waiting = true;
+
+    public IEnumerator WaitForPlayers () {
+
+        FinishWaitingServerRpc ();
+
+        while (waiting || otherPlayer.waiting)
+            yield return new WaitForEndOfFrame ();
+
+        waiting = otherPlayer.waiting = true;
+
+    }
+
+    [ServerRpc]
+    void FinishWaitingServerRpc () {
+
+        FinishWaitingClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void FinishWaitingClientRpc () {
+
+        waiting = false;
+
+    }*/
+
 }
