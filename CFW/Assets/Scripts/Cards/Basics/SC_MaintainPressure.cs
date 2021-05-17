@@ -4,7 +4,7 @@ namespace Card {
 
     public class SC_MaintainPressure : SC_BaseCard {
 
-        public override IEnumerator ApplyEffects () {
+        protected override IEnumerator ApplyEffects () {
 
             yield return StartCoroutine (base.ApplyEffects ());
 

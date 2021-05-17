@@ -23,7 +23,7 @@ namespace Card {
 
         }
 
-        public override IEnumerator ApplyEffects () {            
+        protected override IEnumerator ApplyEffects () {            
 
             Receiver.ApplySingleEffect ("Stamina", -effect.stamina);
 

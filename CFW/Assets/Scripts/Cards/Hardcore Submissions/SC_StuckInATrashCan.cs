@@ -7,7 +7,7 @@ namespace Card {
 
         public OnCardHovered cardHovered;
 
-        public override IEnumerator ApplyEffects () {
+        protected override IEnumerator ApplyEffects () {
 
             yield return StartCoroutine (base.ApplyEffects ());
 

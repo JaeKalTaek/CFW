@@ -296,7 +296,7 @@ namespace Card {
 
         SC_Player effectTarget;
 
-        public virtual IEnumerator ApplyEffects () {
+        protected virtual IEnumerator ApplyEffects () {
 
             foreach (CommonEffect e in commonEffects) {
 

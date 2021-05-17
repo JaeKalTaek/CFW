@@ -5,7 +5,7 @@ namespace Card {
 
     public class SC_Taunt : SC_BaseCard {
 
-        public override IEnumerator ApplyEffects () {
+        protected override IEnumerator ApplyEffects () {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
