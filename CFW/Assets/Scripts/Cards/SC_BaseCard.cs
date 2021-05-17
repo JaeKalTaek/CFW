@@ -466,15 +466,15 @@ namespace Card {
         #region Draw
         public void Draw () {
 
-            StartCoroutine (Draw (effectTarget));
+            StartCoroutine (Draw (effectTarget, CurrentEffect.effectValue));
 
         }
 
-        protected IEnumerator Draw (SC_Player p) {
+        protected IEnumerator Draw (SC_Player p, int d = 1) {
 
             ApplyingEffects = true;
 
-            yield return StartCoroutine (p.Deck.Draw (false));
+            yield return StartCoroutine (p.Deck.Draw (Mathf.Max (1, d), false));
 
             ApplyingEffects = false;
 
