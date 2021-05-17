@@ -28,7 +28,7 @@ namespace Card {
         public CommonRequirement[] commonRequirements;
 
         [Tooltip ("Common effects of this card")]     
-        public CommonEffect[] commonEffects;        
+        public List<CommonEffect> commonEffects;        
 
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom, DiscardChosen }
 
