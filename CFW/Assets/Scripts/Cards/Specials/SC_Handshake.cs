@@ -11,22 +11,22 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            Receiver.IntChoices["Handshake"] = -1;
+            Receiver.IntChoices["ThreeChoices"] = -1;
 
             if (Receiver.IsLocalPlayer) {
 
-                UI.handshakeUI.heelChoice.SetActive (Receiver.Alignment <= 0);
+                UI.ShowThreeChoices (new string[] { "Hit opponent", "Do nothing", "Draw a card" });
 
-                UI.handshakeUI.faceChoice.SetActive (Receiver.Alignment >= 0);
+                UI.threeChoicesUI.leftChoice.SetActive (Receiver.Alignment <= 0);
 
-                UI.handshakeUI.panel.SetActive (true);
+                UI.threeChoicesUI.rightChoice.SetActive (Receiver.Alignment >= 0);                
 
             }
 
-            while (Receiver.GetIntChoice ("Handshake") == -1)
+            while (Receiver.GetIntChoice ("ThreeChoices") == -1)
                 yield return new WaitForEndOfFrame ();
 
-            int choice = Receiver.GetIntChoice ("Handshake");
+            int choice = Receiver.GetIntChoice ("ThreeChoices");
 
             if (choice != 1) {
 

@@ -1,5 +1,4 @@
-﻿using Card;
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
@@ -24,9 +23,9 @@ public class SC_UI_Manager : MonoBehaviour {
     public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton;           
 
     [Serializable]
-    public struct HandshakeUI { public GameObject panel, heelChoice, faceChoice; }
+    public struct ThreeChoicesUI { public GameObject panel, leftChoice, rightChoice; }
 
-    public HandshakeUI handshakeUI;
+    public ThreeChoicesUI threeChoicesUI;
 
     [Serializable]
     public struct AlignmentChoiceUI { public GameObject panel; public TextMeshProUGUI heelChoice, faceChoice; }
@@ -112,11 +111,25 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public void HandshakeChoice (int choice) {
+    public void ShowThreeChoices (string[] texts) {
 
-        handshakeUI.panel.SetActive (false);
+        for (int i = 0; i < 3; i++) {
 
-        localPlayer.SetIntChoiceServerRpc ("Handshake", choice);
+            threeChoicesUI.panel.transform.GetChild (i).GetComponentInChildren<TextMeshProUGUI> ().text = texts[i];
+
+            threeChoicesUI.panel.transform.GetChild (i).gameObject.SetActive (true);
+
+        }
+
+        threeChoicesUI.panel.SetActive (true);
+
+    }
+
+    public void ThreeChoicesSelect (int choice) {
+
+        threeChoicesUI.panel.SetActive (false);
+
+        localPlayer.SetIntChoiceServerRpc ("ThreeChoices", choice);
 
     }
 

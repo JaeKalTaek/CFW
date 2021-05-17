@@ -3891,7 +3891,7 @@ GameObject:
   m_Component:
   - component: {fileID: 483053739}
   m_Layer: 5
-  m_Name: HandshakeUI
+  m_Name: ThreeChoicesUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4069,7 +4069,7 @@ GameObject:
   - component: {fileID: 503731862}
   - component: {fileID: 503731861}
   m_Layer: 5
-  m_Name: HeelButton
+  m_Name: LeftButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4141,7 +4141,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: HandshakeChoice
+        m_MethodName: ThreeChoicesSelect
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10366,7 +10366,7 @@ GameObject:
   - component: {fileID: 1315536025}
   - component: {fileID: 1315536024}
   m_Layer: 5
-  m_Name: FaceButton
+  m_Name: RightButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10438,7 +10438,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: HandshakeChoice
+        m_MethodName: ThreeChoicesSelect
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -14135,10 +14135,10 @@ MonoBehaviour:
   showLockedBasicsButton: {fileID: 1296645944}
   hideBasicsButton: {fileID: 967507031}
   hideLockedBasicsButton: {fileID: 2062056063}
-  handshakeUI:
+  threeChoicesUI:
     panel: {fileID: 483053738}
-    heelChoice: {fileID: 503731859}
-    faceChoice: {fileID: 1315536022}
+    leftChoice: {fileID: 503731859}
+    rightChoice: {fileID: 1315536022}
   alignmentChoiceUI:
     panel: {fileID: 1661074168}
     heelChoice: {fileID: 1922001114}
@@ -17076,7 +17076,7 @@ GameObject:
   - component: {fileID: 1998393372}
   - component: {fileID: 1998393371}
   m_Layer: 5
-  m_Name: NeutralButton
+  m_Name: CenterButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17148,7 +17148,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1762723860}
         m_TargetAssemblyTypeName: SC_UI_Manager, Assembly-CSharp
-        m_MethodName: HandshakeChoice
+        m_MethodName: ThreeChoicesSelect
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
