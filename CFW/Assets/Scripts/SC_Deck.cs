@@ -6,10 +6,11 @@ using UnityEngine.EventSystems;
 using Card;
 using static SC_Player;
 using System.Collections;
-using System;
 using UnityEngine.UI;
 
 public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+
+    public bool ordered;
 
     public List<SC_BaseCard> cards;
 

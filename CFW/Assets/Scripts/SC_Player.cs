@@ -149,7 +149,8 @@ public class SC_Player : NetworkBehaviour {
         while (!Deck || !otherPlayer.Deck)
             yield return new WaitForEndOfFrame ();
 
-        Deck.Shuffle ();
+        if (!Deck.ordered)
+            Deck.Shuffle ();
 
         SetupDeckServerRpc ();
 
