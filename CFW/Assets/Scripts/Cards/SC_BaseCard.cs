@@ -30,7 +30,9 @@ namespace Card {
         [Tooltip ("Common effects of this card")]     
         public List<CommonEffect> commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom, DiscardChosen }
+        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
+            BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
+            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -633,56 +635,58 @@ namespace Card {
         #endregion
 
         #region Discard
-        void Discard (IEnumerator a) {
+        void Discard (Action a) {
 
             if (effectTarget.Hand.Count > 0) {
 
                 ApplyingEffects = true;
 
                 if (effectTarget.IsLocalPlayer)
-                    StartCoroutine (a);
+                    a ();
 
             }
 
         }
 
-        #region Discard random
-        public void DiscardRandom () {
+        public void DiscardRandom () {            
 
-            Discard (WaitDiscardRandom ());
-
-        }
-
-        IEnumerator WaitDiscardRandom () {
-
-            yield return StartCoroutine (ApplyEffect (() => {
-
-                effectTarget.DiscardServerRpc (effectTarget.Hand[UnityEngine.Random.Range (0, effectTarget.Hand.Count)].Path);
-
-            }));
+            Discard (() => { effectTarget.DiscardServerRpc (effectTarget.Hand[UnityEngine.Random.Range (0, effectTarget.Hand.Count)].Path); });
 
         }
-        #endregion
 
-        #region Discard Chosen
         public void DiscardChosen () {
 
-            Discard (WaitDiscardChosen ());
-
-        }
-
-        IEnumerator WaitDiscardChosen () {
-
-            yield return StartCoroutine (ApplyEffect (() => {
+            Discard (() => {
 
                 effectTarget.ChoosingCard = ChoosingCard.Discarding;
 
-                UI.ShowMessage ("Discard");                
+                UI.ShowMessage ("Discard");
 
-            }));
+            });
 
         }
         #endregion
+
+        #region Refill
+        public void Refill () {
+
+            if (effectTarget.Graveyard.Cards.Count > 0) {
+
+                ApplyingEffects = true;
+
+                StartCoroutine (Refilling ());
+
+            }
+
+        }
+
+        IEnumerator Refilling () {
+
+            yield return StartCoroutine (effectTarget.Deck.Refill ());
+
+            ApplyingEffects = false;
+
+        }
         #endregion
 
         public virtual void ApplyBoosts () {

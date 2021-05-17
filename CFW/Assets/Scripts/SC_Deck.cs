@@ -7,6 +7,7 @@ using Card;
 using static SC_Player;
 using System.Collections;
 using UnityEngine.UI;
+using static SC_Global;
 
 public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
@@ -24,11 +25,15 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     bool Local { get; set; }
 
+    SC_Player owner;
+
     RectTransform RectT { get { return transform as RectTransform; } }
 
     public void Setup (bool local) {
 
         Local = local;
+
+        owner = Local ? localPlayer : otherPlayer;
 
         StartCoroutine (Draw (GM.startHandSize, false, false));
 
@@ -76,7 +81,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public IEnumerator Draw (bool startTurn, bool tween = true) {
 
-        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize && (cards.Count > 0 || (Local ? localPlayer : otherPlayer).Graveyard.Cards.Count > 0)) {
+        if (owner.Hand.Count < GM.maxHandSize && (cards.Count > 0 || owner.Graveyard.Cards.Count > 0)) {
 
             if (cards.Count <= 0)
                 yield return StartCoroutine (Refill ());
@@ -115,13 +120,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
     void FinishDrawing (SC_UI_Card c, bool startTurn) {
 
         if (c)
-            (Local ? localPlayer : otherPlayer).Hand.Add (c.Card);
+            owner.Hand.Add (c.Card);
 
         if (startTurn) {
 
-            (Local ? localPlayer : otherPlayer).ApplySingleEffect ("Stamina", GM.staminaPerTurn);
+            owner.ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
-            (Local ? localPlayer : otherPlayer).StartTurn ();
+            owner.StartTurn ();
 
         }
 
@@ -155,7 +160,9 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public IEnumerator Refill () {
 
-        foreach (SC_BaseCard c in (Local ? localPlayer : otherPlayer).Graveyard.Cards) {
+        shuffled = false;
+
+        foreach (SC_BaseCard c in owner.Graveyard.Cards) {
 
             cards.Add (Resources.Load<SC_BaseCard> (c.Path));
 
@@ -173,12 +180,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         TSize.text = Size.ToString ();
 
-        foreach (SC_BaseCard c in (Local ? localPlayer : otherPlayer).Graveyard.Cards)
+        foreach (SC_BaseCard c in owner.Graveyard.Cards)
             Destroy (c.UICard.gameObject);
 
-        (Local ? localPlayer : otherPlayer).Graveyard.Cards.Clear ();
-
-        shuffled = false;
+        owner.Graveyard.Cards.Clear ();        
 
         if (Local)
             Shuffle ();
