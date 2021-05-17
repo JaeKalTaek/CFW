@@ -37,3 +37,5 @@ sysinfo.txt
 *.unitypackage
 
 CFW/UserSettings/EditorUserSettings.asset
+
+CFW/Assets/Resources/Decks/TestDeck.prefab
