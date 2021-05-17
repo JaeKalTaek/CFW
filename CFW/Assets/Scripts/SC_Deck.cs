@@ -76,7 +76,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public IEnumerator Draw (bool startTurn, bool tween = true) {
 
-        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize && (cards.Count > 0 || (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Count > 0)) {
+        if ((Local ? localPlayer : otherPlayer).Hand.Count < GM.maxHandSize && (cards.Count > 0 || (Local ? localPlayer : otherPlayer).Graveyard.Cards.Count > 0)) {
 
             if (cards.Count <= 0)
                 yield return StartCoroutine (Refill ());
@@ -155,7 +155,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public IEnumerator Refill () {
 
-        foreach (SC_BaseCard c in (Local ? GM.localGraveyard : GM.otherGraveyard).Cards) {
+        foreach (SC_BaseCard c in (Local ? localPlayer : otherPlayer).Graveyard.Cards) {
 
             cards.Add (Resources.Load<SC_BaseCard> (c.Path));
 
@@ -173,10 +173,10 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
         TSize.text = Size.ToString ();
 
-        foreach (SC_BaseCard c in (Local ? GM.localGraveyard : GM.otherGraveyard).Cards)
+        foreach (SC_BaseCard c in (Local ? localPlayer : otherPlayer).Graveyard.Cards)
             Destroy (c.UICard.gameObject);
 
-        (Local ? GM.localGraveyard : GM.otherGraveyard).Cards.Clear ();
+        (Local ? localPlayer : otherPlayer).Graveyard.Cards.Clear ();
 
         shuffled = false;
 

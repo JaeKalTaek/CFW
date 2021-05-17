@@ -16,6 +16,8 @@ public class SC_Player : NetworkBehaviour {
 
 	public SC_Deck Deck { get; set; }
 
+    public SC_Graveyard Graveyard { get; set; }
+
     public List<SC_BaseCard> Hand { get; set; }
 
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
@@ -156,6 +158,9 @@ public class SC_Player : NetworkBehaviour {
 
         while (!decksShuffled || !otherPlayer.decksShuffled)
             yield return new WaitForEndOfFrame ();
+
+        Graveyard = GM.localGraveyard;
+        otherPlayer.Graveyard = GM.otherGraveyard;
 
         GM.waitingPanel.SetActive (false);
 
