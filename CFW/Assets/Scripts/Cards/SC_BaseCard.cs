@@ -421,7 +421,11 @@ namespace Card {
 
         }
 
-        public virtual void Broken () { }
+        public virtual void Broken () {
+
+            UI.count.gameObject.SetActive (false);
+
+        }
 
         public void Lock () {
 
@@ -432,6 +436,8 @@ namespace Card {
             lockingCard = this;
 
             GM.Count = 0;
+
+            UI.count.gameObject.SetActive (true);
 
             if (Receiver.IsLocalPlayer)
                 Receiver.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;

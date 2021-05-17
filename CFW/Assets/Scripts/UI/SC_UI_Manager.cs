@@ -14,6 +14,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public Transform localValues, otherValues;
 
+    public TextMeshProUGUI count;
+
     public GameObject bodyPartDamageChoicePanel, messagePanel;
 
     public GameObject pinfallPanel;
