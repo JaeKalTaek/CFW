@@ -90,11 +90,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cards:
-  - {fileID: -5207146750256997977, guid: 3be8ed48affdc37438064c2e3fb7363d, type: 3}
-  - {fileID: -1744875577366130574, guid: 97d26a5029697784ba0df016c1e293b1, type: 3}
+  - {fileID: 4247374562337503601, guid: d363fd63abfbfb244ae33b7025ca11ac, type: 3}
+  - {fileID: 114847427825739746, guid: 6e062f449bb30194cb68e36ed949a0a7, type: 3}
   - {fileID: 114000910370380806, guid: 537502ae1bfd8cd42a1d86a772e9ed84, type: 3}
-  - {fileID: 114905495244997832, guid: c0e7215954f8ab2499082dd095262746, type: 3}
+  - {fileID: 114089202929220000, guid: 13c59af96eb91704299159a4847ca640, type: 3}
   - {fileID: -7651657147326382771, guid: be59b9c61c3583848bf8ecdb3d9796e7, type: 3}
+  - {fileID: 114669295325459004, guid: 64120871c35bebe4490ffb631630121e, type: 3}
   TSize: {fileID: 114388113091052528}
 --- !u!1 &1561726606249410
 GameObject:

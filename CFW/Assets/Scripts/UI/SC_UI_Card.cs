@@ -111,9 +111,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 StopChoosing ();                
 
-            } else if (bigCard.activeSelf && Card.CanUse (localPlayer)) {
-
-                OnPointerExit (new PointerEventData (EventSystem.current));
+            } else if (bigCard.activeSelf && Card.CanUse (localPlayer)) {                
 
                 foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.showLockedBasicsButton, UI.hideBasicsButton, UI.hideLockedBasicsButton })
                     g.SetActive (false);
@@ -128,6 +126,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 } else
                     StartCoroutine (Card.StartPlaying ());
+
+                OnPointerExit (new PointerEventData (EventSystem.current));
 
             }
 

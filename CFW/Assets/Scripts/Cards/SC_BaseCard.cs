@@ -38,7 +38,7 @@ namespace Card {
 
         public SC_Player Receiver { get; set; }
 
-        public static SC_BaseCard activeCard, lockingCard, originalCard;
+        public static SC_BaseCard activeCard, lockingCard, originalCard, boostingCard;
 
         [Serializable]
         public struct CommonEffect {
@@ -103,11 +103,11 @@ namespace Card {
 
         public delegate void OnCardHovered (SC_BaseCard c, bool on);
         
-        public event OnCardHovered OnCardHoveredEvent;
+        public static event OnCardHovered OnCardHoveredEvent;
 
         public void CardHovered (bool on) {
 
-            OnCardHoveredEvent (this, on);
+            OnCardHoveredEvent?.Invoke (this, on);
 
         }
 
@@ -213,6 +213,8 @@ namespace Card {
 
             yield return new WaitForSeconds (GM.responseTime);
 
+            boostingCard?.ApplyBoosts ();
+
             yield return StartCoroutine (ApplyEffects ());
 
             if (GM.Count == 3) {
@@ -307,7 +309,7 @@ namespace Card {
                 if (mi != null)
                     yield return StartCoroutine (ApplyEffect (() => { mi.Invoke (this, null); }));
 
-            }
+            }            
 
         }
 
@@ -682,6 +684,12 @@ namespace Card {
         }
         #endregion
         #endregion
+
+        public virtual void ApplyBoosts () {
+
+            boostingCard = null;
+
+        }
 
         public void AppliedEffects () {
 
