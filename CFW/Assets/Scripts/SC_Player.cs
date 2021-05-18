@@ -446,6 +446,20 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Apply effects
+    [ServerRpc]
+    public void FinishedApplyingEffectsServerRpc () {
+
+        FinishedApplyingEffectsClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void FinishedApplyingEffectsClientRpc () {
+
+        activeCard.ApplyingEffects = false;
+
+    }
+
     public void ApplySingleEffect (string field, int? value = null, object effect = null) {
 
         typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)) + (value ?? -(int) effect.GetType ().GetField (field.ToLower ()).GetValue (effect)));

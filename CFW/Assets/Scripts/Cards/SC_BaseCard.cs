@@ -45,7 +45,7 @@ namespace Card {
         [Serializable]
         public struct CommonEffect {
 
-            public bool effectOnOpponent;
+            public bool effectOnOpponent, may;
 
             public CommonEffectType effectType;
 
@@ -55,7 +55,7 @@ namespace Card {
 
             public CommonEffect (CommonEffectType t) {
 
-                effectOnOpponent = false;
+                effectOnOpponent = may = false;
 
                 effectType = t;
 
@@ -323,42 +323,84 @@ namespace Card {
                 yield return new WaitForEndOfFrame ();
 
         }
+
+        /*protected IEnumerator May (Action a) {
+
+            ApplyingEffects = true;
+
+            while (localPlayer.GetIntChoice ("May") == -1)
+                yield return new WaitForEndOfFrame ();
+
+            //yield return StartCoroutine
+
+        }*/
         #endregion
 
         #region Common Effects
         #region Assess
         public void Assess () {
 
-            ApplyingEffects = true;
+            if (effectTarget.Deck.cards.Count > 0 || effectTarget.Graveyard.Cards.Count > 0) {
 
-            StartCoroutine (AssessCoroutine ());
+                ApplyingEffects = true;
+
+                effectTarget.StringChoices["Assess"] = "";
+
+                StartCoroutine (AssessCoroutine ());
+
+                if (effectTarget.IsLocalPlayer) {
+
+                    if (CurrentEffect.may) {
+
+                        UI.ShowBooleanChoiceUI ("Assess", "Skip", (b) => {
+
+                            if (b)
+                                StartAssessChoice ();
+                            else
+                                effectTarget.FinishedApplyingEffectsServerRpc ();
+
+                        });
+
+                    } else
+                        StartAssessChoice ();
+
+                }
+
+            }
+
+        }
+
+        void StartAssessChoice () {
+
+            localPlayer.ChoosingCard = ChoosingCard.Assessing;
+
+            UI.ShowMessage ("Assess");
 
         }
 
         IEnumerator AssessCoroutine () {
 
-            if (Caller.Deck.cards.Count <= 0)
-                yield return Caller.Deck.Refill ();
+            while (ApplyingEffects && effectTarget.GetStringChoice ("Assess") == "")
+                yield return new WaitForEndOfFrame ();
 
-            Caller.ActionOnCard (Caller.GetStringChoice ("Assess"), (c) => {
+            if (ApplyingEffects) {
 
-                Caller.Hand.Remove (c);
+                if (effectTarget.Deck.cards.Count <= 0)
+                    yield return effectTarget.Deck.Refill ();
 
-                c.Caller = Caller;
+                effectTarget.ActionOnCard (effectTarget.GetStringChoice ("Assess"), (c) => {
 
-                c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
+                    effectTarget.Hand.Remove (c);
 
-            });
+                    c.Caller = effectTarget;
 
-            yield return StartCoroutine (Caller.Deck.Draw (false));
+                    c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
 
-        }
+                });
 
-        public void AssessChoice () {
+                yield return StartCoroutine (effectTarget.Deck.Draw (false));
 
-            localPlayer.ChoosingCard = ChoosingCard.Assessing;
-
-            UI.ShowMessage ("Assess");
+            }
 
         }
         #endregion

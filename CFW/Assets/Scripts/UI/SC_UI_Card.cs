@@ -105,8 +105,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                     localPlayer.SetStringChoiceServerRpc ("Assess", name);
 
-                    activeCard.MakingChoices = false;
-
                 }
 
                 StopChoosing ();                
