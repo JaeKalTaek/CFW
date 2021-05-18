@@ -401,23 +401,27 @@ namespace Card {
 
         public void Break () {
 
-            ApplyingEffects = true;
+            if (lockingCard) {
 
-            lockingCard.UICard.ToGraveyard (1, () => {
+                ApplyingEffects = true;
 
-                if (lockingCard.Is (CardType.Basic))
-                    Destroy (lockingCard.UICard.gameObject);
-                else
-                    lockingCard.Broken ();
+                lockingCard.UICard.ToGraveyard (1, () => {
 
-                if (!localPlayer.Unlocked)
-                    localPlayer.locked.Value = Locked.Unlocked;
+                    if (lockingCard.Is (CardType.Basic))
+                        Destroy (lockingCard.UICard.gameObject);
+                    else
+                        lockingCard.Broken ();
 
-                lockingCard = null;
+                    if (!localPlayer.Unlocked)
+                        localPlayer.locked.Value = Locked.Unlocked;
 
-                ApplyingEffects = false;
+                    lockingCard = null;
 
-            }, false);          
+                    ApplyingEffects = false;
+
+                }, false);
+
+            }
 
         }
 
