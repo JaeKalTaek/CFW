@@ -32,7 +32,7 @@ namespace Card {
 
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
-            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill }
+            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -527,6 +527,13 @@ namespace Card {
             GM.Count++;
 
         }        
+
+        public void StartPinFinished () {
+
+            if (Caller.IsLocalPlayer)
+                Caller.StartUsingBasicServerRpc (3);
+
+        }
         #endregion
 
         #region Draw

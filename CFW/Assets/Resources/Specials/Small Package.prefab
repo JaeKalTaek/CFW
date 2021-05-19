@@ -59,6 +59,6 @@ MonoBehaviour:
     effectValue: 0
   - effectOnOpponent: 0
     may: 0
-    effectType: 11
+    effectType: 17
     valueName: 0
     effectValue: 0
