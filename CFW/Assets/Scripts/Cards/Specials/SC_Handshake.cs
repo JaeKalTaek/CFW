@@ -7,8 +7,6 @@ namespace Card {
 
         protected override IEnumerator ApplyEffects () {            
 
-            ApplyingEffects = true;
-
             Receiver.IntChoices["ThreeChoices"] = -1;
 
             if (Receiver.IsLocalPlayer) {
@@ -36,8 +34,6 @@ namespace Card {
                 yield return Draw (Caller);
 
             }
-
-            ApplyingEffects = false;
 
             yield return StartCoroutine (base.ApplyEffects ());
 
