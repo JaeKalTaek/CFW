@@ -35,6 +35,18 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     }
 
+    public static void Show () {
+
+        Reset ();
+
+        text.text = "Choose!";
+
+        SC_GameManager.Instance.shifumiPanel.transform.SetAsLastSibling ();
+
+        SC_GameManager.Instance.shifumiPanel.SetActive (true);
+
+    }
+
     public void OnPointerEnter (PointerEventData eventData) {
 
         on = true;
@@ -72,9 +84,11 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     }
 
-    public static void Draw () {
+    static void Reset () {
 
-        text.text = "Draw ! Choose again !";
+        SC_Player.localPlayer.ShifumiChoice = ShiFuMi.None;
+
+        SC_Player.otherPlayer.ShifumiChoice = ShiFuMi.None;
 
         foreach (SC_ShiFuMiChoice c in choices) {
 
@@ -83,6 +97,14 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
             c.image.color = c.on ? Color.white : baseColor;
 
         }
+
+    }
+
+    public static void Draw () {
+
+        text.text = "Draw ! Choose again !";
+
+        Reset ();
 
     }
 

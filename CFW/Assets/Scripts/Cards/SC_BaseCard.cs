@@ -53,18 +53,20 @@ namespace Card {
 
             public int effectValue;
 
-            public CommonEffect (CommonEffectType t) {
+            public CommonEffect (CommonEffectType t, bool m = false, int v = 0) {
 
-                effectOnOpponent = may = false;
+                effectOnOpponent = true;
+
+                may = m;
 
                 effectType = t;
 
                 valueName = ValueName.None;
 
-                effectValue = 0;
+                effectValue = v;
 
             }
-        
+
         }
 
         public enum RequirementType { Minimum, Maximum }
@@ -302,7 +304,7 @@ namespace Card {
 
         public bool ApplyingEffects { get; set; }
 
-        SC_Player effectTarget;
+        protected SC_Player effectTarget;
 
         protected virtual IEnumerator ApplyEffects () {
 

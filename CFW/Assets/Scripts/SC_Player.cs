@@ -163,7 +163,7 @@ public class SC_Player : NetworkBehaviour {
         Graveyard = GM.localGraveyard;
         otherPlayer.Graveyard = GM.otherGraveyard;
 
-        shifumiAction = (b) => { ChooseStartingPlayerServerRpc (b); };
+        shifumiAction = (b) => { GM.ShowTurnPanel (b); };
 
         GM.waitingPanel.SetActive (false);
 
@@ -203,7 +203,7 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region ShiFuMi
-    BooleanChoice shifumiAction;
+    public static BooleanChoice shifumiAction;
 
     [ServerRpc]
     public void ShiFuMiChoiceServerRpc (int s) {
@@ -224,7 +224,7 @@ public class SC_Player : NetworkBehaviour {
                 if (ShifumiChoice == otherPlayer.ShifumiChoice)
                     ResetShiFuMiServerRpc ();
                 else
-                    shifumiAction (Win (ShifumiChoice, otherPlayer.ShifumiChoice));
+                    ShiFuMiFinishedServerRpc (Win (ShifumiChoice, otherPlayer.ShifumiChoice));
 
             } else
                 SC_ShiFuMiChoice.text.text = "Waiting for other player to choose...";
@@ -243,29 +243,25 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void ResetShiFuMiClientRpc () {
 
-        ShifumiChoice = ShiFuMi.None;
-
-        otherPlayer.ShifumiChoice = ShiFuMi.None;
-
-        SC_ShiFuMiChoice.Draw();
+        SC_ShiFuMiChoice.Draw ();
 
     }
     #endregion
 
     #region Start Game
     [ServerRpc]
-    void ChooseStartingPlayerServerRpc (bool won) {
+    void ShiFuMiFinishedServerRpc (bool won) {
 
-        ChooseStartingPlayerClientRpc (won);
+        ShiFuMiFinishedClientRpc (won);
 
     }
 
     [ClientRpc]
-    void ChooseStartingPlayerClientRpc (bool won) {
+    void ShiFuMiFinishedClientRpc (bool won) {
 
-        GM.shifumiPanel.SetActive(false);
+        GM.shifumiPanel.SetActive (false);
 
-        GM.ShowTurnPanel(IsLocalPlayer ? won : !won);
+        shifumiAction (IsLocalPlayer ? won : !won);          
 
     }    
 
