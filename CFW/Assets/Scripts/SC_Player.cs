@@ -9,6 +9,7 @@ using System.Collections;
 using MLAPI.NetworkVariable;
 using UnityEngine.UI;
 using static Card.SC_BaseCard;
+using static SC_UI_Manager;
 
 public class SC_Player : NetworkBehaviour {
 
@@ -162,6 +163,8 @@ public class SC_Player : NetworkBehaviour {
         Graveyard = GM.localGraveyard;
         otherPlayer.Graveyard = GM.otherGraveyard;
 
+        shifumiAction = (b) => { ChooseStartingPlayerServerRpc (b); };
+
         GM.waitingPanel.SetActive (false);
 
     }
@@ -200,6 +203,8 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region ShiFuMi
+    BooleanChoice shifumiAction;
+
     [ServerRpc]
     public void ShiFuMiChoiceServerRpc (int s) {
 
@@ -216,25 +221,13 @@ public class SC_Player : NetworkBehaviour {
 
             if (otherPlayer.ShifumiChoice != ShiFuMi.None) {
 
-                if (Win(ShifumiChoice, otherPlayer.ShifumiChoice)) {
+                if (ShifumiChoice == otherPlayer.ShifumiChoice)
+                    ResetShiFuMiServerRpc ();
+                else
+                    shifumiAction (Win (ShifumiChoice, otherPlayer.ShifumiChoice));
 
-                    ChooseStartingPlayerServerRpc (true);
-
-                } else if (ShifumiChoice == otherPlayer.ShifumiChoice) {
-
-                    ResetShiFuMiServerRpc ();                        
-
-                } else {
-
-                    ChooseStartingPlayerServerRpc (false);
-
-                }
-
-            } else {
-
-                GM.shifumiText.text = "Waiting for other player to choose...";
-
-            }
+            } else
+                SC_ShiFuMiChoice.text.text = "Waiting for other player to choose...";
 
         }
 

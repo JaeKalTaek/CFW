@@ -43,12 +43,7 @@ public class SC_GameManager : MonoBehaviour {
 
     public int maxAlignment;
 
-    public float responseTime;
-
-    [Header("ShiFuMi")]
-    public TextMeshProUGUI shifumiText;
-
-    public Color baseShiFuMiChoiceColor, lockedChoiceColor;    
+    public float responseTime; 
 
     public static SC_GameManager Instance;
 

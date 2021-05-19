@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static SC_Global;
@@ -7,22 +8,30 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public ShiFuMi choice;
 
-    SC_GameManager GM { get { return SC_GameManager.Instance; } }
-
     Image image;
 
     static SC_ShiFuMiChoice[] choices;
 
     bool on, locked;
 
+    static Color baseColor = new Color (1, 1, 1, .5f);
+    static Color lockedColor = new Color (.25f, .25f, .25f, 1);
+
+    public static TextMeshProUGUI text;
+
     void Start() {
 
-        if(choices == null)
-            choices = transform.parent.GetComponentsInChildren<SC_ShiFuMiChoice>();
+        if (choices == null) {
+
+            choices = transform.parent.GetComponentsInChildren<SC_ShiFuMiChoice> ();
+
+            text = choices[0].transform.parent.GetComponentInChildren<TextMeshProUGUI> ();
+
+        }
 
         image = GetComponent<Image>();
 
-        image.color = GM.baseShiFuMiChoiceColor;
+        image.color = baseColor;
 
     }
 
@@ -40,7 +49,7 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
         on = false;
 
         if(!locked)
-            image.color = GM.baseShiFuMiChoiceColor;
+            image.color = baseColor;
 
     }
 
@@ -53,7 +62,7 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 c.locked = true;
 
                 if(c != this)
-                    c.image.color = GM.lockedChoiceColor;
+                    c.image.color = lockedColor;
 
             }
 
@@ -65,13 +74,13 @@ public class SC_ShiFuMiChoice : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public static void Draw () {
 
-        SC_GameManager.Instance.shifumiText.text = "Draw ! Choose again !";
+        text.text = "Draw ! Choose again !";
 
         foreach (SC_ShiFuMiChoice c in choices) {
 
             c.locked = false;
 
-            c.image.color = c.on ? Color.white : SC_GameManager.Instance.baseShiFuMiChoiceColor;
+            c.image.color = c.on ? Color.white : baseColor;
 
         }
 
