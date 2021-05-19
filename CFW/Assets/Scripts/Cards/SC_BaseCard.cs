@@ -324,16 +324,45 @@ namespace Card {
 
         }
 
-        /*protected IEnumerator May (Action a) {
+        #region May
+        void May (Action a) {
 
-            ApplyingEffects = true;
+            ApplyingEffects = true;            
 
-            while (localPlayer.GetIntChoice ("May") == -1)
+            if (CurrentEffect.may) {
+
+                effectTarget.IntChoices["May"] = -1;
+
+                StartCoroutine (MayCoroutine (a));
+
+                if (effectTarget.IsLocalPlayer) {
+
+                    UI.ShowBooleanChoiceUI (CurrentEffect.effectType.ToString (), "Skip", (b) => {
+
+                        if (b)
+                            effectTarget.SetIntChoiceServerRpc ("May", 0);
+                        else
+                            effectTarget.FinishedApplyingEffectsServerRpc ();
+
+                    });
+
+                }
+
+            } else
+                a ();
+
+        }
+
+        IEnumerator MayCoroutine (Action a) {
+
+            while (ApplyingEffects && effectTarget.GetIntChoice ("May") == -1)
                 yield return new WaitForEndOfFrame ();
 
-            //yield return StartCoroutine
+            if (ApplyingEffects)
+                a ();
 
-        }*/
+        }
+        #endregion
         #endregion
 
         #region Common Effects
@@ -342,29 +371,14 @@ namespace Card {
 
             if (effectTarget.Deck.cards.Count > 0 || effectTarget.Graveyard.Cards.Count > 0) {
 
-                ApplyingEffects = true;
+                May (() => {
 
-                effectTarget.StringChoices["Assess"] = "";
+                    StartCoroutine (AssessCoroutine ());
 
-                StartCoroutine (AssessCoroutine ());
-
-                if (effectTarget.IsLocalPlayer) {
-
-                    if (CurrentEffect.may) {
-
-                        UI.ShowBooleanChoiceUI ("Assess", "Skip", (b) => {
-
-                            if (b)
-                                StartAssessChoice ();
-                            else
-                                effectTarget.FinishedApplyingEffectsServerRpc ();
-
-                        });
-
-                    } else
+                    if (effectTarget.IsLocalPlayer)
                         StartAssessChoice ();
 
-                }
+                });
 
             }
 
@@ -380,27 +394,25 @@ namespace Card {
 
         IEnumerator AssessCoroutine () {
 
-            while (ApplyingEffects && effectTarget.GetStringChoice ("Assess") == "")
+            effectTarget.StringChoices["Assess"] = "";
+
+            while (effectTarget.GetStringChoice ("Assess") == "")
                 yield return new WaitForEndOfFrame ();
 
-            if (ApplyingEffects) {
+            if (effectTarget.Deck.cards.Count <= 0)
+                yield return effectTarget.Deck.Refill ();
 
-                if (effectTarget.Deck.cards.Count <= 0)
-                    yield return effectTarget.Deck.Refill ();
+            StartCoroutine (effectTarget.Deck.Draw (false));
 
-                effectTarget.ActionOnCard (effectTarget.GetStringChoice ("Assess"), (c) => {
+            effectTarget.ActionOnCard (effectTarget.GetStringChoice ("Assess"), (c) => {
 
-                    effectTarget.Hand.Remove (c);
+                effectTarget.Hand.Remove (c);
 
-                    c.Caller = effectTarget;
+                c.Caller = effectTarget;
 
-                    c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
+                c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
 
-                });
-
-                yield return StartCoroutine (effectTarget.Deck.Draw (false));
-
-            }
+            });                     
 
         }
         #endregion
@@ -520,13 +532,15 @@ namespace Card {
         #region Draw
         public void Draw () {
 
-            StartCoroutine (Draw (effectTarget, CurrentEffect.effectValue));
+            May (() => {
+
+                StartCoroutine (Draw (effectTarget, CurrentEffect.effectValue));
+
+            });
 
         }
 
         protected IEnumerator Draw (SC_Player p, int d = 1) {
-
-            ApplyingEffects = true;
 
             yield return StartCoroutine (p.Deck.Draw (Mathf.Max (1, d), false));
 
