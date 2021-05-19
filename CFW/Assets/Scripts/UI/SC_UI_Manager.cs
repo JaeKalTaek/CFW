@@ -78,9 +78,11 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
+    public GameObject BasicsButton { get { return NoLock ? showBasicsButton : showLockedBasicsButton; } }
+
     public void ShowBasics (bool show) {
 
-        (NoLock ? showBasicsButton : showLockedBasicsButton).SetActive (!show);
+        BasicsButton.SetActive (!show);
 
         (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
 

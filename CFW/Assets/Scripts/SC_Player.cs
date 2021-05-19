@@ -440,7 +440,7 @@ public class SC_Player : NetworkBehaviour {
         Turn = true;
 
         if (IsLocalPlayer)
-            (NoLock ? UI.showBasicsButton : UI.showLockedBasicsButton).SetActive (true);
+            UI.BasicsButton.SetActive (true);
 
     }
     #endregion

@@ -114,9 +114,15 @@ namespace Card {
         }
 
         #region Can use
+        protected bool BaseCanUse (SC_Player user) {
+
+            return user.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed);
+
+        }
+
         public virtual bool CanUse (SC_Player user) {
 
-            if (user.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+            if (BaseCanUse (user) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
@@ -275,7 +281,7 @@ namespace Card {
 
                     Caller.SpecialUsed = true;
 
-                    UI.showBasicsButton.SetActive (true);
+                    UI.BasicsButton.SetActive (true);
 
                 } else
                     NextTurn ();
