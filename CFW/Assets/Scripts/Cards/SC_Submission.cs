@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using static SC_Global;
-using DG.Tweening;
 using System.Collections;
 
 namespace Card {
@@ -19,7 +18,7 @@ namespace Card {
 
             public OffensiveBodyPartDamage bodyPartDamage;
 
-            public int breakCost, earlyBreakDamage;            
+            public int breakCost;            
 
         }
 
