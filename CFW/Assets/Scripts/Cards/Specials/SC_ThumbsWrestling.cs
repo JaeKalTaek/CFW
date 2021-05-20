@@ -30,7 +30,7 @@ namespace Card {
 
             ApplyingEffects = true;
 
-            CurrentEffect = new CommonEffect (CommonEffectType.Draw, false, 2);
+            CurrentEffect = new CommonEffect (CommonEffectType.Draw, v: 2);
 
             effectTarget = Caller.IsLocalPlayer != b ? Receiver : Caller;
 

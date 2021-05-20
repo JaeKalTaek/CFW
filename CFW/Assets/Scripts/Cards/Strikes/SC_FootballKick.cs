@@ -13,7 +13,7 @@ namespace Card {
 
         protected override IEnumerator ApplyEffects () {
 
-            commonEffects.Add (new CommonEffect (CommonEffectType.Chain, false, Mathf.Abs (Caller.Alignment)));
+            commonEffects.Add (new CommonEffect (CommonEffectType.Chain, v: Mathf.Abs (Caller.Alignment)));
 
             return base.ApplyEffects ();
 
