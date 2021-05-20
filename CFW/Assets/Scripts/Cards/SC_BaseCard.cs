@@ -116,15 +116,13 @@ namespace Card {
         }
 
         #region Can use
-        protected bool BaseCanUse (SC_Player user) {
+        public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            return user.Turn && !user.Busy && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed);
+            bool prio = ignorePriority || (user.Turn && !user.Busy);
 
-        }
+            bool locked = ignoreLocks || NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break);
 
-        public virtual bool CanUse (SC_Player user) {
-
-            if (BaseCanUse (user) && (NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break))) {
+            if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed) && prio && locked) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
@@ -200,8 +198,6 @@ namespace Card {
             Receiver = c.IsLocalPlayer ? otherPlayer : localPlayer;       
 
             Caller.Hand.Remove (this);
-
-            //localPlayer.Busy = true;
 
             UICard.RecT.SetParent (UICard.RecT.parent.parent);
 
@@ -587,17 +583,11 @@ namespace Card {
 
             } else {
 
-                if (Caller.Hand.Count >= 2 && CanUse (Caller)) {
+                if (Caller.Hand.Count >= 2 && CanUse (Caller, ignorePriority: true)) {
 
-                    //localPlayer.Busy = false;
-
-                    if (Caller.IsLocalPlayer) {
-
-                        //Caller.Turn = false;                        
+                    if (Caller.IsLocalPlayer) {                  
 
                         UI.ShowBooleanChoiceUI ("Double Tap", "Skip", (b) => {
-
-                            //Caller.Turn = true;
 
                             if (b)
                                 Caller.StartDoubleDiscard (Caller.CopyAndStartUsingServerRpc);
@@ -621,9 +611,7 @@ namespace Card {
 
             Receiver.StringChoices["Exchange"] = "";            
 
-            Receiver.Turn = true;
-
-            if (CanUse (Receiver)) {
+            if (CanUse (Receiver, ignorePriority: true)) {
 
                 ApplyingEffects = true;
 
@@ -633,8 +621,6 @@ namespace Card {
                 StartCoroutine (ExchangeCoroutine ());
 
             }
-
-            Receiver.Turn = false;
 
         }
 
@@ -665,7 +651,7 @@ namespace Card {
 
         public virtual void Chain () {
 
-            if (!Ephemeral && CanUse (Caller)) {
+            if (!Ephemeral && CanUse (Caller, ignorePriority: true)) {
 
                 ApplyingEffects = true;
 
@@ -675,7 +661,7 @@ namespace Card {
 
                     MaxChain = 1;
 
-                    while (MaxChain < CurrentEffect.effectValue && (this as SC_AttackCard).CanUse (Caller, MaxChain + 1))
+                    while (MaxChain < CurrentEffect.effectValue && (this as SC_OffensiveMove).CanUse (Caller, MaxChain + 1, true))
                         MaxChain++;
 
                     UI.ShowNumberChoiceUI (MaxChain);
@@ -817,12 +803,6 @@ namespace Card {
         }
 
         public bool Ephemeral { get; set; }
-
-        public bool IsEphemeral () {
-
-            return Ephemeral || Is (CardType.Basic);
-
-        }
         #endregion
 
     }

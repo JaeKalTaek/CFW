@@ -4,9 +4,9 @@ namespace Card {
 
     public class SC_SubmissionStrikes : SC_BaseCard {
 
-        public override bool CanUse (SC_Player user) {
+        public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            return BaseCanUse (user) && SC_Player.otherPlayer.Submitted;
+            return base.CanUse (user, ignorePriority, true) && SC_Player.otherPlayer.Submitted;
 
         }
 

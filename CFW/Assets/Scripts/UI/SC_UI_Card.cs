@@ -87,8 +87,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 } else if (name != localPlayer.GetStringChoice ("DoubleDiscard")) {
 
-                    //localPlayer.Busy = true;
-
                     localPlayer.SetStringChoiceServerRpc ("DoubleDiscard2", name);
 
                     localPlayer.DoubleDiscardServerRpc ();
@@ -164,7 +162,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             action ();
 
-            if (Card.IsEphemeral ())
+            if (Card.Ephemeral)
                 Destroy (gameObject);
             else
                 (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);            
