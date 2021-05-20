@@ -45,7 +45,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) /*&& (!localPlayer.Busy || localPlayer.ChoosingCard != ChoosingCard.None)*/) {
+        if (IsBasic || localPlayer.Hand.Contains (Card) || lockingCard == Card) {
 
             Card.CardHovered (true);
 
