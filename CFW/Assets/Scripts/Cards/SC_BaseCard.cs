@@ -277,7 +277,7 @@ namespace Card {
 
             } else if (Caller.IsLocalPlayer) {
 
-                if (otherPlayer.Stamina < 3 && this as SC_OffensiveMove)
+                if (Receiver.Stamina < 3 && this as SC_OffensiveMove)
                     UI.pinfallPanel.SetActive (true);
                 else if (Is (CardType.Special)) {
 
@@ -538,7 +538,7 @@ namespace Card {
 
         public void StartPinFinished () {
 
-            if (Caller.IsLocalPlayer)
+            if (Caller.IsLocalPlayer && Receiver.Stamina < 3)
                 Caller.StartUsingBasicServerRpc (3);
 
         }
