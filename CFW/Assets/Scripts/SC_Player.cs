@@ -413,7 +413,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void NextTurnClientRpc () {
 
-        localPlayer.Busy = false;
+        //localPlayer.Busy = false;
 
         if (IsLocalPlayer)
             localPlayer.Turn = false;           
@@ -491,7 +491,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void DoubleDiscardClientRpc () {
 
-        localPlayer.Busy = true;
+        //localPlayer.Busy = true;
 
         ActionOnCard (GetStringChoice ("DoubleDiscard"), (c) => {
 
@@ -501,7 +501,7 @@ public class SC_Player : NetworkBehaviour {
 
                     ca.Discard (this, () => {
 
-                        localPlayer.Busy = false;
+                        //localPlayer.Busy = false;
 
                         if (IsLocalPlayer)
                             DoubleDiscardEffect ();

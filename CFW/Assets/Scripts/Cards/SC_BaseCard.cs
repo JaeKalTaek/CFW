@@ -118,7 +118,7 @@ namespace Card {
         #region Can use
         protected bool BaseCanUse (SC_Player user) {
 
-            return user.Turn && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed);
+            return user.Turn && !user.Busy && GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed);
 
         }
 
@@ -201,7 +201,7 @@ namespace Card {
 
             Caller.Hand.Remove (this);
 
-            localPlayer.Busy = true;
+            //localPlayer.Busy = true;
 
             UICard.RecT.SetParent (UICard.RecT.parent.parent);
 
@@ -589,15 +589,15 @@ namespace Card {
 
                 if (Caller.Hand.Count >= 2 && CanUse (Caller)) {
 
-                    localPlayer.Busy = false;
+                    //localPlayer.Busy = false;
 
                     if (Caller.IsLocalPlayer) {
 
-                        Caller.Turn = false;                        
+                        //Caller.Turn = false;                        
 
                         UI.ShowBooleanChoiceUI ("Double Tap", "Skip", (b) => {
 
-                            Caller.Turn = true;
+                            //Caller.Turn = true;
 
                             if (b)
                                 Caller.StartDoubleDiscard (Caller.CopyAndStartUsingServerRpc);
