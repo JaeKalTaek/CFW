@@ -109,8 +109,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                 foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.showLockedBasicsButton, UI.hideBasicsButton, UI.hideLockedBasicsButton })
                     g.SetActive (false);
 
-                localPlayer.Busy = true;
-
                 if (IsBasic) {
 
                     GM.localHand.gameObject.SetActive (true);

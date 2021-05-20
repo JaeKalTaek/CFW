@@ -118,7 +118,7 @@ namespace Card {
         #region Can use
         public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            bool prio = ignorePriority || (user.Turn && !user.Busy);
+            bool prio = ignorePriority || (user.Turn && !activeCard);
 
             bool locked = ignoreLocks || NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break);
 
@@ -233,8 +233,13 @@ namespace Card {
 
                 UICard.ToGraveyard (1, FinishedUsing, false);
 
-            } else
+            } else {
+
+                activeCard = null;
+
                 NextTurn ();
+
+            }
 
         }
 
@@ -262,7 +267,7 @@ namespace Card {
 
         void BaseFinishedUsing () {
 
-            localPlayer.Busy = false;
+            activeCard = null;
 
             if (Is (CardType.Basic)) {
 
