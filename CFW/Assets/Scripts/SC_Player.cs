@@ -23,7 +23,7 @@ public class SC_Player : NetworkBehaviour {
 
     SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
-    SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
+    SC_UI_Manager UI { get { return Instance; } }
 
     public static SC_Player localPlayer, otherPlayer;
 
@@ -286,21 +286,9 @@ public class SC_Player : NetworkBehaviour {
     #region Card usage
     public delegate void CardAction (SC_BaseCard c);
 
-    public void ActionOnCard (string id, CardAction a) {
+    public void ActionOnCard (int id, CardAction a) {
 
-        foreach (SC_BaseCard c in IsLocalPlayer ? Hand : otherPlayer.Hand) {
-
-            if (c.UICard.name == id) {
-
-                a (c);
-
-                return;
-
-            }
-
-        }
-
-        Debug.LogError ("CARD NOT FOUND FOR ACTION");
+        a ((IsLocalPlayer ? Hand : otherPlayer.Hand)[id]);
 
     }
 
@@ -335,14 +323,14 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     [ServerRpc]
-    public void PlayCardServerRpc (string id) {
+    public void PlayCardServerRpc (int id) {
 
         PlayCardClientRpc (id);
 
     }
 
     [ClientRpc]
-    void PlayCardClientRpc (string id) {
+    void PlayCardClientRpc (int id) {
 
         ActionOnCard (id, (c) => { c.Play (this); });
 
@@ -471,7 +459,7 @@ public class SC_Player : NetworkBehaviour {
 
         DoubleDiscardEffect = a;
 
-        StringChoices["DoubleDiscard"] = "";
+        IntChoices["DoubleDiscard"] = -1;
 
         ChoosingCard = ChoosingCard.DoubleDiscard;        
 
@@ -489,11 +477,11 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void DoubleDiscardClientRpc () {
 
-        ActionOnCard (GetStringChoice ("DoubleDiscard"), (c) => {
+        ActionOnCard (GetIntChoice ("DoubleDiscard"), (c) => {
 
             c.Discard (this, () => {
 
-                ActionOnCard (GetStringChoice ("DoubleDiscard2"), (ca) => {
+                ActionOnCard (GetIntChoice ("DoubleDiscard2"), (ca) => {
 
                     ca.Discard (this, () => {
 
@@ -511,14 +499,14 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ServerRpc]
-    public void DiscardServerRpc (string id) {
+    public void DiscardServerRpc (int id) {
 
         DiscardClientRpc (id);
 
     }
 
     [ClientRpc]
-    void DiscardClientRpc (string id) {
+    void DiscardClientRpc (int id) {
 
         ActionOnCard (id, (c) => { c.Discard (this); });
 

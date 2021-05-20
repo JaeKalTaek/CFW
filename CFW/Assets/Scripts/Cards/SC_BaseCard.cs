@@ -155,7 +155,7 @@ namespace Card {
 
             yield return StartCoroutine (MakeChoices ());
 
-            localPlayer.PlayCardServerRpc (UICard.name);
+            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex () /*UICard.name*/);
 
         }
 
@@ -398,9 +398,9 @@ namespace Card {
 
         IEnumerator AssessCoroutine () {
 
-            effectTarget.StringChoices["Assess"] = "";
+            effectTarget.IntChoices["Assess"] = -1;
 
-            while (effectTarget.GetStringChoice ("Assess") == "")
+            while (effectTarget.GetIntChoice ("Assess") == -1)
                 yield return new WaitForEndOfFrame ();
 
             if (effectTarget.Deck.cards.Count <= 0)
@@ -408,7 +408,7 @@ namespace Card {
 
             StartCoroutine (effectTarget.Deck.Draw (false));
 
-            effectTarget.ActionOnCard (effectTarget.GetStringChoice ("Assess"), (c) => {
+            effectTarget.ActionOnCard (effectTarget.GetIntChoice ("Assess"), (c) => {
 
                 effectTarget.Hand.Remove (c);
 
@@ -609,14 +609,14 @@ namespace Card {
         #region Exchange
         public void Exchange () {
 
-            Receiver.StringChoices["Exchange"] = "";            
+            Receiver.IntChoices["Exchange"] = -1;            
 
             if (CanUse (Receiver, ignorePriority: true)) {
 
                 ApplyingEffects = true;
 
                 if (Receiver.IsLocalPlayer)
-                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetStringChoiceServerRpc ("Exchange", b ? "Accept" : "Refuse"); });               
+                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetIntChoiceServerRpc ("Exchange", b ? 0 : 1 /*"Accept" : "Refuse"*/); });               
 
                 StartCoroutine (ExchangeCoroutine ());
 
@@ -626,7 +626,7 @@ namespace Card {
 
         IEnumerator ExchangeCoroutine () {
 
-            while (Receiver.GetStringChoice ("Exchange") == "")
+            while (Receiver.GetIntChoice ("Exchange") == -1)
                 yield return new WaitForEndOfFrame ();
 
             ApplyingEffects = false;
@@ -635,7 +635,7 @@ namespace Card {
 
         public void ExchangeFinished () {
 
-            if (Receiver.GetStringChoice ("Exchange") == "Accept") {
+            if (Receiver.GetIntChoice ("Exchange") == 0) {
 
                 if (Receiver.IsLocalPlayer)
                     Receiver.CopyAndStartUsingServerRpc ();
@@ -717,7 +717,7 @@ namespace Card {
 
         public void DiscardRandom () {            
 
-            Discard (() => { effectTarget.DiscardServerRpc (effectTarget.Hand[UnityEngine.Random.Range (0, effectTarget.Hand.Count)].Path); });
+            Discard (() => { effectTarget.DiscardServerRpc (UnityEngine.Random.Range (0, effectTarget.Hand.Count)); });
 
         }
 

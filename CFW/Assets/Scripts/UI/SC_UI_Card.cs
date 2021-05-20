@@ -79,15 +79,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             if (localPlayer.ChoosingCard == ChoosingCard.DoubleDiscard) {
 
-                if (localPlayer.GetStringChoice ("DoubleDiscard") == "") {
+                if (localPlayer.GetIntChoice ("DoubleDiscard") == -1) {
 
                     UI.ShowMessage ("DoubleDiscard2");
 
-                    localPlayer.SetStringChoiceServerRpc ("DoubleDiscard", name);
+                    localPlayer.SetIntChoiceServerRpc ("DoubleDiscard", transform.GetSiblingIndex ());
 
-                } else if (name != localPlayer.GetStringChoice ("DoubleDiscard")) {
+                } else if (transform.GetSiblingIndex () != localPlayer.GetIntChoice ("DoubleDiscard")) {
 
-                    localPlayer.SetStringChoiceServerRpc ("DoubleDiscard2", name);
+                    localPlayer.SetIntChoiceServerRpc ("DoubleDiscard2", transform.GetSiblingIndex ());
 
                     localPlayer.DoubleDiscardServerRpc ();
 
@@ -98,12 +98,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             } else if (localPlayer.ChoosingCard != ChoosingCard.None) {
 
                 if (localPlayer.ChoosingCard == ChoosingCard.Discarding)
-                    localPlayer.DiscardServerRpc (name);
-                else if (localPlayer.ChoosingCard == ChoosingCard.Assessing) {
-
-                    localPlayer.SetStringChoiceServerRpc ("Assess", name);
-
-                }
+                    localPlayer.DiscardServerRpc (transform.GetSiblingIndex ());
+                else if (localPlayer.ChoosingCard == ChoosingCard.Assessing)
+                    localPlayer.SetIntChoiceServerRpc ("Assess", transform.GetSiblingIndex ());
 
                 StopChoosing ();                
 
