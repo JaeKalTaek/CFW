@@ -155,7 +155,7 @@ namespace Card {
 
             yield return StartCoroutine (MakeChoices ());
 
-            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex () /*UICard.name*/);
+            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex ());
 
         }
 
