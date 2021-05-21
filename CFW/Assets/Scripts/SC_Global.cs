@@ -76,7 +76,9 @@ public class SC_Global {
 
         { "DoubleDiscard", "Choose a 1st card to discard" },
 
-        { "DoubleDiscard2", "Choose a 2nd card to discard" }
+        { "DoubleDiscard2", "Choose a 2nd card to discard" },
+
+        { "Response", "You may respond to this card for now!" }
 
     };
 
