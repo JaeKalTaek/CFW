@@ -7,6 +7,7 @@ using DG.Tweening;
 using System;
 using static Card.SC_BaseCard;
 using static SC_Global;
+using System.Collections;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -55,13 +56,26 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             bigCard.SetActive (true);
 
+            StartCoroutine (Hovered ());
+
         }
+
+    }
+
+    IEnumerator Hovered () {
+
+        while ((IsBasic && Card != activeCard) || localPlayer.Hand.Contains (Card) || lockingCard == Card)
+            yield return new WaitForEndOfFrame ();
+
+        OnPointerExit (new PointerEventData (EventSystem.current));
 
     }
 
     public void OnPointerExit (PointerEventData eventData) {
 
         if (bigCard.activeSelf) {
+
+            StopCoroutine (Hovered ());
 
             Card.CardHovered (false);
 
