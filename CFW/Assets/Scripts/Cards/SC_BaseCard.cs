@@ -881,7 +881,11 @@ namespace Card {
         #endregion
         #endregion
 
-        public virtual void ApplyModifiers () { }
+        public virtual void ApplyModifiers () {
+
+            modifierCards.Remove (this);
+
+        }
 
         public void AppliedEffects () {
 
