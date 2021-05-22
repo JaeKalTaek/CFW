@@ -5349,7 +5349,8 @@ MonoBehaviour:
   baseBodyPartHealth: 7
   staminaPerTurn: 2
   maxAlignment: 10
-  responseTime: 1
+  playedDelay: 1
+  responseTime: 3
 --- !u!114 &670482960
 MonoBehaviour:
   m_ObjectHideFlags: 0

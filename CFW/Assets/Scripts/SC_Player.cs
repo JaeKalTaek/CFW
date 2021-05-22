@@ -321,16 +321,16 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     [ServerRpc]
-    public void PlayCardServerRpc (int id) {
+    public void PlayCardServerRpc (int id, bool responding = false) {
 
-        PlayCardClientRpc (id);
+        PlayCardClientRpc (id, responding);
 
     }
 
     [ClientRpc]
-    void PlayCardClientRpc (int id) {
+    void PlayCardClientRpc (int id, bool responding = false) {
 
-        ActionOnCard (id, (c) => { c.Play (this); });
+        ActionOnCard (id, (c) => { c.Play (this, responding); });
 
     }    
 
@@ -509,7 +509,33 @@ public class SC_Player : NetworkBehaviour {
         ActionOnCard (id, (c) => { c.Discard (this); });
 
     }
-    #endregion    
+    #endregion
+
+    #region 
+    [ServerRpc]
+    public void StartResponseServerRpc () {
+
+        StartResponseClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void StartResponseClientRpc () {
+
+        if (IsLocalPlayer)
+            UI.messagePanel.SetActive (false);
+        else {
+
+            respondedCards.Push (activeCard);
+
+            UI.ShowMessage ("Responding");
+
+        }
+
+        respondedCards.Peek ().StopAllCoroutines ();
+
+    }
+    #endregion
 
     /*bool waiting = true;
 

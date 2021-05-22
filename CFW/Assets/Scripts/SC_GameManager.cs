@@ -4,6 +4,8 @@ using UnityEngine;
 using static SC_Global;
 using static SC_Player;
 using DG.Tweening;
+using Card;
+using System.Collections.Generic;
 
 public class SC_GameManager : MonoBehaviour {
 
@@ -43,6 +45,8 @@ public class SC_GameManager : MonoBehaviour {
 
     public int maxAlignment;
 
+    [Header ("Delays")]
+    public float playedDelay;
     public float responseTime; 
 
     public static SC_GameManager Instance;
@@ -61,6 +65,9 @@ public class SC_GameManager : MonoBehaviour {
     }
 
     void Start () {
+
+        SC_BaseCard.boostingCards = new List<SC_BaseCard> ();
+        SC_BaseCard.respondedCards = new Stack<SC_BaseCard> ();
 
         waitingPanel.SetActive (true);
 

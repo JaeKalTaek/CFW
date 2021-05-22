@@ -27,12 +27,15 @@ namespace Card {
         [Tooltip ("Common requirements of this card")]
         public CommonRequirement[] commonRequirements;
 
+        public bool unblockable;
+
         [Tooltip ("Common effects of this card")]     
         public List<CommonEffect> commonEffects;        
 
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
-            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin }
+            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
+            Response, Counter }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -40,7 +43,11 @@ namespace Card {
 
         public SC_Player Receiver { get; set; }
 
-        public static SC_BaseCard activeCard, lockingCard, originalCard, boostingCard;
+        public static SC_BaseCard activeCard, lockingCard, originalCard;
+
+        public static List<SC_BaseCard> boostingCards;
+
+        public static Stack<SC_BaseCard> respondedCards;
 
         [Serializable]
         public struct CommonEffect {
@@ -99,6 +106,13 @@ namespace Card {
 
         }
 
+        void OnValidate () {
+
+            if ((Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) && !GetComponent<SC_MatchingCard> ())
+                gameObject.AddComponent<SC_MatchingCard> ();
+
+        }
+
         protected virtual void Awake () {
 
             UICard = transform.parent.GetComponent<SC_UI_Card> ();
@@ -116,9 +130,11 @@ namespace Card {
         }
 
         #region Can use
-        public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
+        static bool responding;
 
-            bool prio = ignorePriority || (user.Turn && !activeCard);
+        public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {            
+
+            bool prio = ignorePriority || (user.Turn && !activeCard) || responding;
 
             bool locked = ignoreLocks || NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break);
 
@@ -127,6 +143,25 @@ namespace Card {
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
                         return false;
+
+                if (responding) {
+
+                    if (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) {
+
+                        if (!GetComponent<SC_MatchingCard> ()) {
+
+                            Debug.LogError ("MATCHING CARD SCRIPT MISSING FOR RESPONSE CARD: " + UICard.name);
+
+                            return false;
+
+                        } else if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
+                            return false;
+
+                    } else
+                        return false;
+
+                } else if (Is (CardType.Special) && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)))
+                    return false;
 
                 return true;
 
@@ -151,11 +186,22 @@ namespace Card {
 
         public IEnumerator StartPlaying () {
 
+            if (Is (CardType.Special))
+                localPlayer.SpecialUsed = true;
+
+            if (responding) {
+
+                respondedCards.Push (activeCard);
+
+                localPlayer.StartResponseServerRpc ();
+
+            }
+
             activeCard = this;
 
             yield return StartCoroutine (MakeChoices ());
 
-            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex ());
+            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), responding);
 
         }
 
@@ -187,11 +233,14 @@ namespace Card {
         #endregion
 
         #region Usage
-        public virtual void Play (SC_Player c) {
+        public virtual void Play (SC_Player c, bool r = false) {
+
+            UI.messagePanel.SetActive (false);
 
             activeCard = this;
 
-            originalCard = Ephemeral ? originalCard : this;
+            if (!originalCard)
+                originalCard = this;
 
             Caller = c;
 
@@ -215,11 +264,34 @@ namespace Card {
 
         }        
 
-        IEnumerator Use () {
+        IEnumerator Use (bool resumed = false) {
 
-            yield return new WaitForSeconds (GM.responseTime);
+            if (!resumed) {
 
-            boostingCard?.ApplyBoosts ();
+                foreach (SC_BaseCard c in boostingCards)
+                    c.ApplyBoosts ();
+
+                yield return new WaitForSeconds (GM.playedDelay);
+
+                if (!unblockable && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
+
+                    if (Receiver.IsLocalPlayer) {
+
+                        UI.ShowMessage ("Response");
+
+                        responding = true;
+
+                    }
+
+                    yield return new WaitForSeconds (GM.responseTime);
+
+                    responding = false;
+
+                    UI.messagePanel.SetActive (false);
+
+                }
+
+            }
 
             yield return StartCoroutine (ApplyEffects ());
 
@@ -265,9 +337,9 @@ namespace Card {
 
         }
 
-        void BaseFinishedUsing () {
+        void BaseFinishedUsing (bool countered = false) {
 
-            activeCard = null;
+            activeCard = originalCard = null;
 
             if (Is (CardType.Basic)) {
 
@@ -278,15 +350,11 @@ namespace Card {
 
             } else if (Caller.IsLocalPlayer) {
 
-                if (Receiver.Stamina < 3 && this as SC_OffensiveMove)
+                if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
                     UI.pinfallPanel.SetActive (true);
-                else if (Is (CardType.Special)) {
-
-                    Caller.SpecialUsed = true;
-
+                else if (Is (CardType.Special))
                     UI.BasicsButton.SetActive (true);
-
-                } else
+                else
                     NextTurn ();
 
             }
@@ -761,11 +829,61 @@ namespace Card {
         }
         #endregion
 
-        public virtual void ApplyBoosts () {
+        #region Responses
+        #region Response
+        public void ResponseFinished () {
 
-            boostingCard = null;
+            activeCard = respondedCards.Pop ();
+
+            activeCard.StartCoroutine (activeCard.Use (true));
 
         }
+        #endregion
+
+        #region Counter
+        public void Counter () {
+
+            if (respondedCards.Count > 0) {
+
+                ApplyingEffects = true;
+
+                respondedCards.Peek ().UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
+
+                respondedCards.Peek ().UICard.ToGraveyard (1, AppliedEffects, false);                
+
+            }
+
+        }
+
+        public void CounterFinished () {
+
+            if (respondedCards.Count == 1) {
+
+                if (respondedCards.Peek ())
+                    respondedCards.Peek ().BaseFinishedUsing (true);
+                else if (originalCard)
+                    originalCard.BaseFinishedUsing (true);
+                else if (Receiver.IsLocalPlayer)
+                    Receiver.NextTurnServerRpc ();
+
+                respondedCards.Pop ();
+
+            } else if (respondedCards.Count > 1) {
+
+                respondedCards.Pop ();
+
+                activeCard = respondedCards.Pop ();
+
+                activeCard.StartCoroutine (activeCard.Use (true));
+
+            } else
+                BaseFinishedUsing ();
+
+        }
+        #endregion
+        #endregion
+
+        public virtual void ApplyBoosts () { }
 
         public void AppliedEffects () {
 

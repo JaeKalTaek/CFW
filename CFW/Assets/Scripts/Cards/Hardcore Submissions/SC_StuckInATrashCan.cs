@@ -11,7 +11,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            boostingCard = this;
+            boostingCards.Add (this);
 
             cardHovered = new OnCardHovered ((c, b) => {
 
@@ -48,7 +48,7 @@ namespace Card {
 
             base.Broken ();
 
-            boostingCard = boostingCard == this ? null : boostingCard;
+            boostingCards.Remove (this);
 
             OnCardHoveredEvent -= cardHovered;
 
