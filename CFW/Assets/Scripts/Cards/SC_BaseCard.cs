@@ -108,7 +108,7 @@ namespace Card {
 
         void OnValidate () {
 
-            if ((Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) && !GetComponent<SC_MatchingCard> ())
+            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) && !GetComponent<SC_MatchingCard> ())
                 gameObject.AddComponent<SC_MatchingCard> ();
 
         }
