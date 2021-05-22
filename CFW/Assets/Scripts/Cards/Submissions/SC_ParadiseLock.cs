@@ -38,15 +38,15 @@ namespace Card {
 
                 (activeCard as SC_OffensiveMove).effectOnOpponent.stamina += 1;                
 
-            }
-
-            base.ApplyModifiers ();
+            }            
 
         }
 
         public override void Broken () {
 
             base.Broken ();
+
+            base.ApplyModifiers ();
 
             OnCardHoveredEvent -= cardHovered;
 

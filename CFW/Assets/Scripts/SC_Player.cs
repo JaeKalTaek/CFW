@@ -336,13 +336,9 @@ public class SC_Player : NetworkBehaviour {
 
     public SC_BaseCard CopyAndStartUsing (SC_UI_Card original) {
 
-        SC_UI_Card c = Instantiate (original, IsLocalPlayer ? GM.localHand : GM.otherHand);        
+        SC_UI_Card c = Create (original.GetComponentInChildren<SC_BaseCard> (), IsLocalPlayer ? GM.localHand : GM.otherHand);
 
-        c.gameObject.SetActive (true);
-
-        c.Card.Ephemeral = true;
-
-        c.name = c.Card.Path;
+        c.Card.Ephemeral = true;        
 
         c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = c.BigRec.anchorMin = c.BigRec.anchorMax = c.BigRec.pivot = new Vector2 (.5f, IsLocalPlayer ? 0 : 1);
 
@@ -350,10 +346,13 @@ public class SC_Player : NetworkBehaviour {
 
         Hand.Add (c.Card);
 
-        if (!IsLocalPlayer)
-            c.GetComponent<Image> ().sprite = Resources.Load<Sprite> ("Sprites/CardBack");
-        else
+        if (IsLocalPlayer) {
+
+            c.SetImages ();
+
             StartCoroutine (c.Card.StartPlaying ());
+
+        }
 
         return c.Card;
 

@@ -44,11 +44,7 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     public SC_UI_Card CreateCard (Transform parent, SC_BaseCard original) {
 
-        SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), Vector3.zero, Quaternion.identity, parent);
-
-        c.name = original.Path;
-
-        c.Card = Instantiate (original, c.transform);
+        SC_UI_Card c = SC_BaseCard.Create (original, parent);
 
         cards.Remove (original);
 

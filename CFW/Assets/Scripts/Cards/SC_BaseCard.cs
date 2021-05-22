@@ -266,7 +266,7 @@ namespace Card {
 
             if (!resumed) {
 
-                foreach (SC_BaseCard c in modifierCards)
+                foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
                     c.ApplyModifiers ();
 
                 yield return new WaitForSeconds (GM.playedDelay);
@@ -929,6 +929,18 @@ namespace Card {
 
         public bool Ephemeral { get; set; }
         #endregion
+
+        public static SC_UI_Card Create (SC_BaseCard original, Transform parent) {
+
+            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), parent);
+
+            c.name = original.GetComponentInChildren<SC_BaseCard> ().Path;
+
+            c.Card = Instantiate (Resources.Load<SC_BaseCard> (c.name), c.transform);
+
+            return c;
+
+        }
 
     }
 
