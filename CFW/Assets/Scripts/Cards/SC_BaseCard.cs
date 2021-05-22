@@ -831,9 +831,13 @@ namespace Card {
         #region Response
         public void ResponseFinished () {
 
-            activeCard = respondedCards.Pop ();
+            if (respondedCards.Count > 0) {
 
-            activeCard.StartCoroutine (activeCard.Use (true));
+                activeCard = respondedCards.Pop ();
+
+                activeCard.StartCoroutine (activeCard.Use (true));
+
+            }
 
         }
         #endregion
