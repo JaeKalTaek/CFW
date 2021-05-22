@@ -60,7 +60,7 @@ namespace Card {
 
         }
 
-        public virtual void NonMatchHeatEffects () {
+        public virtual void PayCost () {
 
             Caller.ApplySingleEffect ("Stamina", null, cost);
 
@@ -68,6 +68,11 @@ namespace Card {
 
             if (cost.bodyPartDamage.bodyPart != BodyPart.None)
                 Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+        }
+
+        public virtual void NonMatchHeatEffects () {
+
+            PayCost ();
 
         }
 
