@@ -18,9 +18,9 @@ namespace Card {
                 if (localPlayer.Turn && localPlayer.Unlocked && c.Is (SC_Global.CardType.Strike)) {
 
                     if (b)
-                        c.commonEffects.Add (new CommonEffect (CommonEffectType.Break));
+                        c.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
                     else
-                        c.commonEffects.RemoveAt (c.commonEffects.Count - 1);
+                        c.commonEffects.RemoveAt (0);
 
                 }
 
@@ -34,21 +34,19 @@ namespace Card {
 
             if (activeCard.Is (SC_Global.CardType.Strike)) {
 
-                activeCard.commonEffects.Add (new CommonEffect (CommonEffectType.Break));
+                activeCard.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
 
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 2;
-
-                base.ApplyModifiers ();
+                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 2;                
 
             }
+
+            base.ApplyModifiers ();
 
         }
 
         public override void Broken () {
 
             base.Broken ();
-
-            modifierCards.Remove (this);
 
             OnCardHoveredEvent -= cardHovered;
 
