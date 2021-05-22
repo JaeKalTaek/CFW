@@ -477,9 +477,7 @@ namespace Card {
                 yield return new WaitForEndOfFrame ();
 
             if (effectTarget.Deck.cards.Count <= 0)
-                yield return effectTarget.Deck.Refill ();
-
-            StartCoroutine (effectTarget.Deck.Draw (false));
+                yield return effectTarget.Deck.Refill ();            
 
             effectTarget.ActionOnCard (effectTarget.GetIntChoice ("Assess"), (c) => {
 
@@ -489,7 +487,9 @@ namespace Card {
 
                 c.UICard.ToGraveyard (GM.drawSpeed, AppliedEffects);
 
-            });                     
+            });
+
+            StartCoroutine (effectTarget.Deck.Draw (false));
 
         }
         #endregion
