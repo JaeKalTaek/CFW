@@ -11,7 +11,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            boostingCards.Add (this);
+            modifierCards.Add (this);
 
             cardHovered = new OnCardHovered ((c, b) => {
 
@@ -30,7 +30,7 @@ namespace Card {
 
         }
 
-        public override void ApplyBoosts () {            
+        public override void ApplyModifiers () {            
 
             if (activeCard.Is (SC_Global.CardType.Strike)) {
 
@@ -38,7 +38,7 @@ namespace Card {
 
                 (activeCard as SC_OffensiveMove).effectOnOpponent.stamina += 1;
 
-                base.ApplyBoosts ();
+                base.ApplyModifiers ();
 
             }
 
@@ -48,7 +48,7 @@ namespace Card {
 
             base.Broken ();
 
-            boostingCards.Remove (this);
+            modifierCards.Remove (this);
 
             OnCardHoveredEvent -= cardHovered;
 

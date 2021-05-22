@@ -45,7 +45,7 @@ namespace Card {
 
         public static SC_BaseCard activeCard, lockingCard, originalCard;
 
-        public static List<SC_BaseCard> boostingCards;
+        public static List<SC_BaseCard> modifierCards;
 
         public static Stack<SC_BaseCard> respondedCards;
 
@@ -266,8 +266,8 @@ namespace Card {
 
             if (!resumed) {
 
-                foreach (SC_BaseCard c in boostingCards)
-                    c.ApplyBoosts ();
+                foreach (SC_BaseCard c in modifierCards)
+                    c.ApplyModifiers ();
 
                 yield return new WaitForSeconds (GM.playedDelay);
 
@@ -881,7 +881,7 @@ namespace Card {
         #endregion
         #endregion
 
-        public virtual void ApplyBoosts () { }
+        public virtual void ApplyModifiers () { }
 
         public void AppliedEffects () {
 

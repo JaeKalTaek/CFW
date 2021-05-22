@@ -66,7 +66,7 @@ public class SC_GameManager : MonoBehaviour {
 
     void Start () {
 
-        SC_BaseCard.boostingCards = new List<SC_BaseCard> ();
+        SC_BaseCard.modifierCards = new List<SC_BaseCard> ();
         SC_BaseCard.respondedCards = new Stack<SC_BaseCard> ();
 
         waitingPanel.SetActive (true);
