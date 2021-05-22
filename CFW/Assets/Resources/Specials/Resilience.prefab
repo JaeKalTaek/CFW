@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1546395002530676725
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6274978370742008012}
+  - component: {fileID: -3529644200864894919}
+  - component: {fileID: -3493061722601533711}
+  m_Layer: 0
+  m_Name: Resilience
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6274978370742008012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546395002530676725}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-3529644200864894919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546395002530676725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7a590bb48245bf4ba96a2fc6fff36cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  matchHeat: 12
+  types: 06000000
+  commonRequirements:
+  - opponent: 0
+    valueType: 3
+    requirementType: 0
+    requirementValue: 2
+  unblockable: 0
+  commonEffects:
+  - effectOnOpponent: 0
+    may: 0
+    effectType: 18
+    valueName: 0
+    effectValue: 0
+  - effectOnOpponent: 1
+    may: 0
+    effectType: 2
+    valueName: 2
+    effectValue: -2
+  - effectOnOpponent: 0
+    may: 0
+    effectType: 2
+    valueName: 3
+    effectValue: 2
+--- !u!114 &-3493061722601533711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546395002530676725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d29c065af870cf140b72660e98acec3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  superTypeQuery: 2
+  typeQueries: []
+  commonEffectQueries: 
