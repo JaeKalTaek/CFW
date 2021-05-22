@@ -266,9 +266,6 @@ namespace Card {
 
             if (!resumed) {
 
-                foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
-                    c.ApplyModifiers ();
-
                 yield return new WaitForSeconds (GM.playedDelay);
 
                 if (!unblockable && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
@@ -290,6 +287,9 @@ namespace Card {
                 }
 
             }
+
+            foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
+                c.ApplyModifiers ();
 
             yield return StartCoroutine (ApplyEffects ());
 
