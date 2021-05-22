@@ -1,17 +1,20 @@
 using System.Collections;
-using Card;
 
-public class SC_RollOutOfDanger : SC_BaseCard {
+namespace Card {
 
-    protected override IEnumerator ApplyEffects () {
+    public class SC_RollOutOfDanger : SC_BaseCard {
 
-        yield return StartCoroutine (base.ApplyEffects ());             
+        protected override IEnumerator ApplyEffects () {
 
-        SC_OffensiveMove c = respondedCards.Peek () as SC_OffensiveMove;
+            yield return StartCoroutine (base.ApplyEffects ());
 
-        c.PayCost ();
+            SC_OffensiveMove c = respondedCards.Peek () as SC_OffensiveMove;
 
-        Receiver.ApplySingleEffect ("Health", -c.effectOnOpponent.health);
+            c.PayCost ();
+
+            Receiver.ApplySingleEffect ("Health", -c.effectOnOpponent.health);
+
+        }
 
     }
 

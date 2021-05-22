@@ -1,25 +1,28 @@
 using System.Collections;
-using Card;
 using UnityEngine;
 
-public class SC_Resilience : SC_BaseCard {
+namespace Card {
 
-    protected override IEnumerator ApplyEffects () {
+    public class SC_Resilience : SC_BaseCard {
 
-        modifierCards.Add (this);
+        protected override IEnumerator ApplyEffects () {
 
-        yield return StartCoroutine (base.ApplyEffects ());
+            modifierCards.Add (this);
 
-    }
+            yield return StartCoroutine (base.ApplyEffects ());
 
-    public override void ApplyModifiers () {
+        }
 
-        SC_OffensiveMove c = activeCard as SC_OffensiveMove;
+        public override void ApplyModifiers () {
 
-        c.effectOnOpponent.bodyPartDamage.damage = Mathf.Max (1, c.effectOnOpponent.bodyPartDamage.damage - 2);
-        c.effectOnOpponent.health = Mathf.Max (1, c.effectOnOpponent.health - 2);
+            SC_OffensiveMove c = activeCard as SC_OffensiveMove;
 
-        base.ApplyModifiers ();
+            c.effectOnOpponent.bodyPartDamage.damage = Mathf.Max (1, c.effectOnOpponent.bodyPartDamage.damage - 2);
+            c.effectOnOpponent.health = Mathf.Max (1, c.effectOnOpponent.health - 2);
+
+            base.ApplyModifiers ();
+
+        }
 
     }
 
