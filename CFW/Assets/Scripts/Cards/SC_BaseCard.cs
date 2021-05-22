@@ -184,10 +184,7 @@ namespace Card {
 
         public List<Action> ChoicesActions { get; set; }
 
-        public IEnumerator StartPlaying () {
-
-            if (Is (CardType.Special))
-                localPlayer.SpecialUsed = true;
+        public IEnumerator StartPlaying () {            
 
             if (responding) {
 
@@ -195,7 +192,8 @@ namespace Card {
 
                 localPlayer.StartResponseServerRpc ();
 
-            }
+            } else if (Is (CardType.Special))
+                localPlayer.SpecialUsed = true;
 
             activeCard = this;
 
