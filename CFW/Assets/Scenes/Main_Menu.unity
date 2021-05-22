@@ -2375,7 +2375,6 @@ GameObject:
   - component: {fileID: 1697246389}
   - component: {fileID: 1697246388}
   - component: {fileID: 1697246387}
-  - component: {fileID: 1697246386}
   - component: {fileID: 1697246385}
   m_Layer: 0
   m_Name: CardSearcher
@@ -2392,21 +2391,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1697246384}
   m_CullTransparentMesh: 1
---- !u!114 &1697246386
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1697246384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d29c065af870cf140b72660e98acec3a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  superTypeQuery: 0
-  typeQueries: []
-  commonEffectQueries: 
 --- !u!114 &1697246387
 MonoBehaviour:
   m_ObjectHideFlags: 0
