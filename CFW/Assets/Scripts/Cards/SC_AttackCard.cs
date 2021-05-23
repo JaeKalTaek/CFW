@@ -76,14 +76,24 @@ namespace Card {
 
         }
 
-        protected override IEnumerator ApplyEffects () {            
+        protected override IEnumerator ApplyEffects () {
 
-            if (!Ephemeral)
+            if (interceptFinishCard as SC_MirrorCounter) {
+
                 GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
 
-            NonMatchHeatEffects ();
+                NonMatchHeatEffects ();
 
-            yield return StartCoroutine (base.ApplyEffects ());
+            } else {
+
+                if (!Ephemeral)
+                    GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
+
+                NonMatchHeatEffects ();
+
+                yield return StartCoroutine (base.ApplyEffects ());
+
+            }
 
         }
 

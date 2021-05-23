@@ -281,15 +281,6 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion
 
-    #region Card usage
-    public delegate void CardAction (SC_BaseCard c);
-
-    public void ActionOnCard (int id, CardAction a) {
-
-        a ((IsLocalPlayer ? Hand : otherPlayer.Hand)[id]);
-
-    }
-
     #region Set choices
     [ServerRpc]
     public void SetIntChoiceServerRpc (string id, int choice) {
@@ -319,6 +310,15 @@ public class SC_Player : NetworkBehaviour {
 
     }
     #endregion
+
+    #region Card usage
+    public delegate void CardAction (SC_BaseCard c);
+
+    public void ActionOnCard (int id, CardAction a) {
+
+        a ((IsLocalPlayer ? Hand : otherPlayer.Hand)[id]);
+
+    }    
 
     [ServerRpc]
     public void PlayCardServerRpc (int id, bool responding = false) {
@@ -384,7 +384,25 @@ public class SC_Player : NetworkBehaviour {
 
         CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponent<SC_UI_Card> ());
 
-    }   
+    }
+
+    #region Specific cards
+    [ServerRpc]
+    public void MirrorCounterServerRpc () {
+
+        MirrorCounterClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void MirrorCounterClientRpc () {
+
+        interceptFinishCard = activeCard;
+
+        CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);
+
+    }
+    #endregion
     #endregion
 
     #region Next turn

@@ -43,7 +43,7 @@ namespace Card {
 
         public SC_Player Receiver { get; set; }
 
-        public static SC_BaseCard activeCard, lockingCard, originalCard;
+        public static SC_BaseCard activeCard, lockingCard, originalCard, interceptFinishCard;
 
         public static List<SC_BaseCard> modifierCards;
 
@@ -314,6 +314,18 @@ namespace Card {
         }
 
         void FinishedUsing () {
+
+            if (interceptFinishCard) {
+
+                SC_BaseCard temp = interceptFinishCard;
+
+                interceptFinishCard = null;
+
+                temp.FinishedUsing ();                
+
+                return;
+
+            }
 
             foreach (CommonEffect c in commonEffects) {
 
@@ -857,7 +869,7 @@ namespace Card {
 
         }
 
-        public void CounterFinished () {
+        public virtual void CounterFinished () {
 
             if (respondedCards.Count == 1) {
 
