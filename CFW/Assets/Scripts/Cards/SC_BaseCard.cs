@@ -687,7 +687,7 @@ namespace Card {
                 ApplyingEffects = true;
 
                 if (Receiver.IsLocalPlayer)
-                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetIntChoiceServerRpc ("Exchange", b ? 0 : 1 /*"Accept" : "Refuse"*/); });               
+                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetIntChoiceServerRpc ("Exchange", b ? 0 : 1); });               
 
                 StartCoroutine (ExchangeCoroutine ());
 
