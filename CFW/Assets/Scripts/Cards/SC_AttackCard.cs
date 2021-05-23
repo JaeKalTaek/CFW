@@ -26,7 +26,34 @@ namespace Card {
 
             public BodyPartDamage bodyPartDamage;
 
-        }        
+        }
+
+        public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
+
+            return CanUse (user, 1, ignorePriority, ignoreLocks);
+
+        }
+
+        public bool CanUse (SC_Player user, int chain, bool ignorePriority = false, bool ignoreLocks = false) {
+
+            return base.CanUse (user, ignorePriority, ignoreLocks) && CanPayCost (user, chain);
+
+        }
+
+        public bool CanPayCost (SC_Player user, int chain = 1) {
+
+            if (user.Health > cost.health * chain && user.Stamina >= cost.stamina * chain) {
+
+                foreach (BodyPart b in user.BodyPartsHealth.Keys)
+                    if (b == cost.bodyPartDamage.bodyPart && user.BodyPartsHealth[b] < cost.bodyPartDamage.damage * chain)
+                        return false;
+
+                return true;
+
+            } else
+                return false;
+
+        }
 
         protected override IEnumerator MakeChoices () {
 

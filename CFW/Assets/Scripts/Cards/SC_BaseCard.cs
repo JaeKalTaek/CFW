@@ -732,7 +732,7 @@ namespace Card {
 
                     MaxChain = 1;
 
-                    while (MaxChain < CurrentEffect.effectValue && (this as SC_OffensiveMove).CanUse (Caller, MaxChain + 1, true))
+                    while (MaxChain < CurrentEffect.effectValue && (this as SC_OffensiveMove).CanPayCost (Caller, MaxChain + 1))
                         MaxChain++;
 
                     UI.ShowNumberChoiceUI (MaxChain);
