@@ -188,6 +188,8 @@ namespace Card {
 
             if (responding) {
 
+                responding = false;
+
                 respondedCards.Push (activeCard);
 
                 localPlayer.StartResponseServerRpc ();
