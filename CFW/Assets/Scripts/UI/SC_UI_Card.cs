@@ -130,7 +130,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
                     localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
 
                 } else
-                    StartCoroutine (Card.StartPlaying ());
+                    Card.StartCoroutine (Card.StartPlaying ());
 
                 OnPointerExit (new PointerEventData (EventSystem.current));
 

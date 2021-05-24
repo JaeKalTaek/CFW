@@ -80,7 +80,9 @@ public class SC_Global {
 
         { "Response", "You may respond to this card for now!" },
 
-        { "Responding", "Your opponent is responding to your play" }
+        { "Responding", "Your opponent is responding to your play" },
+
+        { "Boost", "You can boost this card" }
 
     };
 

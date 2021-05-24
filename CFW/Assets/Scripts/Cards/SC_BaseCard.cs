@@ -11,6 +11,7 @@ namespace Card {
 
     public class SC_BaseCard : MonoBehaviour {
 
+        #region Variables, Properties, Structures
         protected static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
         protected static SC_GameManager GM { get { return SC_GameManager.Instance; } }
@@ -35,13 +36,15 @@ namespace Card {
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter }
+            Response, Counter, Boost }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
         public SC_Player Caller { get; set; }
 
         public SC_Player Receiver { get; set; }
+
+        static bool responding, boosting;
 
         public static SC_BaseCard activeCard, lockingCard, originalCard, interceptFinishCard;
 
@@ -105,10 +108,11 @@ namespace Card {
             }
 
         }
+        #endregion
 
         void OnValidate () {
 
-            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) && !GetComponent<SC_MatchingCard> ())
+            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_MatchingCard> ())
                 gameObject.AddComponent<SC_MatchingCard> ();
 
         }
@@ -117,24 +121,12 @@ namespace Card {
 
             UICard = transform.parent.GetComponent<SC_UI_Card> ();
 
-        }
+        }        
 
-        public delegate void OnCardHovered (SC_BaseCard c, bool on);
-        
-        public static event OnCardHovered OnCardHoveredEvent;
-
-        public void CardHovered (bool on) {
-
-            OnCardHoveredEvent?.Invoke (this, on);
-
-        }
-
-        #region Can use
-        static bool responding;
-
+        #region Can use      
         public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {            
 
-            bool prio = ignorePriority || (user.Turn && !activeCard) || responding;
+            bool prio = ignorePriority || (user.Turn && !activeCard) || responding || boosting;
 
             bool locked = ignoreLocks || NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break);
 
@@ -148,20 +140,27 @@ namespace Card {
 
                     if (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) {
 
-                        if (!GetComponent<SC_MatchingCard> ()) {
-
-                            Debug.LogError ("MATCHING CARD SCRIPT MISSING FOR RESPONSE CARD: " + UICard.name);
-
-                            return false;
-
-                        } else if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
+                        if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
                             return false;
 
                     } else
                         return false;
 
-                } else if (Is (CardType.Special) && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)))
+                } else if (Is (CardType.Special) && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter))) {
+
                     return false;
+
+                } else if (boosting) {
+
+                    if (Has (CommonEffectType.Boost)) {
+
+                        if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
+                            return false;
+
+                    } else
+                        return false;
+
+                }
 
                 return true;
 
@@ -184,24 +183,49 @@ namespace Card {
 
         public List<Action> ChoicesActions { get; set; }
 
-        public IEnumerator StartPlaying () {            
+        public IEnumerator StartPlaying (bool resume = false) {
 
-            if (responding) {
+            if (responding || boosting) {
 
-                responding = false;
+                UI.messagePanel.SetActive (false);
+
+                responding = boosting = false;
 
                 respondedCards.Push (activeCard);
 
-                localPlayer.StartResponseServerRpc ();
+                if (responding)
+                    localPlayer.StartResponseServerRpc ();
+                else {
+
+                    respondedCards.Peek ().StopAllCoroutines ();
+
+                    localPlayer.StartBoostServerRpc (UICard.transform.GetSiblingIndex ());
+
+                }
 
             } else if (Is (CardType.Special))
                 localPlayer.SpecialUsed = true;
 
             activeCard = this;
 
+            boosting = true;
+
+            if (!resume && !Is (CardType.Special) && CheckForBoosts ()) {
+
+                UI.ShowMessage ("Boost");
+
+                yield return new WaitForSeconds (GM.responseTime);
+
+                UI.messagePanel.SetActive (false);
+
+                boosting = false;
+
+            } else
+                boosting = false;
+
             yield return StartCoroutine (MakeChoices ());
 
-            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), responding);
+            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex ());
 
         }
 
@@ -233,7 +257,7 @@ namespace Card {
         #endregion
 
         #region Usage
-        public virtual void Play (SC_Player c, bool r = false) {
+        public virtual void Play (SC_Player c) {
 
             UI.messagePanel.SetActive (false);
 
@@ -899,6 +923,33 @@ namespace Card {
         #endregion
         #endregion
 
+        #region Boost
+        bool CheckForBoosts () {
+
+            foreach (SC_BaseCard c in localPlayer.Hand)
+                if (c.CanUse (localPlayer, true))
+                    return true;
+
+            return false;
+
+        }
+
+        public void Boost () {
+
+            modifierCards.Add (this);
+
+        }
+
+        public void BoostFinished () {
+
+            SC_BaseCard c = respondedCards.Pop ();
+
+            if (Caller.IsLocalPlayer)
+                c.StartCoroutine (c.StartPlaying (true));
+
+        }
+        #endregion
+
         public virtual void ApplyModifiers () {
 
             modifierCards.Remove (this);
@@ -959,6 +1010,18 @@ namespace Card {
             return c;
 
         }
+
+        #region Cards hovering
+        public delegate void OnCardHovered (SC_BaseCard c, bool on);
+
+        public static event OnCardHovered OnCardHoveredEvent;
+
+        public void CardHovered (bool on) {
+
+            OnCardHoveredEvent?.Invoke (this, on);
+
+        }
+        #endregion
 
     }
 

@@ -321,16 +321,16 @@ public class SC_Player : NetworkBehaviour {
     }    
 
     [ServerRpc]
-    public void PlayCardServerRpc (int id, bool responding = false) {
+    public void PlayCardServerRpc (int id) {
 
-        PlayCardClientRpc (id, responding);
+        PlayCardClientRpc (id);
 
     }
 
     [ClientRpc]
-    void PlayCardClientRpc (int id, bool responding = false) {
+    void PlayCardClientRpc (int id) {
 
-        ActionOnCard (id, (c) => { c.Play (this, responding); });
+        ActionOnCard (id, (c) => { c.Play (this); });
 
     }    
 
@@ -350,7 +350,7 @@ public class SC_Player : NetworkBehaviour {
 
             c.SetImages ();
 
-            StartCoroutine (c.Card.StartPlaying ());
+            c.Card.StartCoroutine (c.Card.StartPlaying ());
 
         }
 
@@ -528,7 +528,7 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion
 
-    #region 
+    #region Response
     [ServerRpc]
     public void StartResponseServerRpc () {
 
@@ -539,9 +539,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartResponseClientRpc () {
 
-        if (IsLocalPlayer)
-            UI.messagePanel.SetActive (false);
-        else {
+        if (!IsLocalPlayer) {
 
             respondedCards.Push (activeCard);
 
@@ -550,6 +548,23 @@ public class SC_Player : NetworkBehaviour {
         }
 
         respondedCards.Peek ().StopAllCoroutines ();
+
+    }
+    #endregion
+
+    #region Boost
+    [ServerRpc]
+    public void StartBoostServerRpc (int id) {
+
+        StartBoostClientRpc (id);
+
+    }
+
+    [ClientRpc]
+    void StartBoostClientRpc (int id) {
+
+        if (!IsLocalPlayer)
+            respondedCards.Push (Hand[id]);      
 
     }
     #endregion
