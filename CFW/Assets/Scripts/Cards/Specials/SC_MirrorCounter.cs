@@ -12,9 +12,6 @@ namespace Card {
 
         public override void CounterFinished () {
 
-            /*if (Caller.IsLocalPlayer)
-                Caller.MirrorCounterServerRpc ();*/
-
             interceptFinishCard = this;
 
             Caller.CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);

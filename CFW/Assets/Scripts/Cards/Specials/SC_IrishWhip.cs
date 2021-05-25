@@ -2,11 +2,9 @@ namespace Card {
 
     public class SC_IrishWhip : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void Boost () {
 
-            (activeCard as SC_OffensiveMove).effectOnOpponent.health += 2;
-
-            base.ApplyModifiers ();
+            (respondedCards.Peek () as SC_OffensiveMove).effectOnOpponent.health += 2;
 
         }
 

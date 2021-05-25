@@ -160,7 +160,8 @@ namespace Card {
                     } else
                         return false;
 
-                }
+                } else if (Has (CommonEffectType.Boost))
+                    return false;
 
                 return true;
 
@@ -197,7 +198,7 @@ namespace Card {
 
                     respondedCards.Peek ().StopAllCoroutines ();
 
-                    localPlayer.StartBoostServerRpc (UICard.transform.GetSiblingIndex ());
+                    localPlayer.StartBoostServerRpc (activeCard.UICard.transform.GetSiblingIndex ());
 
                 }
 
@@ -340,8 +341,6 @@ namespace Card {
         }
 
         void FinishedUsing () {
-
-            //DebugWithTime ("FINISH USING: " + Path);
 
             if (interceptFinishCard) {
 
@@ -904,11 +903,16 @@ namespace Card {
 
             } else if (respondedCards.Count > 1) {
 
-                respondedCards.Pop ();
+                if (!respondedCards.Peek ().Has (CommonEffectType.Boost)) {
 
-                activeCard = respondedCards.Pop ();
+                    respondedCards.Pop ();
 
-                activeCard.StartCoroutine (activeCard.Use (true));
+                    activeCard = respondedCards.Pop ();
+
+                    activeCard.StartCoroutine (activeCard.Use (true));
+
+                } else
+                    respondedCards.Pop ().BoostFinished ();
 
             } else
                 BaseFinishedUsing ();
@@ -918,11 +922,7 @@ namespace Card {
         #endregion
 
         #region Boost     
-        public void Boost () {
-
-            modifierCards.Add (this);
-
-        }
+        public virtual void Boost () { }
 
         public void BoostFinished () {
 
