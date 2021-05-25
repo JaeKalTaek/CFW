@@ -403,6 +403,8 @@ namespace Card {
 
         protected void NextTurn () {
 
+            //DebugWithTime (StackTraceUtility.ExtractStackTrace ());
+
             (Caller.IsLocalPlayer ? Caller : null)?.NextTurnServerRpc ();
 
         }
@@ -875,6 +877,8 @@ namespace Card {
 
         #region Counter
         public void Counter () {
+
+            interceptFinishCard = null;
 
             if (respondedCards.Count > 0) {
 
