@@ -29,6 +29,14 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
     RectTransform RectT { get { return transform as RectTransform; } }
 
+    void OnValidate () {
+
+        foreach (SC_BaseCard c in cards)
+            if (!c)
+                print ("CARD ERROR IN:" + name);
+
+    }
+
     public void Setup (bool local) {
 
         Local = local;
