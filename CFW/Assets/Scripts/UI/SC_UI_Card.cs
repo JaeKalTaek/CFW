@@ -111,10 +111,12 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             } else if (localPlayer.ChoosingCard != ChoosingCard.None) {
 
-                if (localPlayer.ChoosingCard == ChoosingCard.Discarding)
+                if (localPlayer.ChoosingCard == ChoosingCard.Discard)
                     localPlayer.DiscardServerRpc (transform.GetSiblingIndex ());
-                else if (localPlayer.ChoosingCard == ChoosingCard.Assessing)
+                else if (localPlayer.ChoosingCard == ChoosingCard.Assess)
                     localPlayer.SetIntChoiceServerRpc ("Assess", transform.GetSiblingIndex ());
+                else if (localPlayer.ChoosingCard == ChoosingCard.Play && (Card as SC_OffensiveMove) && Card.CanUse (localPlayer, true))
+                    Card.StartCoroutine (Card.StartPlaying ());
 
                 StopChoosing ();                
 

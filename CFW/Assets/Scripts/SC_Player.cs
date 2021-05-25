@@ -386,7 +386,21 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    #region Specific cards
+    [ServerRpc]
+    public void InterceptCardFinishServerRpc () {
+
+        InterceptCardFinishClientRpc ();
+
+    }
+
+    [ClientRpc]
+    void InterceptCardFinishClientRpc () {
+
+        interceptFinishCard = activeCard;
+
+    }
+
+    /*#region Specific cards
     [ServerRpc]
     public void MirrorCounterServerRpc () {
 
@@ -397,12 +411,14 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void MirrorCounterClientRpc () {
 
+        DebugWithTime ("SET INTERCEPT");
+
         interceptFinishCard = activeCard;
 
         CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);
 
     }
-    #endregion
+    #endregion*/
     #endregion
 
     #region Next turn
@@ -476,9 +492,7 @@ public class SC_Player : NetworkBehaviour {
 
         IntChoices["DoubleDiscard"] = -1;
 
-        ChoosingCard = ChoosingCard.DoubleDiscard;        
-
-        UI.ShowMessage ("DoubleDiscard");
+        StartChoosingCard (ChoosingCard.DoubleDiscard);
 
     }
 
@@ -568,6 +582,26 @@ public class SC_Player : NetworkBehaviour {
 
     }
     #endregion
+
+    public delegate bool CardOfType (SC_BaseCard c);
+
+    public bool HasOnePlayableCardInHand (CardOfType ca = null) {
+
+        foreach (SC_BaseCard c in Hand)
+            if ((ca == null || ca (c)) && c.CanUse (this, true))
+                return true;
+
+        return false;
+
+    }
+
+    public void StartChoosingCard (ChoosingCard t) {
+
+        ChoosingCard = t;
+
+        UI.ShowMessage (t.ToString ());
+
+    }
 
     /*bool waiting = true;
 

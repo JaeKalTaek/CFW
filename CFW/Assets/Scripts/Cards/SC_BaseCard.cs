@@ -187,9 +187,7 @@ namespace Card {
 
             if (responding || boosting) {
 
-                UI.messagePanel.SetActive (false);
-
-                responding = boosting = false;
+                UI.messagePanel.SetActive (false);                
 
                 respondedCards.Push (activeCard);
 
@@ -203,6 +201,8 @@ namespace Card {
 
                 }
 
+                responding = boosting = false;
+
             } else if (Is (CardType.Special))
                 localPlayer.SpecialUsed = true;
 
@@ -210,7 +210,7 @@ namespace Card {
 
             boosting = true;
 
-            if (!resume && !Is (CardType.Special) && CheckForBoosts ()) {
+            if (!resume && !Is (CardType.Special) && localPlayer.HasOnePlayableCardInHand ()) {
 
                 UI.ShowMessage ("Boost");
 
@@ -341,13 +341,11 @@ namespace Card {
 
         void FinishedUsing () {
 
+            //DebugWithTime ("FINISH USING: " + Path);
+
             if (interceptFinishCard) {
 
-                SC_BaseCard temp = interceptFinishCard;
-
-                interceptFinishCard = null;
-
-                temp.FinishedUsing ();                
+                interceptFinishCard.InterceptFinish ();
 
                 return;
 
@@ -396,6 +394,12 @@ namespace Card {
             }
 
         }
+
+        protected virtual void InterceptFinish () {
+
+            interceptFinishCard = null;
+
+        }
         #endregion
 
         protected void NextTurn () {
@@ -438,7 +442,7 @@ namespace Card {
         }
 
         #region May
-        void May (Action a) {
+        protected void May (Action a) {
 
             ApplyingEffects = true;            
 
@@ -489,19 +493,11 @@ namespace Card {
                     StartCoroutine (AssessCoroutine ());
 
                     if (effectTarget.IsLocalPlayer)
-                        StartAssessChoice ();
+                        effectTarget.StartChoosingCard (ChoosingCard.Assess);
 
                 });
 
             }
-
-        }
-
-        void StartAssessChoice () {
-
-            localPlayer.ChoosingCard = ChoosingCard.Assessing;
-
-            UI.ShowMessage ("Assess");
 
         }
 
@@ -701,7 +697,7 @@ namespace Card {
                             if (b)
                                 Caller.StartDoubleDiscard (Caller.CopyAndStartUsingServerRpc);
                             else
-                                Caller.NextTurnServerRpc ();
+                                NextTurn ();
 
                         });
 
@@ -834,9 +830,7 @@ namespace Card {
 
             Discard (() => {
 
-                effectTarget.ChoosingCard = ChoosingCard.Discarding;
-
-                UI.ShowMessage ("Discard");
+                effectTarget.StartChoosingCard (ChoosingCard.Discard);
 
             });
 
@@ -923,17 +917,7 @@ namespace Card {
         #endregion
         #endregion
 
-        #region Boost
-        bool CheckForBoosts () {
-
-            foreach (SC_BaseCard c in localPlayer.Hand)
-                if (c.CanUse (localPlayer, true))
-                    return true;
-
-            return false;
-
-        }
-
+        #region Boost     
         public void Boost () {
 
             modifierCards.Add (this);

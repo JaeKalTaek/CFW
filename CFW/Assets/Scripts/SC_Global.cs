@@ -50,7 +50,7 @@ public class SC_Global {
 
     public enum ChoosingCard {
 
-        None, Discarding, Assessing, DoubleDiscard
+        None, Discard, Assess, DoubleDiscard, Play
 
     }
 
@@ -82,7 +82,9 @@ public class SC_Global {
 
         { "Responding", "Your opponent is responding to your play" },
 
-        { "Boost", "You can boost this card" }
+        { "Boost", "You can boost this card" },
+
+        { "Play", "Choose an offensive move to play" }
 
     };
 

@@ -10,19 +10,22 @@ namespace Card {
 
         }
 
-        bool intercept;
-
         public override void CounterFinished () {
 
-            if (!intercept) {
+            /*if (Caller.IsLocalPlayer)
+                Caller.MirrorCounterServerRpc ();*/
 
-                intercept = true;
+            interceptFinishCard = this;
 
-                if (Caller.IsLocalPlayer)
-                    Caller.MirrorCounterServerRpc ();
+            Caller.CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);
 
-            } else
-                base.CounterFinished ();
+        }
+
+        protected override void InterceptFinish () {
+
+            base.InterceptFinish ();
+
+            base.CounterFinished ();
 
         }
 

@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6274978370742008012}
   - component: {fileID: -4783293490276253215}
+  - component: {fileID: -5984580932505993673}
   m_Layer: 0
   m_Name: Test Card
   m_TagString: Untagged
@@ -48,8 +49,23 @@ MonoBehaviour:
   commonRequirements: []
   unblockable: 0
   commonEffects:
-  - effectOnOpponent: 1
-    may: 1
-    effectType: 7
+  - effectOnOpponent: 0
+    may: 0
+    effectType: 19
     valueName: 0
     effectValue: 0
+--- !u!114 &-5984580932505993673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1546395002530676725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d29c065af870cf140b72660e98acec3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  superTypeQuery: 0
+  typeQueries: []
+  commonEffectQueries: 
