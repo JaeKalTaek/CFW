@@ -211,7 +211,7 @@ namespace Card {
 
             boosting = true;
 
-            if (!resume && !Is (CardType.Special) && localPlayer.HasOnePlayableCardInHand ()) {
+            if (!resume && !Is (CardType.Special) && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand ()) {
 
                 UI.ShowMessage ("Boost");
 
