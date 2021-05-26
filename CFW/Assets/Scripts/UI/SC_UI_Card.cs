@@ -91,34 +91,49 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (activeCard != Card) {
 
-            if (localPlayer.ChoosingCard == ChoosingCard.DoubleDiscard) {
+            if (localPlayer.ChoosingCard != ChoosingCard.None) {
 
-                if (localPlayer.GetIntChoice ("DoubleDiscard") == -1) {
+                switch (localPlayer.ChoosingCard) {
+                    
+                    case ChoosingCard.Discard:
+                        localPlayer.DiscardServerRpc (transform.GetSiblingIndex ());
+                        StopChoosing ();
+                        break;
 
-                    UI.ShowMessage ("DoubleDiscard2");
+                    case ChoosingCard.Assess:
+                        localPlayer.SetIntChoiceServerRpc ("Assess", transform.GetSiblingIndex ());
+                        StopChoosing ();
+                        break;
 
-                    localPlayer.SetIntChoiceServerRpc ("DoubleDiscard", transform.GetSiblingIndex ());
+                    case ChoosingCard.DoubleDiscard:
+                        if (localPlayer.GetIntChoice ("DoubleDiscard") == -1) {
 
-                } else if (transform.GetSiblingIndex () != localPlayer.GetIntChoice ("DoubleDiscard")) {
+                            UI.ShowMessage ("DoubleDiscard2");
 
-                    localPlayer.SetIntChoiceServerRpc ("DoubleDiscard2", transform.GetSiblingIndex ());
+                            localPlayer.SetIntChoiceServerRpc ("DoubleDiscard", transform.GetSiblingIndex ());
 
-                    localPlayer.DoubleDiscardServerRpc ();
+                        } else if (transform.GetSiblingIndex () != localPlayer.GetIntChoice ("DoubleDiscard")) {
 
-                    StopChoosing ();
+                            localPlayer.SetIntChoiceServerRpc ("DoubleDiscard2", transform.GetSiblingIndex ());
+
+                            localPlayer.DoubleDiscardServerRpc ();
+
+                            StopChoosing ();
+
+                        }
+                        break;
+
+                    case ChoosingCard.Play:
+                        if ((Card as SC_OffensiveMove) && Card.CanUse (localPlayer, true)) {
+
+                            Card.StartCoroutine (Card.StartPlaying ());
+
+                            StopChoosing ();
+
+                        }
+                        break;
 
                 }
-
-            } else if (localPlayer.ChoosingCard != ChoosingCard.None) {
-
-                if (localPlayer.ChoosingCard == ChoosingCard.Discard)
-                    localPlayer.DiscardServerRpc (transform.GetSiblingIndex ());
-                else if (localPlayer.ChoosingCard == ChoosingCard.Assess)
-                    localPlayer.SetIntChoiceServerRpc ("Assess", transform.GetSiblingIndex ());
-                else if (localPlayer.ChoosingCard == ChoosingCard.Play && (Card as SC_OffensiveMove) && Card.CanUse (localPlayer, true))
-                    Card.StartCoroutine (Card.StartPlaying ());
-
-                StopChoosing ();                
 
             } else if (bigCard.activeSelf && Card.CanUse (localPlayer)) {                
 
