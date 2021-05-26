@@ -223,10 +223,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b093f5580ff498b388189bcc86ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ordered: 0
   cards:
   - {fileID: 114172684542658776, guid: afcb1923f3ef87447a9898411faad25c, type: 3}
   - {fileID: 114263228151308634, guid: 62c6994eb8d3ec449b7de4468f3a4ec0, type: 3}
-  - {fileID: 114475385622744256, guid: c8dee461bf960ac4f8d16c5fa6cda43e, type: 3}
+  - {fileID: -8661082781179254891, guid: ceb6d79253199784c8889932ffdb8e7f, type: 3}
   - {fileID: 114846653426927268, guid: 354ee74b8a22e44479d92dab6506e680, type: 3}
   - {fileID: 114824049716881146, guid: 4958be05074e46e4b831c0d373900077, type: 3}
   - {fileID: 114661212946353714, guid: 86d17f66e4ab56a478ff8b46e0779e52, type: 3}

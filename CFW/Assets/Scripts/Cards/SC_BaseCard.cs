@@ -378,7 +378,11 @@ namespace Card {
 
         }
 
+        protected static event Action OnBaseFinishedUsing;
+
         void BaseFinishedUsing (bool countered = false) {
+
+            OnBaseFinishedUsing?.Invoke ();
 
             activeCard = originalCard = null;
 
