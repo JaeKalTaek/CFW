@@ -44,7 +44,7 @@ namespace Card {
 
         public SC_Player Receiver { get; set; }
 
-        static bool responding, boosting;
+        protected static bool responding, boosting;
 
         public static SC_BaseCard activeCard, lockingCard, originalCard, interceptFinishCard;
 
@@ -124,17 +124,23 @@ namespace Card {
         }        
 
         #region Can use      
-        public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {            
+        public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
+
+            //DebugWithTime ("_______________________________________________\n" + Path);
 
             bool prio = ignorePriority || (user.Turn && !activeCard) || responding || boosting;
 
             bool locked = ignoreLocks || NoLock || Is (CardType.Basic) || Has (CommonEffectType.Break);
+
+            //DebugWithTime ((GM.MatchHeat >= matchHeat) + ", " + (!Is (CardType.Special) || !user.SpecialUsed) + ", " + prio + ", " + locked);
 
             if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed) && prio && locked) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
                         return false;
+
+                //DebugWithTime ("COMMON REQUIREMENTS OK");
 
                 if (responding) {
 
@@ -153,6 +159,8 @@ namespace Card {
                 } else if (boosting) {
 
                     if (Has (CommonEffectType.Boost)) {
+
+                        //DebugWithTime ("BOOST MATCHING: " + GetComponent<SC_MatchingCard> ().Matching (activeCard));
 
                         if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
                             return false;
@@ -930,10 +938,15 @@ namespace Card {
 
         public void BoostFinished () {
 
-            SC_BaseCard c = respondedCards.Pop ();
+            if (respondedCards.Count > 0) {
 
-            if (Caller.IsLocalPlayer)
-                c.StartCoroutine (c.StartPlaying (true));
+                SC_BaseCard c = respondedCards.Pop ();
+
+                if (Caller.IsLocalPlayer)
+                    c.StartCoroutine (c.StartPlaying (true));
+
+            } else
+                BaseFinishedUsing ();
 
         }
         #endregion
