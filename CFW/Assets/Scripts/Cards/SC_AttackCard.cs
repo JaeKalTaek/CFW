@@ -78,7 +78,7 @@ namespace Card {
 
         protected override IEnumerator ApplyEffects () {
 
-            if (interceptFinishCard as SC_MirrorCounter) {
+            if (interceptFinishCard) {
 
                 GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
 
