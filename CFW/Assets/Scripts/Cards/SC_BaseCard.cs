@@ -689,7 +689,7 @@ namespace Card {
 
             } else {
 
-                if (Caller.Hand.Count >= 2 && CanUse (Caller, ignorePriority: true)) {
+                if (Caller.Hand.Count >= 2 && CanUse (Caller, true)) {
 
                     if (Caller.IsLocalPlayer) {                  
 
@@ -717,7 +717,7 @@ namespace Card {
 
             Receiver.IntChoices["Exchange"] = -1;            
 
-            if (CanUse (Receiver, ignorePriority: true)) {
+            if (CanUse (Receiver, true)) {
 
                 ApplyingEffects = true;
 
@@ -757,7 +757,7 @@ namespace Card {
 
         public virtual void Chain () {
 
-            if (!Ephemeral && CanUse (Caller, ignorePriority: true)) {
+            if (!Ephemeral && CanUse (Caller, true)) {
 
                 ApplyingEffects = true;
 
