@@ -9,7 +9,7 @@ public class SC_CardSearcherEditor : Editor {
 
         base.OnInspectorGUI ();
 
-        SC_MatchingCard cardMatcher = (target as SC_CardSearcher).GetComponent<SC_MatchingCard> ();
+        SC_CardMatcher cardMatcher = (target as SC_CardSearcher).GetComponent<SC_CardMatcher> ();
 
         if (GUILayout.Button ("Search")) {
 

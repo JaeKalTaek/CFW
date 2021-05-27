@@ -38,6 +38,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject booleanChoiceUI;
 
+    public delegate void BooleanChoice (bool b);
+
     [Serializable]
     public struct NumberChoiceUI {
 
@@ -52,7 +54,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public NumberChoiceUI numberChoiceUI;
 
-    public delegate void BooleanChoice (bool b);
+    public GameObject grabPanel;
 
     void Awake () {
 

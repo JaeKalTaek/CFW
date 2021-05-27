@@ -4,9 +4,9 @@ using static Card.SC_BaseCard;
 using System;
 using Card;
 
-public class SC_MatchingCard : MonoBehaviour {
+public class SC_CardGrabber : SC_CardMatcher {
 
-    //Super type
+    /*//Super type
     public enum Supertype { Any, Attack, OffensiveMove }
 
     public Supertype superTypeQuery;
@@ -43,6 +43,6 @@ public class SC_MatchingCard : MonoBehaviour {
 
         return true;
 
-    } 
+    } */
 
 }

@@ -36,7 +36,7 @@ namespace Card {
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost }
+            Response, Counter, Boost, Grab }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -112,8 +112,8 @@ namespace Card {
 
         void OnValidate () {
 
-            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_MatchingCard> ())
-                gameObject.AddComponent<SC_MatchingCard> ();
+            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_CardMatcher> ())
+                gameObject.AddComponent<SC_CardMatcher> ();
 
         }
 
@@ -146,7 +146,7 @@ namespace Card {
 
                     if (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) {
 
-                        if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
+                        if (!GetComponent<SC_CardMatcher> ().Matching (activeCard))
                             return false;
 
                     } else
@@ -162,7 +162,7 @@ namespace Card {
 
                         //DebugWithTime ("BOOST MATCHING: " + GetComponent<SC_MatchingCard> ().Matching (activeCard));
 
-                        if (!GetComponent<SC_MatchingCard> ().Matching (activeCard))
+                        if (!GetComponent<SC_CardMatcher> ().Matching (activeCard))
                             return false;
 
                     } else
@@ -951,6 +951,22 @@ namespace Card {
 
             } else
                 BaseFinishedUsing ();
+
+        }
+        #endregion
+
+        #region Grab
+        public void Grab () {
+
+            List<SC_BaseCard> grabbable = new List<SC_BaseCard> ();
+
+
+
+            if (grabbable.Count > 0) {
+
+                UI.grabPanel.SetActive (true);
+
+            }
 
         }
         #endregion
