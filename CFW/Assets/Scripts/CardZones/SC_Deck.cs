@@ -7,9 +7,8 @@ using Card;
 using static SC_Player;
 using System.Collections;
 using UnityEngine.UI;
-using static SC_Global;
 
-public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
+public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
     public bool ordered;
 
@@ -26,8 +25,6 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
     bool Local { get; set; }
 
     SC_Player owner;
-
-    RectTransform RectT { get { return transform as RectTransform; } }
 
     void OnValidate () {
 
@@ -46,15 +43,13 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
         StartCoroutine (Draw (GM.startHandSize, false, false));
 
         if (!local)
-            RectT.anchorMin = RectT.anchorMax = RectT.pivot = Vector2.up;        
+            RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.up;        
 
     }
 
-    public SC_UI_Card CreateCard (Transform parent, SC_BaseCard original) {
+    public override SC_UI_Card CreateCard (SC_BaseCard original, RectTransform parent = null) {
 
-        SC_UI_Card c = SC_BaseCard.Create (original, parent);
-
-        cards.Remove (original);
+        SC_UI_Card c = base.CreateCard (original, parent);
 
         if (cards.Count <= 0) {
 
@@ -90,9 +85,11 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
             if (cards.Count <= 0)
                 yield return StartCoroutine (Refill ());
 
-            RectTransform rT = Local ? GM.localHand : GM.otherHand;
+            yield return StartCoroutine (Grab (Local, cards[0], tween));
 
-            SC_UI_Card c = CreateCard (rT, cards[0]);
+            /*RectTransform rT = Local ? GM.localHand : GM.otherHand;
+
+            SC_UI_Card c = CreateCard (cards[0], rT);
 
             if (!Local)
                 c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);            
@@ -112,19 +109,19 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
 
                 yield return c.transform.DOLocalMove (target, GM.drawSpeed, true).WaitForCompletion ();
 
-            }
+            }*/
 
-            FinishDrawing (c, startTurn);
+            // FinishDrawing (c, startTurn);
 
-        } else
-            FinishDrawing (null, startTurn);
+        } //else
+            FinishDrawing (/*null,*/ startTurn);
 
     }
 
-    void FinishDrawing (SC_UI_Card c, bool startTurn) {
+    void FinishDrawing (/*SC_UI_Card c,*/ bool startTurn) {
 
-        if (c)
-            owner.Hand.Add (c.Card);
+        /*if (c)
+            owner.Hand.Add (c.Card);*/
 
         if (startTurn) {
 
@@ -207,6 +204,12 @@ public class SC_Deck : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler 
     public void OnPointerExit (PointerEventData eventData) {
 
         TSize.gameObject.SetActive (false);
+
+    }
+
+    public override List<SC_BaseCard> GetCards () {
+
+        return cards;
 
     }
 

@@ -55,7 +55,7 @@ namespace Card {
 
                         ApplyingEffects = true;
 
-                        SC_UI_Card card = Receiver.Deck.CreateCard (Receiver.Deck.transform, c);
+                        SC_UI_Card card = Receiver.Deck.CreateCard (c);
 
                         card.RecT.anchoredPosition = Vector2.zero;
 
