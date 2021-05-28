@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Card;
@@ -22,8 +22,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
 
     public GameObject bigCard;
-
-    bool Local { get { return transform.parent.name.Contains ("Local"); } }
 
     bool IsBasic { get { return Card.Is (CardType.Basic); } }
 
