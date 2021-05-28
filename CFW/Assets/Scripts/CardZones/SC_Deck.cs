@@ -87,41 +87,13 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
             yield return StartCoroutine (Grab (Local, cards[0], tween));
 
-            /*RectTransform rT = Local ? GM.localHand : GM.otherHand;
+        }
 
-            SC_UI_Card c = CreateCard (cards[0], rT);
-
-            if (!Local)
-                c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);            
-
-            if (Local && !tween)
-                c.SetImages ();
-
-            OrganizeHand (rT);            
-
-            if (tween) {
-
-                Vector3 target = c.transform.localPosition;
-
-                c.transform.position = transform.position;                
-
-                c.Flip (Local, GM.drawSpeed);
-
-                yield return c.transform.DOLocalMove (target, GM.drawSpeed, true).WaitForCompletion ();
-
-            }*/
-
-            // FinishDrawing (c, startTurn);
-
-        } //else
-            FinishDrawing (/*null,*/ startTurn);
+        FinishDrawing (startTurn);
 
     }
 
-    void FinishDrawing (/*SC_UI_Card c,*/ bool startTurn) {
-
-        /*if (c)
-            owner.Hand.Add (c.Card);*/
+    void FinishDrawing (bool startTurn) {
 
         if (startTurn) {
 
