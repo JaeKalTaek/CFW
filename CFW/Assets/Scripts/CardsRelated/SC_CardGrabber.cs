@@ -18,6 +18,8 @@ public class SC_CardGrabber : SC_CardMatcher {
 
     public int maxMatchHeat;
 
+    public BodyPart bodyPartTarget;
+
     public override bool Matching (SC_BaseCard card) {
 
         if (maxMatchHeat > 0 && card.matchHeat > maxMatchHeat)
@@ -38,6 +40,20 @@ public class SC_CardGrabber : SC_CardMatcher {
             }
 
             if (!has)
+                return false;
+
+        }
+
+        if (bodyPartTarget != BodyPart.None) {
+
+            if (card as SC_AttackCard) {
+
+                OffensiveBodyPartDamage obpd = (card as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (card as SC_Submission).effect.bodyPartDamage;
+
+                if (obpd.bodyPart != bodyPartTarget && obpd.otherBodyPart != bodyPartTarget)
+                    return false;
+
+            } else
                 return false;
 
         }
