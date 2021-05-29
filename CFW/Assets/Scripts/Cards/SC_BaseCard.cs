@@ -987,6 +987,13 @@ namespace Card {
 
         public void Grab () {
 
+            if (!(this as SC_AttackCard))
+                GrabPerform ();
+
+        }
+
+        public void GrabPerform () {
+
             GrabsRemaining = Mathf.Max (CurrentEffect.effectValue, 1);
 
             ApplyingEffects = true;
@@ -1085,6 +1092,36 @@ namespace Card {
             }            
 
             ApplyingEffects = false;
+
+        }
+
+        public virtual void GrabFinished () {
+
+            if (this as SC_AttackCard) {
+
+                CommonEffect effect;
+
+                foreach (CommonEffect c in commonEffects)
+                    if (c.effectType == CommonEffectType.Grab)
+                        effect = c;
+
+                effectTarget = Caller;
+
+                GrabPerform ();
+
+                StartCoroutine (GrabFinishedCoroutine ());
+
+            } else
+                BaseFinishedUsing ();
+
+        }
+
+        protected virtual IEnumerator GrabFinishedCoroutine () {
+
+            while (ApplyingEffects)
+                yield return new WaitForEndOfFrame ();
+
+            BaseFinishedUsing ();
 
         }
         #endregion

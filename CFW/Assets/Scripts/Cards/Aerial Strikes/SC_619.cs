@@ -5,21 +5,15 @@ namespace Card {
 
     public class SC_619 : SC_OffensiveMove {
 
-        protected override void FinishedUsing () {
+        public override void GrabFinished () {
 
             originalCard = null;
 
-            CurrentEffect = new CommonEffect (CommonEffectType.Grab, true);
-
-            effectTarget = Caller;
-
-            Grab ();
-
-            StartCoroutine (EffectCoroutine ());
+            base.GrabFinished ();
 
         }
 
-        IEnumerator EffectCoroutine () {
+        protected override IEnumerator GrabFinishedCoroutine () {
 
             while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
