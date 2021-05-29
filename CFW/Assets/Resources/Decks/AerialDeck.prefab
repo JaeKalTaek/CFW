@@ -89,8 +89,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b093f5580ff498b388189bcc86ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ordered: 0
+  ordered: 1
   cards:
+  - {fileID: -610028904600705886, guid: 29e38e807531c9a44b76c9014bba633a, type: 3}
   - {fileID: 114920436494339884, guid: 4a7f9bea851b9304c89750043fb727ba, type: 3}
   - {fileID: 114887729522612654, guid: bbe9ff5e981d52c4d920f232e1175661, type: 3}
   - {fileID: 114435252025451164, guid: 39e93a8aa9a1a954f861707c87d67388, type: 3}

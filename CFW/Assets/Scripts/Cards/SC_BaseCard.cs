@@ -359,7 +359,7 @@ namespace Card {
 
         }
 
-        void FinishedUsing () {
+        protected virtual void FinishedUsing () {
 
             if (interceptFinishCard) {
 
@@ -391,7 +391,7 @@ namespace Card {
 
         protected static event Action OnBaseFinishedUsing;
 
-        void BaseFinishedUsing (bool countered = false) {
+        protected void BaseFinishedUsing (bool countered = false) {
 
             OnBaseFinishedUsing?.Invoke ();
 
@@ -1043,23 +1043,27 @@ namespace Card {
 
             }
 
+            Caller.IntChoices["Grab"] = -1;
+
             if (x == 0 && y == 0)
                 ApplyingEffects = false;
             else {
 
-                Caller.IntChoices["Grab"] = -1;
+                May (() => {                    
 
-                StartCoroutine (Grabbing ());
-                
-                if (Caller.IsLocalPlayer) {
+                    StartCoroutine (Grabbing ());
 
-                    y = Mathf.Max (0, y - 1 - (x == 0 ? 1 : 0));
+                    if (Caller.IsLocalPlayer) {
 
-                    UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
+                        y = Mathf.Max (0, y - 1 - (x == 0 ? 1 : 0));
 
-                    UI.ShowGrabPanel ();
+                        UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
 
-                }
+                        UI.ShowGrabPanel ();
+
+                    }
+
+                });
 
             }
 
