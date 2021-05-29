@@ -1,26 +1,46 @@
 ﻿using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static Card.SC_BaseCard;
 
 public class SC_GrabCard : MonoBehaviour, IPointerClickHandler {
 
+    public Image image;
+
+    public GameObject highlight;
+
+    public TextMeshProUGUI text;
+
     int origin;
+
+    bool selected;
 
     public void SetOrigin (int o) {
 
         origin = o;
 
-        transform.parent.GetComponentInChildren<TextMeshProUGUI> ().text = o == 0 ? "From your deck" : (o == 1 ? "From your discard" : "From opponent's discard");
+        text.text = o == 0 ? "From your deck" : (o == 1 ? "From your discard" : "From opponent's discard");
 
     }
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        SC_UI_Manager.Instance.grabUI.panel.SetActive (false);
+        if (selected || activeCard.GrabsRemaining > 0) {
 
-        SC_Player.localPlayer.SetIntChoiceServerRpc ("Grab", origin);
+            selected ^= true;
 
-        SC_Player.localPlayer.SetStringChoiceServerRpc ("Grab", name);
+            activeCard.GrabsRemaining += selected ? -1 : 1;
+
+            highlight.SetActive (selected);
+
+            SC_Player.localPlayer.SetIntChoiceServerRpc ("Grab" + activeCard.GrabsRemaining, origin);
+
+            SC_Player.localPlayer.SetStringChoiceServerRpc ("Grab" + activeCard.GrabsRemaining, name);
+
+            SC_UI_Manager.Instance.GrabSelected ();
+
+        }
 
     }
 

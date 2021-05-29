@@ -859,6 +859,18 @@ namespace Card {
             });
 
         }
+
+        public void Discard (SC_Player owner, Action a = null) {
+
+            Caller = owner;
+
+            Caller.Hand.Remove (this);
+
+            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+            UICard.ToGraveyard (GM.drawSpeed, a ?? AppliedEffects);
+
+        }
         #endregion
 
         #region Refill
@@ -971,7 +983,11 @@ namespace Card {
         #endregion
 
         #region Grab
+        public int GrabsRemaining { get; set; }
+
         public void Grab () {
+
+            GrabsRemaining = Mathf.Max (CurrentEffect.effectValue, 1);
 
             ApplyingEffects = true;
 
@@ -1005,7 +1021,7 @@ namespace Card {
 
                                 SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
 
-                                g.GetComponent<Image> ().sprite = Resources.Load<Sprite> (c.Path);
+                                g.image.sprite = Resources.Load<Sprite> (c.Path);
 
                                 g.name = c.Path;
 
@@ -1031,7 +1047,7 @@ namespace Card {
                 ApplyingEffects = false;
             else {
 
-                Caller.StringChoices["Grab"] = "";
+                Caller.IntChoices["Grab"] = -1;
 
                 StartCoroutine (Grabbing ());
                 
@@ -1041,9 +1057,7 @@ namespace Card {
 
                     UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
 
-                    UI.grabUI.panel.transform.SetAsLastSibling ();
-
-                    UI.grabUI.panel.SetActive (true);
+                    UI.ShowGrabPanel ();
 
                 }
 
@@ -1053,14 +1067,18 @@ namespace Card {
 
         IEnumerator Grabbing () {
 
-            while (Caller.GetStringChoice ("Grab") == "")
+            while (Caller.GetIntChoice ("Grab") == -1)
                 yield return new WaitForEndOfFrame ();
 
-            SC_CardZone zone = Caller.GetIntChoice ("Grab") == 0 ? Caller.Deck : ((Caller.GetIntChoice ("Grab") == 1 ? Caller.Graveyard : Receiver.Graveyard) as SC_CardZone);
+            for (int i = 0; i < Mathf.Max (CurrentEffect.effectValue, 1); i++) {
 
-            SC_BaseCard grabbed = zone.GetCards ().Find ((c) => { return c.Path == Caller.GetStringChoice ("Grab"); });
+                SC_CardZone zone = Caller.GetIntChoice ("Grab" + i) == 0 ? Caller.Deck : ((Caller.GetIntChoice ("Grab" + i) == 1 ? Caller.Graveyard : Receiver.Graveyard) as SC_CardZone);
 
-            yield return StartCoroutine (zone.Grab (Caller.IsLocalPlayer, grabbed));
+                SC_BaseCard grabbed = zone.GetCards ().Find ((c) => { return c.Path == Caller.GetStringChoice ("Grab" + i); });
+
+                yield return StartCoroutine (zone.Grab (Caller.IsLocalPlayer, grabbed));
+
+            }            
 
             ApplyingEffects = false;
 
@@ -1078,19 +1096,7 @@ namespace Card {
             activeCard.ApplyingEffects = false;
 
         }
-        #endregion
-
-        public void Discard (SC_Player owner, Action a = null) {
-
-            Caller = owner;
-
-            Caller.Hand.Remove (this);
-
-            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);            
-
-            UICard.ToGraveyard (GM.drawSpeed, a ?? AppliedEffects);
-
-        }
+        #endregion        
 
         #region Getters
         public bool Is (CardType t) {

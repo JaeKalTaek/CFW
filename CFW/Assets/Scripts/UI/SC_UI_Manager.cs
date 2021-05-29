@@ -57,7 +57,11 @@ public class SC_UI_Manager : MonoBehaviour {
     [Serializable]
     public struct GrabUI {
 
-        public GameObject panel;
+        public GameObject panel, showButton;
+
+        public TextMeshProUGUI text;
+
+        public Button confirmButton;
 
         public RectTransform container;
 
@@ -257,12 +261,50 @@ public class SC_UI_Manager : MonoBehaviour {
     }
     #endregion
 
+    #region Grab
+    public void ShowGrabPanel () {
+
+        grabUI.panel.transform.SetAsLastSibling ();
+
+        grabUI.showButton.SetActive (true);
+
+        grabUI.text.text = "Select " + activeCard.GrabsRemaining;
+
+        grabUI.panel.SetActive (true);
+
+    }
+    
+    public void ShowGrabPanel (bool show) {
+
+        grabUI.panel.SetActive (show);
+
+    }
+
+    public void GrabSelected () {
+
+        grabUI.confirmButton.interactable = activeCard.GrabsRemaining == 0;
+
+        grabUI.text.text = activeCard.GrabsRemaining == 0 ? "Confirm or change selection" : "Select " + activeCard.GrabsRemaining;
+
+    }
+
+    public void ConfirmGrab () {
+
+        grabUI.showButton.SetActive (false);
+
+        grabUI.panel.SetActive (false);
+
+        localPlayer.SetIntChoiceServerRpc ("Grab", 0);
+
+    }
+    #endregion
+
     public void ShowEndPanel (bool won) {
 
         endText.text = "YOU " + (won ? "WON" : "LOST");
 
         endText.transform.parent.gameObject.SetActive (true);
 
-    }
+    }   
 
 }
