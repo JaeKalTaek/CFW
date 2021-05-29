@@ -1064,7 +1064,9 @@ namespace Card {
 
             Caller.IntChoices["Grab"] = -1;
 
-            if (x == 0 && y == 0)
+            GrabsRemaining = Mathf.Min (GrabsRemaining, y * 5 + x);
+
+            if (GrabsRemaining == 0)
                 StartCoroutine (NoGrabbing ());
             else {
 
