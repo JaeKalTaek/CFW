@@ -9,6 +9,7 @@ public class SC_CardMatcher : MonoBehaviour {
     //Super type
     public enum Supertype { Any, Attack, OffensiveMove }
 
+    [Header("BASE QUERIES")]
     public Supertype superTypeQuery;
 
     //Type
@@ -26,7 +27,7 @@ public class SC_CardMatcher : MonoBehaviour {
     //Common effects
     public CommonEffectType[] commonEffectQueries;
 
-    public bool Matching (SC_BaseCard card) {
+    public virtual bool Matching (SC_BaseCard card) {
 
         if (superTypeQuery == Supertype.Attack && !(card as SC_AttackCard))
             return false;

@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using static SC_Global;
 using static SC_Player;
 
@@ -45,6 +47,8 @@ namespace Card {
         public SC_Player Receiver { get; set; }
 
         protected static bool responding, boosting;
+
+        public bool Stolen { get; set; }
 
         public static SC_BaseCard activeCard, lockingCard, originalCard, interceptFinishCard;
 
@@ -112,8 +116,15 @@ namespace Card {
 
         void OnValidate () {
 
-            if (commonEffects != null && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_CardMatcher> ())
-                gameObject.AddComponent<SC_CardMatcher> ();
+            if (commonEffects != null) {
+
+                if ((Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_CardMatcher> ())
+                    gameObject.AddComponent<SC_CardMatcher> ();
+
+                if (Has (CommonEffectType.Grab) && !GetComponent<SC_CardGrabber> ())
+                    gameObject.AddComponent<SC_CardGrabber> ();
+
+            }
 
         }
 
@@ -962,15 +973,96 @@ namespace Card {
         #region Grab
         public void Grab () {
 
-            List<SC_BaseCard> grabbable = new List<SC_BaseCard> ();
+            ApplyingEffects = true;
 
+            SC_CardGrabber grabber = GetComponent<SC_CardGrabber> ();
 
+            bool[] where = new bool[] { grabber.deck, grabber.discard, grabber.otherDiscard };
 
-            if (grabbable.Count > 0) {
+            List<SC_BaseCard>[] lists = new List<SC_BaseCard>[] { Caller.Deck.cards, Caller.Graveyard.Cards, Receiver.Graveyard.Cards };
 
-                UI.grabPanel.SetActive (true);
+            Vector2 size = Resources.Load<RectTransform> ("Prefabs/P_Grab_Card").sizeDelta;
+
+            foreach (Transform t in UI.grabUI.container)
+                Destroy (t.gameObject);
+
+            float xMargin = (UI.grabUI.container.rect.width - (size.x * 5)) / 6f;
+
+            float yMargin = xMargin;
+
+            int x = 0;
+            int y = 0;
+
+            for (int i = 0; i < 3; i++) {
+
+                 if (where [i]) {
+
+                    foreach (SC_BaseCard c in lists[i]) {
+
+                        if (grabber.Matching (c)) {
+
+                            if (Caller.IsLocalPlayer) {
+
+                                SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
+
+                                g.GetComponent<Image> ().sprite = Resources.Load<Sprite> (c.Path);
+
+                                g.name = c.Path;
+
+                                g.SetOrigin (i);
+
+                                (g.transform.parent as RectTransform).anchoredPosition = new Vector2 (x * size.x + (x + 1) * xMargin, -y * size.y - (y + 1) * yMargin);
+
+                            }
+
+                            x = x == 4 ? 0 : x + 1;
+
+                            y = x == 0 ? y + 1 : y;
+
+                        }
+
+                    }
+
+                }
 
             }
+
+            if (x == 0 && y == 0)
+                ApplyingEffects = false;
+            else {
+
+                Caller.StringChoices["Grab"] = "";
+
+                StartCoroutine (Grabbing ());
+                
+                if (Caller.IsLocalPlayer) {
+
+                    y = Mathf.Max (0, y - 1 - (x == 0 ? 1 : 0));
+
+                    UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
+
+                    UI.grabUI.panel.transform.SetAsLastSibling ();
+
+                    UI.grabUI.panel.SetActive (true);
+
+                }
+
+            }
+
+        }
+
+        IEnumerator Grabbing () {
+
+            while (Caller.GetStringChoice ("Grab") == "")
+                yield return new WaitForEndOfFrame ();
+
+            SC_CardZone zone = Caller.GetIntChoice ("Grab") == 0 ? Caller.Deck : ((Caller.GetIntChoice ("Grab") == 1 ? Caller.Graveyard : Receiver.Graveyard) as SC_CardZone);
+
+            SC_BaseCard grabbed = zone.GetCards ().Find ((c) => { return c.Path == Caller.GetStringChoice ("Grab"); });
+
+            yield return StartCoroutine (zone.Grab (Caller.IsLocalPlayer, grabbed));
+
+            ApplyingEffects = false;
 
         }
         #endregion

@@ -178,7 +178,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void ToGraveyard (float speed, Action action, bool? flip = null) {
 
-        transform.SetParent ((Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).transform);
+        SC_Graveyard target = Card.Caller.IsLocalPlayer == Card.Stolen ? GM.otherGraveyard : GM.localGraveyard;
+
+        transform.SetParent (target.transform);
 
         RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
 
@@ -191,7 +193,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             if (Card.Ephemeral)
                 Destroy (gameObject);
             else
-                (Card.Caller.IsLocalPlayer ? GM.localGraveyard : GM.otherGraveyard).Cards.Add (Card);            
+                target.Cards.Add (Card);            
             
         });
 

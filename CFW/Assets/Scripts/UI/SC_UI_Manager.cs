@@ -54,13 +54,26 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public NumberChoiceUI numberChoiceUI;
 
-    public GameObject grabPanel;
+    [Serializable]
+    public struct GrabUI {
+
+        public GameObject panel;
+
+        public RectTransform container;
+
+        public float baseContainerHeight;
+
+    }
+
+    public GrabUI grabUI;
 
     void Awake () {
 
         Instance = this;
 
         knowYourOpponentChoice.onSubmit.AddListener (KnowYourOpponentConfirmedChoice);
+
+        grabUI.baseContainerHeight = grabUI.container.rect.height;
 
     }
 

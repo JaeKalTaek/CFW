@@ -6,43 +6,44 @@ using Card;
 
 public class SC_CardGrabber : SC_CardMatcher {
 
-    /*//Super type
-    public enum Supertype { Any, Attack, OffensiveMove }
+    [Header("WHERE TO GRAB FROM")]
+    public bool deck;
 
-    public Supertype superTypeQuery;
+    public bool discard, otherDiscard;
 
-    //Type
-    [Serializable]
-    public struct TypeQuery {
+    [Header ("ADDITIONAL QUERIES")]
+    public bool finisher;
 
-        public bool isOfType;
+    public bool heel, face;
 
-        public CardType type;
+    public int maxMatchHeat;
 
-    }
+    public override bool Matching (SC_BaseCard card) {
 
-    public TypeQuery[] typeQueries;    
-
-    //Common effects
-    public CommonEffectType[] commonEffectQueries;
-
-    public bool Matching (SC_BaseCard card) {
-
-        if (superTypeQuery == Supertype.Attack && !(card as SC_AttackCard))
-            return false;
-        else if (superTypeQuery == Supertype.OffensiveMove && !(card as SC_OffensiveMove))
+        if (maxMatchHeat > 0 && card.matchHeat > maxMatchHeat)
             return false;
 
-        foreach (TypeQuery tq in typeQueries)
-            if (card.Is (tq.type) != tq.isOfType)
-                return false;               
+        if (finisher && (!(card as SC_AttackCard) || !(card as SC_AttackCard).finisher))
+                return false;        
 
-        foreach (CommonEffectType cet in commonEffectQueries)
-            if (!card.Has (cet))
+        if (heel || face) {
+
+            bool has = false;
+
+            foreach (CommonRequirement c in card.commonRequirements) {
+
+                if (c.valueType == ValueName.Alignment && !c.opponent && ((heel && c.requirementType == RequirementType.Maximum && c.requirementValue <= 0) || (face && c.requirementType == RequirementType.Minimum && c.requirementValue >= 0)))
+                    has = true;
+
+            }
+
+            if (!has)
                 return false;
 
-        return true;
+        }
 
-    } */
+        return base.Matching (card);
+
+    }
 
 }
