@@ -1004,6 +1004,8 @@ namespace Card {
 
         public void GrabPerform () {
 
+            activeCard = this;
+
             GrabsRemaining = Mathf.Max (CurrentEffect.effectValue, 1);
 
             ApplyingEffects = true;
