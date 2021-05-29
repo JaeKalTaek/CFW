@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b093f5580ff498b388189bcc86ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ordered: 1
+  ordered: 0
   cards:
   - {fileID: -5675953350091057158, guid: 5abd026e0d3d2fd43beb192ad2ea1e19, type: 3}
   - {fileID: 114172684542658776, guid: afcb1923f3ef87447a9898411faad25c, type: 3}
