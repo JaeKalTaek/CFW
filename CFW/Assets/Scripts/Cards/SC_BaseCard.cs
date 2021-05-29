@@ -938,7 +938,11 @@ namespace Card {
         #endregion
 
         #region Boost     
-        public virtual void Boost () { }
+        public virtual void Boost () {
+
+            originalCard = null;
+
+        }
 
         public void BoostFinished () {
 

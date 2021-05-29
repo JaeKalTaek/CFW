@@ -4,6 +4,8 @@ namespace Card {
 
         public override void Boost () {
 
+            base.Boost ();
+
             (respondedCards.Peek () as SC_Submission).effect.bodyPartDamage.damage += 2;
 
         }

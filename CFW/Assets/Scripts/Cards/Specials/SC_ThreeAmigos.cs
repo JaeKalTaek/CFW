@@ -12,7 +12,7 @@ namespace Card {
 
         public override void Boost () {
 
-            originalCard = null;
+            base.Boost ();
 
             modifierCards.Add (this);
 
