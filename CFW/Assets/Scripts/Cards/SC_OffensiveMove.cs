@@ -19,7 +19,9 @@ namespace Card {
 
             public OffensiveBodyPartDamage bodyPartDamage;
 
-        }        
+        }
+
+        public int moveOfDoom;
 
         public override void NonMatchHeatEffects () {
 

@@ -20,13 +20,18 @@ public class SC_CardGrabber : SC_CardMatcher {
 
     public BodyPart bodyPartTarget;
 
+    public int moveOfDoom;
+
     public override bool Matching (SC_BaseCard card) {
 
         if (maxMatchHeat > 0 && card.matchHeat > maxMatchHeat)
             return false;
 
         if (finisher && (!(card as SC_AttackCard) || !(card as SC_AttackCard).finisher))
-                return false;        
+                return false;
+
+        if (moveOfDoom > 0 && (!(card as SC_OffensiveMove) || (card as SC_OffensiveMove).moveOfDoom != moveOfDoom))
+            return false;
 
         if (heel || face) {
 

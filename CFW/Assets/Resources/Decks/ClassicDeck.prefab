@@ -223,8 +223,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7605b093f5580ff498b388189bcc86ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ordered: 0
+  ordered: 1
   cards:
+  - {fileID: 114386409429625822, guid: d552b2a830eafa44ca721d4f4f5fdf5d, type: 3}
   - {fileID: -5675953350091057158, guid: 5abd026e0d3d2fd43beb192ad2ea1e19, type: 3}
   - {fileID: 114172684542658776, guid: afcb1923f3ef87447a9898411faad25c, type: 3}
   - {fileID: 114263228151308634, guid: 62c6994eb8d3ec449b7de4468f3a4ec0, type: 3}
@@ -256,4 +257,7 @@ MonoBehaviour:
   - {fileID: 114973384762618864, guid: c9f938e508bc5fa4caede784366c0a25, type: 3}
   - {fileID: 114640412988992054, guid: a51eafbbe073367458530ba94d747212, type: 3}
   - {fileID: 114697305955305446, guid: 3e60a7ef359b1854ba515c9970ed95a4, type: 3}
+  - {fileID: 114364493320695624, guid: a7a20ba78f6cc544e8c9a8c90dd1a701, type: 3}
+  - {fileID: 114668146155286892, guid: 7399d13510c537d438cba66806eb7aa8, type: 3}
+  - {fileID: 114364493320695624, guid: cfc7993b22a83164f8cdf2f7c850285b, type: 3}
   TSize: {fileID: 114575181548724414}
