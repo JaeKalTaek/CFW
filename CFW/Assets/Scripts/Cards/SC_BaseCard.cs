@@ -1053,10 +1053,10 @@ namespace Card {
             Caller.IntChoices["Grab"] = -1;
 
             if (x == 0 && y == 0)
-                ApplyingEffects = false;
+                StartCoroutine (NoGrabbing ());
             else {
 
-                May (() => {                    
+                May (() => {
 
                     StartCoroutine (Grabbing ());
 
@@ -1073,6 +1073,19 @@ namespace Card {
                 });
 
             }
+
+        }
+
+        IEnumerator NoGrabbing () {
+
+            if (Caller.IsLocalPlayer)
+                UI.ShowMessage ("NoGrabbing");
+
+            yield return new WaitForSeconds (.5f);
+
+            UI.messagePanel.SetActive (false);
+
+            ApplyingEffects = false;
 
         }
 

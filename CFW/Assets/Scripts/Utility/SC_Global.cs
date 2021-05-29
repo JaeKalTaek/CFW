@@ -84,7 +84,9 @@ public class SC_Global {
 
         { "Boost", "You can boost this card" },
 
-        { "Play", "Choose an offensive move to play" }
+        { "Play", "Choose an offensive move to play" },
+
+        { "NoGrabbing", "There was nothing to grab" }
 
     };
 
