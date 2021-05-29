@@ -347,7 +347,7 @@ namespace Card {
 
                 UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-                UICard.ToGraveyard (1, FinishedUsing, false);
+                UICard.ToGraveyard (1, () => { FinishedUsing (); }, false);
 
             } else {
 
@@ -359,39 +359,48 @@ namespace Card {
 
         }
 
-        protected virtual void FinishedUsing () {
-
-            if (interceptFinishCard) {
-
-                interceptFinishCard.InterceptFinish ();
-
-                return;
-
-            }
-
-            foreach (CommonEffect c in commonEffects) {
-
-                CurrentEffect = c;
-
-                MethodInfo mi = typeof (SC_BaseCard).GetMethod (c.effectType.ToString () + "Finished");
-
-                if (mi != null) {
-
-                    mi.Invoke (this, null);
-
-                    return;
-
-                }                
-
-            }
-
-            BaseFinishedUsing ();
-
-        }
+        List<CommonEffect> finishedEffects;
 
         protected static event Action OnBaseFinishedUsing;
 
-        protected void BaseFinishedUsing (bool countered = false) {
+        protected virtual void FinishedUsing (bool countered = false) {
+
+            if (!countered) {
+
+                if (finishedEffects == null)
+                    finishedEffects = new List<CommonEffect> ();
+
+                if (interceptFinishCard) {
+
+                    interceptFinishCard.InterceptFinish ();
+
+                    return;
+
+                }
+
+                foreach (CommonEffect c in commonEffects) {
+
+                    if (!finishedEffects.Contains (c)) {
+
+                        CurrentEffect = c;
+
+                        MethodInfo mi = typeof (SC_BaseCard).GetMethod (c.effectType.ToString () + "Finished");
+
+                        if (mi != null) {
+
+                            finishedEffects.Add (c);
+
+                            mi.Invoke (this, null);
+
+                            return;
+
+                        }
+
+                    }
+
+                }
+
+            }
 
             OnBaseFinishedUsing?.Invoke ();
 
@@ -708,7 +717,7 @@ namespace Card {
 
             if (Ephemeral) {
 
-                BaseFinishedUsing ();
+                originalCard.FinishedUsing ();
 
             } else {
 
@@ -728,7 +737,7 @@ namespace Card {
                     }
 
                 } else
-                    BaseFinishedUsing ();
+                    FinishedUsing ();
 
             }
 
@@ -770,7 +779,7 @@ namespace Card {
                     Receiver.CopyAndStartUsingServerRpc ();
 
             } else
-                originalCard.BaseFinishedUsing ();
+                originalCard.FinishedUsing ();
 
         }
         #endregion
@@ -817,7 +826,7 @@ namespace Card {
 
             if (Caller.GetIntChoice ("NumberChoice") == 0) {
 
-                BaseFinishedUsing ();
+                originalCard.FinishedUsing ();
 
             } else if (Caller.IsLocalPlayer) {
 
@@ -932,9 +941,9 @@ namespace Card {
             if (respondedCards.Count == 1) {
 
                 if (respondedCards.Peek ())
-                    respondedCards.Peek ().BaseFinishedUsing (true);
+                    respondedCards.Peek ().FinishedUsing (true);
                 else if (originalCard)
-                    originalCard.BaseFinishedUsing (true);
+                    originalCard.FinishedUsing (true);
                 else if (Receiver.IsLocalPlayer)
                     Receiver.NextTurnServerRpc ();
 
@@ -954,7 +963,7 @@ namespace Card {
                     respondedCards.Pop ().BoostFinished ();
 
             } else
-                BaseFinishedUsing ();
+                FinishedUsing ();
 
         }
         #endregion
@@ -977,7 +986,7 @@ namespace Card {
                     c.StartCoroutine (c.StartPlaying (true));
 
             } else
-                BaseFinishedUsing ();
+                FinishedUsing ();
 
         }
         #endregion
@@ -1125,7 +1134,7 @@ namespace Card {
                 StartCoroutine (GrabFinishedCoroutine ());
 
             } else
-                BaseFinishedUsing ();
+                FinishedUsing ();
 
         }
 
@@ -1134,7 +1143,7 @@ namespace Card {
             while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
 
-            BaseFinishedUsing ();
+            FinishedUsing ();
 
         }
         #endregion

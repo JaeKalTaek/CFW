@@ -19,14 +19,14 @@ namespace Card {
                 yield return new WaitForEndOfFrame ();
 
             if (Caller.GetIntChoice ("May") == -1 || Caller.GetIntChoice ("Grab") == -1)
-                BaseFinishedUsing ();
+                FinishedUsing ();
             else if (Caller.Hand[Caller.Hand.Count - 1].CanUse (Caller, true)) {
 
                 if (Caller.IsLocalPlayer)
                     Caller.Hand[Caller.Hand.Count - 1].StartCoroutine (Caller.Hand[Caller.Hand.Count - 1].StartPlaying ());
 
             } else
-                BaseFinishedUsing ();
+                FinishedUsing ();
 
         }
 
