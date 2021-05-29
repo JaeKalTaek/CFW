@@ -38,7 +38,7 @@ namespace Card {
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost, Grab }
+            Response, Counter, Boost, Grab, Turn }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -674,6 +674,12 @@ namespace Card {
 
             if (Caller.IsLocalPlayer && Receiver.Stamina < 3)
                 Caller.StartUsingBasicServerRpc (3);
+
+        }
+
+        public void Turn () {
+
+            effectTarget.Alignment *= -1;
 
         }
         #endregion
