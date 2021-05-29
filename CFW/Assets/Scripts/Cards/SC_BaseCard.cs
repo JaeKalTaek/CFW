@@ -293,7 +293,7 @@ namespace Card {
 
             DOTween.Sequence ().Append (UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta * GM.playedSizeMultiplicator, 1)).OnComplete (() => { StartCoroutine (Use ()); });
 
-            UICard.Flip (!Caller.IsLocalPlayer, 1);
+            UICard.Flip (!UICard.FaceUp, 1);
 
         }        
 

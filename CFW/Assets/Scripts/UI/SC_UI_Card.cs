@@ -25,6 +25,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     bool IsBasic { get { return Card.Is (CardType.Basic); } }
 
+    public bool FaceUp { get { return GetComponent<Image> ().sprite.name != "CardBack"; } }
+
     void Awake () {
 
         BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
