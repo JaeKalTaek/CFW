@@ -9,7 +9,9 @@ namespace Card {
 
             originalCard = null;
 
-            CurrentEffect = new CommonEffect (CommonEffectType.Grab);
+            CurrentEffect = new CommonEffect (CommonEffectType.Grab, true);
+
+            effectTarget = Caller;
 
             Grab ();
 
@@ -24,8 +26,13 @@ namespace Card {
 
             if (Caller.GetIntChoice ("May") == -1 || Caller.GetIntChoice ("Grab") == -1)
                 BaseFinishedUsing ();
-            else if (Caller.IsLocalPlayer)
-                Caller.Hand[Caller.Hand.Count - 1].StartCoroutine (Caller.Hand[Caller.Hand.Count - 1].StartPlaying ());
+            else if (Caller.Hand[Caller.Hand.Count - 1].CanUse (Caller, true)) {
+
+                if (Caller.IsLocalPlayer)
+                    Caller.Hand[Caller.Hand.Count - 1].StartCoroutine (Caller.Hand[Caller.Hand.Count - 1].StartPlaying ());
+
+            } else
+                BaseFinishedUsing ();
 
         }
 
