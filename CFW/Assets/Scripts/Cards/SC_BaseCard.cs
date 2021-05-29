@@ -828,11 +828,12 @@ namespace Card {
 
                 originalCard.FinishedUsing ();
 
-            } else if (Caller.IsLocalPlayer) {
+            } else {                 
 
                 Caller.IntChoices["NumberChoice"]--;
 
-                Caller.CopyAndStartUsingServerRpc ();
+                if (Caller.IsLocalPlayer)
+                    Caller.CopyAndStartUsingServerRpc ();
 
             }
 
