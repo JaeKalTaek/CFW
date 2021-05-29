@@ -16,11 +16,13 @@ public class SC_Graveyard : SC_CardZone {
 
         Cards = new List<SC_BaseCard> ();
 
+        Local = name.Contains ("Local");
+
     }
 
     public override SC_UI_Card CreateCard (SC_BaseCard original, RectTransform parent = null) {
 
-        SC_UI_Card c = CreateCard (original, parent);
+        SC_UI_Card c = base.CreateCard (original, parent);
 
         Destroy (original.UICard.gameObject);
 

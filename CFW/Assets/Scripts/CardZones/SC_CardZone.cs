@@ -6,6 +6,8 @@ using UnityEngine;
 
 public abstract class SC_CardZone : MonoBehaviour {
 
+    protected bool Local { get; set; }
+
     public bool IsDiscard { get { return this as SC_Graveyard; } }
 
     public abstract List<SC_BaseCard> GetCards ();
@@ -29,6 +31,8 @@ public abstract class SC_CardZone : MonoBehaviour {
         RectTransform rT = local ? GM.localHand : GM.otherHand;
 
         SC_UI_Card c = CreateCard (original, rT);
+
+        c.Card.Stolen = local != Local;
 
         if (!local)
             c.RecT.anchorMin = c.RecT.anchorMax = c.RecT.pivot = new Vector2 (.5f, 1);

@@ -20,9 +20,7 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
     static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
-    static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
-
-    bool Local { get; set; }
+    static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }    
 
     SC_Player owner;
 
