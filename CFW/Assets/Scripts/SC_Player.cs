@@ -621,7 +621,7 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    /*bool waiting = true;
+    bool waiting = true;
 
     public IEnumerator WaitForPlayers () {
 
@@ -646,6 +646,6 @@ public class SC_Player : NetworkBehaviour {
 
         waiting = false;
 
-    }*/
+    }
 
 }
