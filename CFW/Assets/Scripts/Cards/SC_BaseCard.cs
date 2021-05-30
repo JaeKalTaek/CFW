@@ -361,8 +361,6 @@ namespace Card {
 
         List<CommonEffect> finishedEffects;
 
-        protected static event Action OnBaseFinishedUsing;
-
         protected virtual void FinishedUsing (bool countered = false) {
 
             if (!countered) {
@@ -401,8 +399,6 @@ namespace Card {
                 }
 
             }
-
-            OnBaseFinishedUsing?.Invoke ();
 
             activeCard = originalCard = null;
 

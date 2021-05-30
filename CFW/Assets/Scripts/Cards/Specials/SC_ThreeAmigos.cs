@@ -18,7 +18,7 @@ namespace Card {
 
             boostedCardName = respondedCards.Peek ().Path;
 
-            OnBaseFinishedUsing += base.ApplyModifiers;
+            SC_Player.OnNewTurn += base.ApplyModifiers;
 
         }
 

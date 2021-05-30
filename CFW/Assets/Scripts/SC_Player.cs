@@ -418,6 +418,8 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Next turn
+    public static event Action OnNewTurn;
+
     [ServerRpc]
     public void NextTurnServerRpc () {
 
@@ -454,6 +456,8 @@ public class SC_Player : NetworkBehaviour {
             }
 
         }
+
+        OnNewTurn?.Invoke ();
 
         SpecialUsed = false;
 
