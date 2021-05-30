@@ -133,28 +133,14 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
         shuffled = false;
 
-        foreach (SC_BaseCard c in owner.Graveyard.Cards) {
-
-            cards.Add (Resources.Load<SC_BaseCard> (c.Path));
-
-            c.UICard.transform.SetParent (transform);
-
-            c.UICard.RecT.DOAnchorPos (Vector2.zero, 1);
-
-            c.UICard.Flip (true, 1, false);
-
-        }
+        foreach (SC_BaseCard c in new List<SC_BaseCard> (owner.Graveyard.Cards))
+            StartCoroutine (c.UICard.DiscardToDeck (this));       
 
         yield return new WaitForSeconds (1);
 
         GetComponent<Image> ().enabled = true;
 
         TSize.text = Size.ToString ();
-
-        foreach (SC_BaseCard c in owner.Graveyard.Cards)
-            Destroy (c.UICard.gameObject);
-
-        owner.Graveyard.Cards.Clear ();        
 
         if (Local)
             Shuffle ();

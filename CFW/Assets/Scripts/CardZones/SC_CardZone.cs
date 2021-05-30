@@ -6,7 +6,7 @@ using UnityEngine;
 
 public abstract class SC_CardZone : MonoBehaviour {
 
-    protected bool Local { get; set; }
+    public bool Local { get; set; }
 
     public bool IsDiscard { get { return this as SC_Graveyard; } }
 

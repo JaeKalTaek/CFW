@@ -201,4 +201,20 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public IEnumerator DiscardToDeck (SC_Deck target) {
+
+        target.cards.Add (Resources.Load<SC_BaseCard> (Card.Path));
+
+        transform.SetParent (target.RecT);        
+
+        Flip (true, 1, false);        
+
+        (target.Local ? localPlayer.Graveyard : otherPlayer.Graveyard).Cards.Remove (Card);
+
+        yield return RecT.DOAnchorPos (Vector2.zero, 1).WaitForCompletion ();
+
+        Destroy (gameObject);
+
+    }
+
 }
