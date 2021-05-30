@@ -90,7 +90,7 @@ public class SC_Global {
 
     };
 
-    public static void DebugWithTime (string s) {
+    public static void DebugWithTime (object s) {
 
         Debug.Log (s + ": " + DateTime.Now + ":" + DateTime.Now.Millisecond);
 
