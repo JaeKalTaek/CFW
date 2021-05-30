@@ -370,7 +370,7 @@ namespace Card {
                 if (finishedEffects == null)
                     finishedEffects = new List<CommonEffect> ();
 
-                if (interceptFinishCard) {
+                if (interceptFinishCard && interceptFinishCard != this) {
 
                     interceptFinishCard.InterceptFinish ();
 
