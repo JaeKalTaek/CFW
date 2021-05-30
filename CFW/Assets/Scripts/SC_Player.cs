@@ -439,7 +439,25 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    public void StartTurn () {
+    bool firstTurn;
+
+    public IEnumerator StartTurn () {
+
+        if (!firstTurn) {
+
+            firstTurn = true;
+
+            foreach (SC_BaseCard c in new List<SC_BaseCard> (Hand)) {
+
+                c.Caller = this;
+
+                c.Receiver = IsLocalPlayer ? otherPlayer : localPlayer;
+
+                yield return c.StartCoroutine (c.FirstTurnEffect ());
+
+            }
+
+        }
 
         SpecialUsed = false;
 

@@ -97,7 +97,7 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
             owner.ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
-            owner.StartTurn ();
+            owner.StartCoroutine (owner.StartTurn ());
 
         }
 

@@ -1170,6 +1170,12 @@ namespace Card {
             activeCard.ApplyingEffects = false;
 
         }
+
+        public virtual IEnumerator FirstTurnEffect () {
+
+            yield return null;
+
+        }
         #endregion        
 
         #region Getters
