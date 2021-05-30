@@ -400,25 +400,21 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    /*#region Specific cards
+    #region Specific cards
     [ServerRpc]
-    public void MirrorCounterServerRpc () {
+    public void FinishStrikesComboServerRpc (int nbr) {
 
-        MirrorCounterClientRpc ();
+        FinishStrikesComboClientRpc (nbr);
 
     }
 
     [ClientRpc]
-    void MirrorCounterClientRpc () {
+    void FinishStrikesComboClientRpc (int nbr) {
 
-        DebugWithTime ("SET INTERCEPT");
-
-        interceptFinishCard = activeCard;
-
-        CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);
+        originalCard.StartCoroutine ((originalCard as SC_StrikesCombo).FinishCombo (nbr));
 
     }
-    #endregion*/
+    #endregion
     #endregion
 
     #region Next turn

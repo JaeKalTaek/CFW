@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static SC_Global;
 
 namespace Card {
 
@@ -44,30 +43,17 @@ namespace Card {
 
             }
 
-            print ("CALL FINISH");
-
             Caller.FinishStrikesComboServerRpc (nbr);
-
-            /*for (int i = 0; i < nbr; i++)
-                StartCoroutine (Caller.Graveyard.Cards[Caller.Graveyard.Cards.Count - 1].UICard.DiscardToDeck (Caller.Deck));
-
-            if (nbr > 0)
-                yield return new WaitForSeconds (1);*/
-
-            //modifierCards.Remove (this);
-
-            // base.FinishedUsing ();
 
         }
 
         public IEnumerator FinishCombo (int nbr) {
 
+            yield return SC_Player.localPlayer.StartCoroutine (SC_Player.localPlayer.WaitForPlayers ());
+
             modifierCards.Remove (this);
 
             interceptFinishCard = null;
-
-            foreach (SC_BaseCard c in Caller.Graveyard.Cards)
-                print (c.Path);
 
             for (int i = 0; i < nbr; i++)
                 StartCoroutine (Caller.Graveyard.Cards[Caller.Graveyard.Cards.Count - 1].UICard.DiscardToDeck (Caller.Deck));
