@@ -64,7 +64,7 @@ namespace Card {
             if (Caller.IsLocalPlayer) {
 
                 if (Receiver.Stamina < 3)
-                    UI.pinfallPanel.SetActive (true);
+                    StartPinfallChoice ();
                 else
                     NextTurn ();
 

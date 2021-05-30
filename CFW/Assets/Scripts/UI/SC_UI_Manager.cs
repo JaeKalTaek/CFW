@@ -18,8 +18,6 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject bodyPartDamageChoicePanel, messagePanel;
 
-    public GameObject pinfallPanel;
-
     public TextMeshProUGUI endText;
 
     public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton;           
@@ -112,17 +110,6 @@ public class SC_UI_Manager : MonoBehaviour {
         basicsPanel.SetActive (show);        
 
         GM.localHand.gameObject.SetActive (!show);
-
-    }
-
-    public void Pinfall (bool yes) {
-
-        pinfallPanel.SetActive (false);
-
-        if (yes)
-            localPlayer.StartUsingBasicServerRpc (3);
-        else
-            localPlayer.NextTurnServerRpc ();
 
     }
 

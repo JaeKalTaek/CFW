@@ -416,7 +416,7 @@ namespace Card {
             } else if (Caller.IsLocalPlayer) {
 
                 if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
-                    UI.pinfallPanel.SetActive (true);
+                    StartPinfallChoice ();
                 else if (Is (CardType.Special))
                     UI.BasicsButton.SetActive (true);
                 else
@@ -471,6 +471,12 @@ namespace Card {
 
             while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
+
+        }
+
+        public void AppliedEffects () {
+
+            activeCard.ApplyingEffects = false;
 
         }
 
@@ -1158,16 +1164,24 @@ namespace Card {
 
         }
         #endregion
+        #endregion
+
+        public void StartPinfallChoice () {
+
+            UI.ShowBooleanChoiceUI ("Start Pinfall", "Skip", (b) => {
+
+                if (b)
+                    localPlayer.StartUsingBasicServerRpc (3);
+                else
+                    NextTurn ();
+
+            });
+
+        }
 
         public virtual void ApplyModifiers () {
 
             modifierCards.Remove (this);
-
-        }
-
-        public void AppliedEffects () {
-
-            activeCard.ApplyingEffects = false;
 
         }
 
@@ -1176,7 +1190,6 @@ namespace Card {
             yield return null;
 
         }
-        #endregion        
 
         #region Getters
         public bool Is (CardType t) {
