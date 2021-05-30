@@ -14,11 +14,7 @@ namespace Card {
 
         public override void ApplyModifiers () {
 
-            SC_OffensiveMove c = activeCard as SC_OffensiveMove;
-
-            c.effectOnOpponent.bodyPartDamage.damage /= 2;
-            c.effectOnOpponent.health /= 2;
-            c.effectOnOpponent.stamina /= 2;
+            (activeCard as SC_OffensiveMove).effectOnOpponent /= 2;
 
             base.ApplyModifiers ();
 
