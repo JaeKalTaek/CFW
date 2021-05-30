@@ -44,8 +44,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchHeat: 7
-  types: 03000000
+  types: 0000000003000000
   commonRequirements: []
+  unblockable: 0
   commonEffects: []
   matchHeatGain: 2
   cost:
@@ -63,3 +64,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 1
+  moveOfDoom: 0
