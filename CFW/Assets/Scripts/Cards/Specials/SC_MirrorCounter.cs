@@ -14,7 +14,7 @@ namespace Card {
 
             interceptFinishCard = this;
 
-            Caller.CopyAndStartUsing ((respondedCards.Peek () == null ? originalCard : respondedCards.Peek ()).UICard);
+            Caller.CopyAndStartUsing (respondedCards.Peek () == null ? originalCard : respondedCards.Peek ());
 
         }
 

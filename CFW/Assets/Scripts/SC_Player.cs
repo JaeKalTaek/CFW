@@ -334,9 +334,9 @@ public class SC_Player : NetworkBehaviour {
 
     }    
 
-    public SC_BaseCard CopyAndStartUsing (SC_UI_Card original) {
+    public SC_BaseCard CopyAndStartUsing (SC_BaseCard original) {
 
-        SC_UI_Card c = Create (original.GetComponentInChildren<SC_BaseCard> (), IsLocalPlayer ? GM.localHand : GM.otherHand);
+        SC_UI_Card c = Create (original, IsLocalPlayer ? GM.localHand : GM.otherHand);
 
         c.Card.Ephemeral = true;        
 
@@ -368,7 +368,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void CopyAndStartUsingClientRpc () {
 
-        CopyAndStartUsing (originalCard.UICard);
+        CopyAndStartUsing (originalCard);
 
     }
 
@@ -382,7 +382,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartUsingBasicClientRpc (int id) {
 
-        CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponent<SC_UI_Card> ());
+        CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponentInChildren<SC_BaseCard> ());
 
     }
 
