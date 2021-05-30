@@ -38,7 +38,7 @@ public class SC_GameManager : MonoBehaviour {
     [Header ("Base Values")]
     public int baseHealth;
 
-    public int baseStamina, baseBodyPartHealth;
+    public int baseStamina, baseBodyPartHealth, startingAlignment;
 
     [Header ("Other Values")]
     public int staminaPerTurn;
@@ -96,7 +96,7 @@ public class SC_GameManager : MonoBehaviour {
 
         UI.SetValue (local, "Stamina", baseStamina);
 
-        UI.SetValue (local, "Alignment", 0);
+        UI.SetValue (local, "Alignment", startingAlignment);
 
         foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
             if (bP != BodyPart.None)

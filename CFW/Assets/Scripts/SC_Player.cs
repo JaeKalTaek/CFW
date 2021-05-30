@@ -118,6 +118,8 @@ public class SC_Player : NetworkBehaviour {
             if (bP != BodyPart.None)
                 BodyPartsHealth.Add(bP, GM.baseBodyPartHealth);
 
+        Alignment = GM.startingAlignment;
+
         if (IsLocalPlayer)
             SetDeckServerRpc (deckName);
 
