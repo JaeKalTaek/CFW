@@ -18,7 +18,23 @@ namespace Card {
 
             public OffensiveBodyPartDamage bodyPartDamage;
 
-            public int breakCost;            
+            public int breakCost;
+
+            public static Effect operator * (Effect e, int x) {
+
+                e.stamina *= x;
+                e.bodyPartDamage.damage *= x;
+                return e;
+
+            }
+
+            public static Effect operator / (Effect e, int x) {
+
+                e.stamina /= x;
+                e.bodyPartDamage.damage /= x;
+                return e;
+
+            }
 
         }
 

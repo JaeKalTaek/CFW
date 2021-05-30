@@ -26,6 +26,24 @@ namespace Card {
 
             public BodyPartDamage bodyPartDamage;
 
+            public static Cost operator * (Cost c, int x) {
+
+                c.stamina *= x;
+                c.health *= x;
+                c.bodyPartDamage.damage *= x;
+                return c;
+
+            }
+
+            public static Cost operator / (Cost c, int x) {
+
+                c.stamina /= x;
+                c.health /= x;
+                c.bodyPartDamage.damage /= x;
+                return c;
+
+            }
+
         }
 
         public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
