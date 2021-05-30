@@ -617,6 +617,7 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
+    #region Wait for players
     bool waiting = true;
 
     public IEnumerator WaitForPlayers () {
@@ -643,5 +644,6 @@ public class SC_Player : NetworkBehaviour {
         waiting = false;
 
     }
+    #endregion
 
 }
