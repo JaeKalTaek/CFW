@@ -137,7 +137,7 @@ namespace Card {
         #region Can use      
         public virtual bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            //DebugWithTime ("_______________________________________________\n" + Path);
+            //DebugWithTime (Path);
 
             bool prio = ignorePriority || (user.Turn && !activeCard) || responding || boosting;
 
