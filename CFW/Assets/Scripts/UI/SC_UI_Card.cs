@@ -182,6 +182,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         transform.SetParent (target.transform);
 
+        SC_Deck.OrganizeHand (Card.Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+
         RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.one * .5f;
 
         Flip (flip ?? !Card.Caller.IsLocalPlayer, speed);
