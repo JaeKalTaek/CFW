@@ -317,7 +317,7 @@ namespace Card {
 
                 yield return new WaitForSeconds (GM.playedDelay);
 
-                if (!unblockable && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
+                if (!unblockable && Receiver.Unlocked && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
 
                     if (Receiver.IsLocalPlayer) {
 
