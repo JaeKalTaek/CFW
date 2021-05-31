@@ -20,7 +20,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TextMeshProUGUI endText;
 
-    public GameObject basicsPanel, showBasicsButton, showLockedBasicsButton, hideBasicsButton, hideLockedBasicsButton;           
+    public GameObject basicsPanel, showBasicsButton, hideBasicsButton;           
 
     [Serializable]
     public struct ThreeChoicesUI { public GameObject panel, leftChoice, rightChoice; }
@@ -95,13 +95,11 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public GameObject BasicsButton { get { return NoLock ? showBasicsButton : showLockedBasicsButton; } }
-
     public void ShowBasics (bool show) {
 
-        BasicsButton.SetActive (!show);
+        showBasicsButton.SetActive (!show);
 
-        (NoLock ? hideBasicsButton : hideLockedBasicsButton).SetActive (show);
+        hideBasicsButton.SetActive (show);
 
         if (show)
             for (int i = 0; i < 11; i++)

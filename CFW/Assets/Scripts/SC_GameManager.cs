@@ -29,6 +29,8 @@ public class SC_GameManager : MonoBehaviour {
 
     public SC_Graveyard localGraveyard, otherGraveyard;
 
+    public Transform cardsOnRing;
+
     [Header("Cards")]
     public float cardWidth;
 

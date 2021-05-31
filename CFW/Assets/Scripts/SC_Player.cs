@@ -277,6 +277,8 @@ public class SC_Player : NetworkBehaviour {
 
         GM.waitPanel.SetActive (false);
 
+        GM.cardsOnRing.gameObject.SetActive (true);
+
         if ((start && !IsLocalPlayer) || (!start && IsLocalPlayer))
             localPlayer.NextTurnServerRpc ();
 
@@ -455,7 +457,7 @@ public class SC_Player : NetworkBehaviour {
 
                 yield return c.StartCoroutine (c.FirstTurnEffect ());
 
-            }
+            }            
 
         }
 
@@ -466,7 +468,7 @@ public class SC_Player : NetworkBehaviour {
         Turn = true;
 
         if (IsLocalPlayer)
-            UI.BasicsButton.SetActive (true);
+            UI.showBasicsButton.SetActive (true);
 
     }
     #endregion

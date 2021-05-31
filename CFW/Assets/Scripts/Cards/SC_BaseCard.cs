@@ -414,7 +414,7 @@ namespace Card {
                 if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
                     StartPinfallChoice ();
                 else if (Is (CardType.Special))
-                    UI.BasicsButton.SetActive (true);
+                    UI.showBasicsButton.SetActive (true);
                 else
                     NextTurn ();
 
@@ -644,17 +644,11 @@ namespace Card {
             if (Receiver.IsLocalPlayer)
                 Receiver.locked.Value = Is (CardType.Submission) ? Locked.Submission : Locked.Pinned;
 
-            Vector3 oldPos = UICard.RecT.position;
+            UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
 
-            UICard.RecT.anchorMin = UICard.RecT.anchorMax = UICard.BigRec.anchorMin = UICard.BigRec.anchorMax = UICard.BigRec.pivot = Vector2.one * .5f;
+            UICard.BigRec.anchoredPosition = Vector2.zero;
 
-            UICard.RecT.position = oldPos;
-
-            UICard.BigRec.anchoredPosition = Vector2.up * -UICard.RecT.sizeDelta.y / (2 * GM.playedSizeMultiplicator);
-
-            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
-
-            UICard.RecT.DOAnchorPosY (UICard.RecT.sizeDelta.y * .75f / GM.playedSizeMultiplicator, 1).onComplete = AppliedEffects;
+            UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1).onComplete = AppliedEffects;
 
         }
 

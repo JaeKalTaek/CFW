@@ -72,7 +72,7 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
     public static void OrganizeHand (RectTransform rT) {
 
         for (int i = 0; i < rT.childCount; i++)
-            (rT.GetChild (i).transform as RectTransform).anchoredPosition = new Vector2((((rT.childCount - 1) / 2f) - i) * -(GM.cardWidth / 2), GM.yOffset.F(rT == GM.otherHand));
+            (rT.GetChild (i).transform as RectTransform).anchoredPosition = new Vector2((((rT.childCount - 1) / 2f) - i) * -(GM.cardWidth / 2), GM.yOffset.F(rT == GM.otherHand) / (rT == GM.localHand ? 1 : .67f));
 
     }
 
