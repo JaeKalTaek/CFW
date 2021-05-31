@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
@@ -63,8 +63,6 @@ public class SC_UI_Manager : MonoBehaviour {
 
         public RectTransform container;
 
-        public float baseContainerHeight;
-
     }
 
     public GrabUI grabUI;
@@ -74,8 +72,6 @@ public class SC_UI_Manager : MonoBehaviour {
         Instance = this;
 
         knowYourOpponentChoice.onSubmit.AddListener (KnowYourOpponentConfirmedChoice);
-
-        grabUI.baseContainerHeight = grabUI.container.rect.height;
 
     }
 
