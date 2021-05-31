@@ -171,7 +171,7 @@ namespace Card {
 
                     if (Has (CommonEffectType.Boost)) {
 
-                        //DebugWithTime ("BOOST MATCHING: " + GetComponent<SC_MatchingCard> ().Matching (activeCard));
+                        //DebugWithTime ("BOOST MATCHING: " + GetComponent<SC_CardMatcher> ().Matching (activeCard));
 
                         if (!GetComponent<SC_CardMatcher> ().Matching (activeCard))
                             return false;
