@@ -32,7 +32,7 @@ public class SC_Global {
 
     public enum CardType {
 
-        Aerial, Classic, Hardcore, Strike, Basic, Submission, Special, Mythos
+        Aerial, Classic, Hardcore, Strike, Basic, Submission, Special, Mytho
 
     }
 
