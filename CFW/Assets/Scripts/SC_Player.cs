@@ -277,7 +277,7 @@ public class SC_Player : NetworkBehaviour {
 
         GM.waitPanel.SetActive (false);
 
-        GM.cardsOnRing.gameObject.SetActive (true);
+        UI.ringSlots[0].slot.parent.gameObject.SetActive (true);
 
         if ((start && !IsLocalPlayer) || (!start && IsLocalPlayer))
             localPlayer.NextTurnServerRpc ();

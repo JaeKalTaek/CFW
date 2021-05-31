@@ -27,9 +27,7 @@ public class SC_GameManager : MonoBehaviour {
 
     public RectTransform localHand, otherHand;
 
-    public SC_Graveyard localGraveyard, otherGraveyard;
-
-    public Transform cardsOnRing;
+    public SC_Graveyard localGraveyard, otherGraveyard;    
 
     [Header("Cards")]
     public float cardWidth;

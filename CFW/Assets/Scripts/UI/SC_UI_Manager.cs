@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
 using static Card.SC_BaseCard;
 using static SC_Global;
 using UnityEngine.UI;
+using Card;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -20,7 +21,18 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public TextMeshProUGUI endText;
 
-    public GameObject basicsPanel, showBasicsButton, hideBasicsButton;           
+    public GameObject basicsPanel, showBasicsButton, hideBasicsButton;
+
+    public RingSlot[] ringSlots;
+
+    [Serializable]
+    public struct RingSlot {
+
+        public Transform slot;
+
+        public SC_BaseCard card;
+
+    }
 
     [Serializable]
     public struct ThreeChoicesUI { public GameObject panel, leftChoice, rightChoice; }

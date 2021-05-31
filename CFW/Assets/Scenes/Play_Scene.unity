@@ -1487,7 +1487,7 @@ GameObject:
   - component: {fileID: 170439959}
   - component: {fileID: 170439958}
   m_Layer: 5
-  m_Name: Slot (5)
+  m_Name: Slot_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1505,7 +1505,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1817026254}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5676,7 +5676,6 @@ MonoBehaviour:
   otherHand: {fileID: 358808372}
   localGraveyard: {fileID: 1774692600}
   otherGraveyard: {fileID: 1611163171}
-  cardsOnRing: {fileID: 1817026254}
   cardWidth: 190
   yOffset: 108
   enlargeCardFactor: 2.25
@@ -14457,6 +14456,15 @@ MonoBehaviour:
   basicsPanel: {fileID: 1354745414}
   showBasicsButton: {fileID: 12439930}
   hideBasicsButton: {fileID: 967507031}
+  ringSlots:
+  - slot: {fileID: 1766137335}
+    card: {fileID: 0}
+  - slot: {fileID: 170439957}
+    card: {fileID: 0}
+  - slot: {fileID: 1889513704}
+    card: {fileID: 0}
+  - slot: {fileID: 2108495338}
+    card: {fileID: 0}
   threeChoicesUI:
     panel: {fileID: 483053738}
     leftChoice: {fileID: 503731859}
@@ -14478,7 +14486,6 @@ MonoBehaviour:
     text: {fileID: 1304839002}
     confirmButton: {fileID: 1966333855}
     container: {fileID: 861445395}
-    baseContainerHeight: 0
 --- !u!1 &1766137334
 GameObject:
   m_ObjectHideFlags: 0
@@ -14491,7 +14498,7 @@ GameObject:
   - component: {fileID: 1766137337}
   - component: {fileID: 1766137336}
   m_Layer: 5
-  m_Name: Slot (3)
+  m_Name: Slot_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14509,7 +14516,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1817026254}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -15035,10 +15042,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1889513704}
   - {fileID: 1766137335}
-  - {fileID: 2108495338}
   - {fileID: 170439957}
+  - {fileID: 1889513704}
+  - {fileID: 2108495338}
   m_Father: {fileID: 1762723857}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16046,7 +16053,7 @@ GameObject:
   - component: {fileID: 1889513706}
   - component: {fileID: 1889513705}
   m_Layer: 5
-  m_Name: Slot (2)
+  m_Name: Slot_3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16064,7 +16071,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1817026254}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -18512,7 +18519,7 @@ GameObject:
   - component: {fileID: 2108495340}
   - component: {fileID: 2108495339}
   m_Layer: 5
-  m_Name: Slot (4)
+  m_Name: Slot_4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18530,7 +18537,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1817026254}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
