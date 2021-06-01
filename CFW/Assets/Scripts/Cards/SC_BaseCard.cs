@@ -503,6 +503,14 @@ namespace Card {
 
         }
 
+        public void SetCurrentEffect (CommonEffect e, SC_Player t = null) {
+
+            CurrentEffect = e;
+
+            effectTarget = t ?? Caller;
+
+        }
+
         #region May
         protected void May (Action a) {
 

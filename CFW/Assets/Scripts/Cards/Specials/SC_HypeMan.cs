@@ -7,9 +7,7 @@ namespace Card {
 
         public override IEnumerator FirstTurnEffect () {
 
-            CurrentEffect = new CommonEffect (CommonEffectType.Grab, true);
-
-            effectTarget = Caller;
+            SetCurrentEffect (new CommonEffect (CommonEffectType.Grab, true));
 
             GrabPerform ();
 
