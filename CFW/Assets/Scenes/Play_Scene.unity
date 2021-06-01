@@ -5823,12 +5823,12 @@ MonoBehaviour:
   playedSizeMultiplicator: 2
   baseHealth: 20
   baseStamina: 10
-  baseBodyPartHealth: 7
+  baseBodyPartHealth: 10
   startingAlignment: 0
   staminaPerTurn: 2
   maxAlignment: 10
-  playedDelay: 0.75
-  responseTime: 2
+  playedDelay: 0.5
+  responseTime: 1.5
 --- !u!114 &670482960
 MonoBehaviour:
   m_ObjectHideFlags: 0
