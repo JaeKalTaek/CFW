@@ -35,7 +35,7 @@ namespace Card {
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost, Grab, Turn, Modifier }
+            Response, Counter, Boost, Grab, Turn, Modifier, OnPlayTrigger }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -323,9 +323,16 @@ namespace Card {
 
             UICard.Flip (!UICard.FaceUp, 1);
 
-        }        
+        }
+
+        public static event Action OnPlay;
 
         IEnumerator Use (bool resumed = false) {
+
+            OnPlay?.Invoke ();
+
+            while (ApplyingEffects)
+                yield return new WaitForEndOfFrame ();
 
             if (!resumed) {
 
@@ -704,6 +711,14 @@ namespace Card {
             modifierCards.Add (this);
 
         }
+
+        public void OnPlayTrigger () {
+
+            OnPlay += OnPlayTriggered;
+
+        }
+
+        protected virtual void OnPlayTriggered () { }
         #endregion
 
         #region Draw
