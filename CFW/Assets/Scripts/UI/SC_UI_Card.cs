@@ -90,7 +90,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (activeCard != Card) {
 
-            if (localPlayer.ChoosingCard != ChoosingCard.None) {
+            if (localPlayer.ChoosingCard != ChoosingCard.None && !Card.OnTheRing) {
 
                 switch (localPlayer.ChoosingCard) {
                     
