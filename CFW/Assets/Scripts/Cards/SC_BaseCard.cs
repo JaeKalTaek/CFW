@@ -1246,6 +1246,16 @@ namespace Card {
         }
 
         public bool Ephemeral { get; set; }
+
+        public bool IsAlignmentCard (bool face) {
+
+            foreach (CommonRequirement c in commonRequirements)
+                if (c.valueType == ValueName.Alignment && !c.opponent && ((!face && c.requirementType == RequirementType.Maximum && c.requirementValue <= 0) || (face && c.requirementType == RequirementType.Minimum && c.requirementValue >= 0)))
+                    return true;
+
+            return false;
+
+        }
         #endregion
 
         public static SC_UI_Card Create (SC_BaseCard original, Transform parent) {

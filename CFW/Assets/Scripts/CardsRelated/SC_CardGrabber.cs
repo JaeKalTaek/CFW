@@ -33,21 +33,8 @@ public class SC_CardGrabber : SC_CardMatcher {
         if (moveOfDoom > 0 && (!(card as SC_OffensiveMove) || (card as SC_OffensiveMove).moveOfDoom != moveOfDoom))
             return false;
 
-        if (heel || face) {
-
-            bool has = false;
-
-            foreach (CommonRequirement c in card.commonRequirements) {
-
-                if (c.valueType == ValueName.Alignment && !c.opponent && ((heel && c.requirementType == RequirementType.Maximum && c.requirementValue <= 0) || (face && c.requirementType == RequirementType.Minimum && c.requirementValue >= 0)))
-                    has = true;
-
-            }
-
-            if (!has)
-                return false;
-
-        }
+        if ((heel && !card.IsAlignmentCard (heel)) || (face && !card.IsAlignmentCard (face)))
+            return false;
 
         if (bodyPartTarget != BodyPart.None) {
 
