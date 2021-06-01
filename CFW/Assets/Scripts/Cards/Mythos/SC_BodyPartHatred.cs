@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace Card {
 
     public class SC_BodyPartHatred : SC_BaseCard {
