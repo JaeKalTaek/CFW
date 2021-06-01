@@ -11,8 +11,6 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            modifierCards.Add (this);
-
             cardHovered = new OnCardHovered ((c, b) => {
 
                 if (localPlayer.Turn && localPlayer.Unlocked && c.Is (SC_Global.CardType.Strike)) {

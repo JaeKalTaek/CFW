@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1034911921795846
+--- !u!1 &1546395002530676725
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4293301065684786}
-  - component: {fileID: 7798182494940750044}
+  - component: {fileID: 6274978370742008012}
+  - component: {fileID: -2437839659050808980}
   m_Layer: 0
-  m_Name: Paradise Lock
+  m_Name: Body Part Hatred
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4293301065684786
+--- !u!4 &6274978370742008012
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034911921795846}
+  m_GameObject: {fileID: 1546395002530676725}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,42 +31,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7798182494940750044
+--- !u!114 &-2437839659050808980
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1034911921795846}
+  m_GameObject: {fileID: 1546395002530676725}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2801f83018e3bb44b8599919822d64b, type: 3}
+  m_Script: {fileID: 11500000, guid: 649a1587bd12d6142be05978e0f5261d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchHeat: 6
-  types: 05000000
+  matchHeat: 4
+  types: 07000000
   commonRequirements: []
   unblockable: 0
-  stayOnRing: 0
+  stayOnRing: 1
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 23
     valueName: 0
     effectValue: 0
-  matchHeatGain: 2
-  cost:
-    stamina: 2
-    health: 0
-    bodyPartDamage:
-      bodyPart: 0
-      damage: 0
-  finisher: 0
-  effect:
-    stamina: 2
-    bodyPartDamage:
-      bodyPart: 0
-      otherBodyPart: 0
-      both: 0
-      damage: 0
-    breakCost: 6

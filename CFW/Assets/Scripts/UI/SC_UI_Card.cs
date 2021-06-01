@@ -8,6 +8,7 @@ using System;
 using static Card.SC_BaseCard;
 using static SC_Global;
 using System.Collections;
+using static SC_UI_Manager;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -46,13 +47,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic && Card != activeCard) || localPlayer.Hand.Contains (Card) || lockingCard == Card) {
+        if ((IsBasic && Card != activeCard) || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card) {
 
             Card.CardHovered (true);
 
-            bigCard.transform.SetParent (transform.parent.parent);
-
-            bigCard.transform.SetAsLastSibling ();
+            bigCard.transform.SetParent (UI.hoveredParent);
 
             bigCard.SetActive (true);
 
@@ -64,7 +63,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     IEnumerator Hovered () {
 
-        while ((IsBasic && Card != activeCard) || localPlayer.Hand.Contains (Card) || lockingCard == Card)
+        while ((IsBasic && Card != activeCard) || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)
             yield return new WaitForEndOfFrame ();
 
         OnPointerExit (new PointerEventData (EventSystem.current));
@@ -197,6 +196,42 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             else
                 target.Cards.Add (Card);            
             
+        });
+
+    }
+
+    public void ToRingSlot () {
+
+        RingSlot target = new RingSlot ();
+
+        foreach (RingSlot r in Card.Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots) {
+
+            if (!r.card) {
+
+                target = r;
+
+                break;
+
+            }
+
+        }
+
+        transform.SetParent (target.slot);
+
+        RecT.anchorMin = RecT.anchorMax = Vector2.one * .5f;
+
+        RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
+
+            target.card = Card;
+
+            BigRec.anchorMin = BigRec.anchorMax = BigRec.pivot = Vector2.one * .5f;
+
+            BigRec.anchoredPosition = Vector2.zero;
+
+            Card.OnTheRing = true;
+
+            Card.FinishedUsing ();
+
         });
 
     }

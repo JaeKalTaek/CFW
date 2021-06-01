@@ -1,17 +1,8 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Card {
 
     public class SC_Resilience : SC_BaseCard {
-
-        protected override IEnumerator ApplyEffects () {
-
-            modifierCards.Add (this);
-
-            yield return StartCoroutine (base.ApplyEffects ());
-
-        }
 
         public override void ApplyModifiers () {
 

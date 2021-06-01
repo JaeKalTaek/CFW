@@ -3,11 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using static SC_Global;
 using static SC_Player;
+using static SC_UI_Manager;
 
 namespace Card {
 
@@ -21,24 +20,22 @@ namespace Card {
         public SC_UI_Card UICard { get; set; }
 
         [Header("Base Card Variables")]
-        [Tooltip("The minimum Match Heat required to play this card")]
         public int matchHeat;
 
-        [Tooltip("Types of this card")]
         public CardType[] types;
 
-        [Tooltip ("Common requirements of this card")]
         public CommonRequirement[] commonRequirements;
 
-        public bool unblockable;
+        public bool unblockable, stayOnRing;
 
-        [Tooltip ("Common effects of this card")]     
+        public  bool OnTheRing { get; set; }
+
         public List<CommonEffect> commonEffects;        
 
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost, Grab, Turn }
+            Response, Counter, Boost, Grab, Turn, Modifier }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -126,6 +123,9 @@ namespace Card {
 
             }
 
+            if (types != null && Is (CardType.Mytho))
+                stayOnRing = true;
+
         }
 
         protected virtual void Awake () {
@@ -145,13 +145,24 @@ namespace Card {
 
             //DebugWithTime ((GM.MatchHeat >= matchHeat) + ", " + (!Is (CardType.Special) || !user.SpecialUsed) + ", " + prio + ", " + locked);
 
-            if (GM.MatchHeat >= matchHeat && (!Is (CardType.Special) || !user.SpecialUsed) && prio && locked) {
+            if (GM.MatchHeat >= matchHeat && (!IsSpecial || !user.SpecialUsed) && (!OnTheRing || CanUseFromRing ()) && prio && locked) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
                         return false;
 
                 //DebugWithTime ("COMMON REQUIREMENTS OK");
+
+                if (stayOnRing) {
+
+                    foreach (RingSlot r in UI.localRingSlots)
+                        if (!r.card)
+                            goto OpenSlot;
+
+                    return false;
+
+                }
+                OpenSlot:
 
                 if (responding) {
 
@@ -196,6 +207,12 @@ namespace Card {
             return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
 
         }
+
+        protected virtual bool CanUseFromRing () {
+
+            return false;
+
+        }
         #endregion     
 
         #region Start using & making choices
@@ -223,14 +240,14 @@ namespace Card {
 
                 responding = boosting = false;
 
-            } else if (Is (CardType.Special))
+            } else if (IsSpecial)
                 localPlayer.SpecialUsed = true;
 
             activeCard = this;
 
             boosting = true;
 
-            if (!resume && !Is (CardType.Special) && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand ()) {
+            if (!resume && !IsSpecial && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand ()) {
 
                 UI.ShowMessage ("Boost");
 
@@ -347,7 +364,10 @@ namespace Card {
 
                 UICard.RecT.DOSizeDelta (UICard.RecT.sizeDelta / GM.playedSizeMultiplicator, 1);
 
-                UICard.ToGraveyard (1, () => { FinishedUsing (); }, false);
+                if (stayOnRing)
+                    UICard.ToRingSlot ();
+                else
+                    UICard.ToGraveyard (1, () => { FinishedUsing (); }, false);
 
             } else {
 
@@ -361,7 +381,7 @@ namespace Card {
 
         List<CommonEffect> finishedEffects;
 
-        protected virtual void FinishedUsing (bool countered = false) {
+        public virtual void FinishedUsing (bool countered = false) {
 
             if (!countered) {
 
@@ -413,7 +433,7 @@ namespace Card {
 
                 if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
                     StartPinfallChoice ();
-                else if (Is (CardType.Special))
+                else if (IsSpecial)
                     UI.showBasicsButton.SetActive (true);
                 else
                     NextTurn ();
@@ -676,6 +696,12 @@ namespace Card {
         public void Turn () {
 
             effectTarget.Alignment *= -1;
+
+        }
+
+        public void Modifier () {
+
+            modifierCards.Add (this);
 
         }
         #endregion
@@ -1191,6 +1217,8 @@ namespace Card {
             return false;
 
         }
+
+        public bool IsSpecial { get { return Is (CardType.Special) || Is (CardType.Mytho); } }
 
         public bool Has (CommonEffectType ce) {
 

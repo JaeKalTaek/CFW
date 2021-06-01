@@ -23,7 +23,9 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public GameObject basicsPanel, showBasicsButton, hideBasicsButton;
 
-    public RingSlot[] ringSlots;
+    public Transform hoveredParent;
+
+    public RingSlot[] localRingSlots, otherRingSlots;
 
     [Serializable]
     public struct RingSlot {

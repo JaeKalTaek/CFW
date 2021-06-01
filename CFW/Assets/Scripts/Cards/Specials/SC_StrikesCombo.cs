@@ -13,13 +13,11 @@ namespace Card {
 
             interceptFinishCard = this;
 
-            modifierCards.Add (this);
-
             yield return StartCoroutine (base.ApplyEffects ());
 
         }
 
-        protected override void FinishedUsing (bool countered = false) {
+        public override void FinishedUsing (bool countered = false) {
 
             if (Caller.IsLocalPlayer)
                 StartCoroutine (PlayCombo ());
