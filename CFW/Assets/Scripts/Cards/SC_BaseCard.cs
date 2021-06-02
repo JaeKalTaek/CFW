@@ -36,7 +36,7 @@ namespace Card {
         public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
             BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
             Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost, Grab, Turn, Modifier, OnPlayTrigger }
+            Response, Counter, Boost, Grab, Turn, Modifier, OnPlayTrigger, OnNewTurnTrigger }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -734,6 +734,14 @@ namespace Card {
         }
 
         protected virtual void OnPlayTriggered () { }
+
+        public void OnNewTurnTrigger () {
+
+            OnNewTurn += OnNewTurnTriggered;
+
+        }
+
+        protected virtual void OnNewTurnTriggered () { }
         #endregion
 
         #region Draw

@@ -246,9 +246,7 @@ public class SC_Player : NetworkBehaviour {
         SC_ShiFuMiChoice.Draw ();
 
     }
-    #endregion
 
-    #region Start Game
     [ServerRpc]
     void ShiFuMiFinishedServerRpc (bool won) {
 
@@ -261,10 +259,12 @@ public class SC_Player : NetworkBehaviour {
 
         GM.shifumiPanel.SetActive (false);
 
-        shifumiAction (IsLocalPlayer ? won : !won);          
+        shifumiAction (IsLocalPlayer ? won : !won);
 
-    }    
+    }
+    #endregion
 
+    #region Start Game
     [ServerRpc]
     public void StartGameServerRpc (bool start) {
 
@@ -436,7 +436,9 @@ public class SC_Player : NetworkBehaviour {
     void NextTurnClientRpc () {
 
         if (IsLocalPlayer)
-            localPlayer.Turn = false;           
+            localPlayer.Turn = false;
+        else
+            otherPlayer.Turn = false;
 
         StartCoroutine ((IsLocalPlayer ? otherPlayer : localPlayer).Deck.Draw (true));
 
@@ -460,13 +462,13 @@ public class SC_Player : NetworkBehaviour {
 
             }            
 
-        }
-
-        OnNewTurn?.Invoke ();
+        }        
 
         SpecialUsed = false;
 
         Turn = true;
+
+        OnNewTurn?.Invoke ();
 
         if (IsLocalPlayer)
             UI.showBasicsButton.SetActive (true);
