@@ -34,6 +34,8 @@ namespace Card {
 
             if (CanUse (Caller)) {
 
+                UI.showBasicsButton.SetActive (false);
+
                 RingSlot = slot;
 
                 StartCoroutine (StartPlaying ());
