@@ -29,7 +29,26 @@ namespace Card {
         public bool unblockable, stayOnRing;
 
         public int RingSlot { get; set; }
-        public  bool OnTheRing { get { return RingSlot != -1; } }
+        public bool OnTheRing { get { return RingSlot != -1; } }
+
+        int counters;
+        public int Counters {
+
+            get { return counters; }
+
+            set {
+
+                counters = value;
+
+                UICard.counters.nbr.text = UICard.bigCounters.nbr.text = counters.ToString ();
+
+                UICard.counters.root.SetActive (counters > 0 && !UICard.bigCard.activeSelf);
+
+                UICard.bigCounters.root.SetActive (counters > 0);
+
+            }
+
+        }
 
         public List<CommonEffect> commonEffects;        
 

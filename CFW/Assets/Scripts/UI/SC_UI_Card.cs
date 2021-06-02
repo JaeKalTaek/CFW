@@ -8,7 +8,7 @@ using System;
 using static Card.SC_BaseCard;
 using static SC_Global;
 using System.Collections;
-using static SC_UI_Manager;
+using TMPro;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -23,6 +23,17 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
 
     public GameObject bigCard;
+
+    [Serializable]
+    public struct Counters {
+
+        public GameObject root;
+
+        public TextMeshProUGUI nbr;
+
+    }
+
+    public Counters counters, bigCounters;
 
     bool IsBasic { get { return Card.Is (CardType.Basic); } }
 
@@ -49,6 +60,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
+            counters.root.SetActive (false);
+
             Card.CardHovered (true);
 
             bigCard.transform.SetParent (UI.hoveredParent);
@@ -73,6 +86,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnPointerExit (PointerEventData eventData) {
 
         if (bigCard.activeSelf) {
+
+            counters.root.SetActive (Card.Counters > 0);
 
             StopCoroutine (Hovered ());
 
