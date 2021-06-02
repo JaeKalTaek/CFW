@@ -28,7 +28,8 @@ namespace Card {
 
         public bool unblockable, stayOnRing;
 
-        public  bool OnTheRing { get; set; }
+        public int RingSlot { get; set; }
+        public  bool OnTheRing { get { return RingSlot != -1; } }
 
         public List<CommonEffect> commonEffects;        
 
@@ -130,6 +131,8 @@ namespace Card {
 
         protected virtual void Awake () {
 
+            RingSlot = -1;
+
             UICard = transform.parent.GetComponent<SC_UI_Card> ();
 
         }        
@@ -145,7 +148,7 @@ namespace Card {
 
             //DebugWithTime ((GM.MatchHeat >= matchHeat) + ", " + (!Is (CardType.Special) || !user.SpecialUsed) + ", " + prio + ", " + locked);
 
-            if (GM.MatchHeat >= matchHeat && (!IsSpecial || !user.SpecialUsed) && (!OnTheRing || CanUseFromRing ()) && prio && locked) {
+            if (GM.MatchHeat >= matchHeat && (!IsSpecial || !user.SpecialUsed) && !OnTheRing && prio && locked) {
 
                 foreach (CommonRequirement c in commonRequirements)
                     if (!Test (c, user))
@@ -155,8 +158,8 @@ namespace Card {
 
                 if (stayOnRing) {
 
-                    foreach (RingSlot r in UI.localRingSlots)
-                        if (!r.card)
+                    foreach (RingSlot r in (user.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots))
+                        if (!r.occupied)
                             goto OpenSlot;
 
                     return false;
@@ -205,12 +208,6 @@ namespace Card {
             int value = (int) typeof (SC_Player).GetProperty (c.valueType.ToString ()).GetValue ((c.opponent && user.IsLocalPlayer) || (!c.opponent && !user.IsLocalPlayer) ? otherPlayer : localPlayer);
 
             return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
-
-        }
-
-        protected virtual bool CanUseFromRing () {
-
-            return false;
 
         }
         #endregion     
@@ -262,7 +259,7 @@ namespace Card {
 
             yield return StartCoroutine (MakeChoices ());
 
-            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex ());
+            localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), OnTheRing);
 
         }
 
@@ -305,17 +302,27 @@ namespace Card {
 
             Caller = c;
 
-            Receiver = c.IsLocalPlayer ? otherPlayer : localPlayer;       
-
-            Caller.Hand.Remove (this);
+            Receiver = Caller.IsLocalPlayer ? otherPlayer : localPlayer;
 
             UICard.RecT.SetParent (UICard.RecT.parent.parent);
 
-            SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+            if (!OnTheRing) {
 
-            UICard.RecT.pivot = Vector2.one * .5f;
+                Caller.Hand.Remove (this);
 
-            UICard.RecT.anchoredPosition3D = Vector3.up * (Caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
+                SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+                UICard.RecT.pivot = Vector2.one * .5f;
+
+                UICard.RecT.anchoredPosition3D = Vector3.up * (Caller.IsLocalPlayer ? UICard.RecT.sizeDelta.y / 2 : (GM.transform as RectTransform).sizeDelta.y - UICard.RecT.sizeDelta.y / 2);
+
+            } else {
+
+                (Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[RingSlot].occupied = false;
+
+                RingSlot = -1;
+
+            }
 
             UICard.RecT.DOLocalMove (Vector3.zero, 1);
 
@@ -1289,6 +1296,8 @@ namespace Card {
 
         }
         #endregion
+
+        public virtual void OnRingClicked () { }
 
     }
 

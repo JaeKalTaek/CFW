@@ -323,16 +323,19 @@ public class SC_Player : NetworkBehaviour {
     }    
 
     [ServerRpc]
-    public void PlayCardServerRpc (int id) {
+    public void PlayCardServerRpc (int id, bool onTheRing = false) {
 
-        PlayCardClientRpc (id);
+        PlayCardClientRpc (id, onTheRing);
 
     }
 
     [ClientRpc]
-    void PlayCardClientRpc (int id) {
+    void PlayCardClientRpc (int id, bool onTheRing) {
 
-        ActionOnCard (id, (c) => { c.Play (this); });
+        if (onTheRing)
+            (IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[0].slot.parent.GetChild (id).GetComponentInChildren<SC_BaseCard> ().Play (this);
+        else
+            ActionOnCard (id, (c) => { c.Play (this); });
 
     }    
 

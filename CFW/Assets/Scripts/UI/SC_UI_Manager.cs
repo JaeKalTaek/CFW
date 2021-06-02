@@ -32,7 +32,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
         public Transform slot;
 
-        public SC_BaseCard card;
+        public bool occupied;
 
     }
 

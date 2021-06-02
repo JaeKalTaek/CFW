@@ -47,7 +47,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((IsBasic && Card != activeCard) || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card) {
+        if (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
             Card.CardHovered (true);
 
@@ -63,7 +63,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     IEnumerator Hovered () {
 
-        while ((IsBasic && Card != activeCard) || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)
+        while (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card))
             yield return new WaitForEndOfFrame ();
 
         OnPointerExit (new PointerEventData (EventSystem.current));
@@ -134,21 +134,26 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 }
 
-            } else if (bigCard.activeSelf && Card.CanUse (localPlayer)) {                
+            } else if (bigCard.activeSelf) {
 
-                foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.hideBasicsButton })
-                    g.SetActive (false);
+                if (Card.CanUse (localPlayer)) {
 
-                if (IsBasic) {
+                    foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.hideBasicsButton })
+                        g.SetActive (false);
 
-                    GM.localHand.gameObject.SetActive (true);
+                    if (IsBasic) {
 
-                    localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
+                        GM.localHand.gameObject.SetActive (true);
 
-                } else
-                    Card.StartCoroutine (Card.StartPlaying ());
+                        localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
 
-                OnPointerExit (new PointerEventData (EventSystem.current));
+                    } else
+                        Card.StartCoroutine (Card.StartPlaying ());
+
+                    OnPointerExit (new PointerEventData (EventSystem.current));
+
+                } else if (localPlayer.Turn && Card.OnTheRing && localPlayer == Card.Caller)
+                    Card.OnRingClicked ();
 
             }
 
@@ -202,13 +207,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void ToRingSlot () {
 
-        RingSlot target = new RingSlot ();
+        for (int i = 0; i < 4; i++) {        
 
-        foreach (RingSlot r in Card.Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots) {
+            if (!(Card.Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[i].occupied) {
 
-            if (!r.card) {
+                transform.SetParent ((Card.Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[i].slot);
 
-                target = r;
+                (Card.Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[i].occupied = true;
+
+                Card.RingSlot = i;
 
                 break;
 
@@ -216,19 +223,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         }
 
-        transform.SetParent (target.slot);
-
         RecT.anchorMin = RecT.anchorMax = Vector2.one * .5f;
 
         RecT.DOAnchorPos (Vector2.zero, 1).OnComplete (() => {
 
-            target.card = Card;
+            transform.SetParent (transform.parent.parent);
 
             BigRec.anchorMin = BigRec.anchorMax = BigRec.pivot = Vector2.one * .5f;
 
-            BigRec.anchoredPosition = Vector2.zero;
-
-            Card.OnTheRing = true;
+            BigRec.anchoredPosition = Vector2.zero;           
 
             Card.FinishedUsing ();
 
