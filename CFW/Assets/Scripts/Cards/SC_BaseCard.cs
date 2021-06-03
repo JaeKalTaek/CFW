@@ -181,7 +181,7 @@ namespace Card {
 
                 if (stayOnRing) {
 
-                    foreach (RingSlot r in (user.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots))
+                    foreach (RingSlot r in user.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)
                         if (!r.occupied)
                             goto OpenSlot;
 
