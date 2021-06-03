@@ -167,7 +167,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                     OnPointerExit (new PointerEventData (EventSystem.current));
 
-                } else if (localPlayer.Turn && Card.OnTheRing && localPlayer == Card.Caller)
+                } else if (localPlayer.Turn && Card.OnTheRing)
                     Card.OnRingClicked ();
 
             }
