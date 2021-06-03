@@ -48,6 +48,7 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -66,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe35ed1c7f44524da0619cfc11094d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  superTypeQuery: 2
+  superTypeQuery: 1
   typeQueries: []
   commonEffectQueries: 
   deck: 1
@@ -76,3 +77,5 @@ MonoBehaviour:
   heel: 0
   face: 0
   maxMatchHeat: 0
+  bodyPartTarget: 0
+  moveOfDoom: 0
