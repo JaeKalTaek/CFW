@@ -852,22 +852,30 @@ namespace Card {
 
             }
 
-        }        
+        }
         #endregion
 
         #region Exchange
+        public static SC_Player forceFirstExchange;
+
         public void Exchange () {
 
             Receiver.IntChoices["Exchange"] = -1;            
 
             if (CanUse (Receiver, true)) {
 
-                ApplyingEffects = true;
+                if (!Ephemeral && forceFirstExchange == Caller)
+                    localPlayer.SetIntChoiceServerRpc ("Exchange", 0);
+                else {
 
-                if (Receiver.IsLocalPlayer)
-                    UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetIntChoiceServerRpc ("Exchange", b ? 0 : 1); });               
+                    ApplyingEffects = true;
 
-                StartCoroutine (ExchangeCoroutine ());
+                    if (Receiver.IsLocalPlayer)
+                        UI.ShowBooleanChoiceUI ("Accept Exchange", "Refuse Exchange", (b) => { localPlayer.SetIntChoiceServerRpc ("Exchange", b ? 0 : 1); });
+
+                    StartCoroutine (ExchangeCoroutine ());
+
+                }
 
             }
 
