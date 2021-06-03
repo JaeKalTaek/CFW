@@ -1314,6 +1314,7 @@ namespace Card {
 
         #region Cards hovering
         public delegate void OnCardHovered (SC_BaseCard c, bool on);
+        protected OnCardHovered cardHovered;
 
         public static event OnCardHovered OnCardHoveredEvent;
 

@@ -3,9 +3,7 @@ using static SC_Player;
 
 namespace Card {
 
-    public class SC_StuckInATrashCan : SC_Submission {
-
-        public OnCardHovered cardHovered;
+    public class SC_StuckInATrashCan : SC_Submission {        
 
         protected override IEnumerator ApplyEffects () {
 
@@ -13,7 +11,7 @@ namespace Card {
 
             cardHovered = new OnCardHovered ((c, b) => {
 
-                if (localPlayer.Turn && localPlayer.Unlocked && c.Is (SC_Global.CardType.Strike)) {
+                if (localPlayer == Caller && !activeCard && c.Is (SC_Global.CardType.Strike)) {
 
                     if (b)
                         c.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
