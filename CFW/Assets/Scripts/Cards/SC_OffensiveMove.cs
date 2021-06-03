@@ -49,9 +49,14 @@ namespace Card {
 
             Receiver.ApplySingleEffect ("Health", null, effectOnOpponent);
 
+            if (effectOnOpponent.health > 0)
+                OnOffensiveMoveDamage?.Invoke ();
+
             ApplyBodyPartDamage ();
 
         }
+
+        public static event Action OnOffensiveMoveDamage;        
 
     }
 

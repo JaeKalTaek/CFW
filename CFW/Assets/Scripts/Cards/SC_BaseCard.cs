@@ -57,7 +57,7 @@ namespace Card {
             Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest,
             Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom,
             DiscardChosen, Refill, StartPin, Response, Counter, Boost, Grab, Turn, Modifier,
-            OnPlayTrigger, OnNewTurnTrigger, OnNoAttackTurnTrigger
+            OnPlayTrigger, OnNewTurnTrigger, OnNoAttackTurnTrigger, OnOffensiveMoveDamageTrigger
 
         }
 
@@ -778,6 +778,15 @@ namespace Card {
         }
 
         protected virtual void OnNoAttackTurnTriggered () { }
+
+        //On Offensive Move Damage
+        public void OnOffensiveMoveDamageTrigger () {
+
+            SC_OffensiveMove.OnOffensiveMoveDamage += OnOffensiveMoveDamageTriggered;
+
+        }
+
+        protected virtual void OnOffensiveMoveDamageTriggered () { }
         #endregion
 
         #region Draw
