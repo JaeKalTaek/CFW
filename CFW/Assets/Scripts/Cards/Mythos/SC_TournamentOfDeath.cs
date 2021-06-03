@@ -14,6 +14,8 @@ namespace Card {
 
         public override void OnRingClicked () {
 
+            base.OnRingClicked ();
+
             if (Counters >= 3 && localPlayer == Caller && Caller.Turn && !activeCard) {
 
                 UI.showBasicsButton.SetActive (false);

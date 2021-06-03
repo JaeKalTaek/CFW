@@ -86,7 +86,9 @@ public class SC_Global {
 
         { "Play", "Choose an offensive move to play" },
 
-        { "NoGrabbing", "There was nothing to grab" }
+        { "NoGrabbing", "There was nothing to grab" },
+
+        { "DestroyBackstory", "Choose a mythos card on the ring to discard" }
 
     };
 

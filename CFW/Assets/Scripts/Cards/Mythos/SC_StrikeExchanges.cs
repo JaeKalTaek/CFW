@@ -12,6 +12,14 @@ namespace Card {
 
         }
 
+        public override void DiscardedFromRing () {
+
+            base.DiscardedFromRing ();
+
+            forceFirstExchange = null;
+
+        }
+
     }
 
 }

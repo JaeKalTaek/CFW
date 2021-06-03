@@ -1357,7 +1357,37 @@ namespace Card {
         }
         #endregion
 
-        public virtual void OnRingClicked () { }
+        #region On Ring Clicked
+        public delegate void OnRingClickedDelegate (SC_BaseCard c);
+
+        public static event OnRingClickedDelegate OnRingClickedEvent;
+
+        public virtual void OnRingClicked () {
+
+            OnRingClickedEvent?.Invoke (this);
+
+        }
+        #endregion
+
+        public virtual void DiscardedFromRing () {
+
+            Counters = 0;
+
+            if (Has (CommonEffectType.OnPlayTrigger))
+                OnPlay -= OnPlayTriggered;
+
+            modifierCards.Remove (this);
+
+            if (Has (CommonEffectType.OnNewTurnTrigger))
+                OnNewTurn -= OnNewTurnTriggered;
+
+            if (Has (CommonEffectType.OnNoAttackTurnTrigger))
+                OnNoAttackTurn -= OnNoAttackTurnTriggered;
+
+            if (Has (CommonEffectType.OnOffensiveMoveDamageTrigger))
+                SC_OffensiveMove.OnOffensiveMoveDamage -= OnOffensiveMoveDamageTriggered;
+
+        }
 
     }
 

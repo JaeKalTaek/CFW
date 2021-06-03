@@ -28,6 +28,8 @@ namespace Card {
 
         public override void OnRingClicked () {
 
+            base.OnRingClicked ();
+
             int slot = RingSlot;
 
             RingSlot = -1;
