@@ -9,7 +9,7 @@ namespace Card {
 
             yield return StartCoroutine (base.MakeChoices ());
 
-            if (localPlayer.Health > cost.health + 2) {
+            if (localPlayer.Health > GetHealthCost (localPlayer) + 2) {
 
                 yield return StartCoroutine (MakeChoice (() => {
 

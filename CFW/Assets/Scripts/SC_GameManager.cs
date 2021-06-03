@@ -68,6 +68,7 @@ public class SC_GameManager : MonoBehaviour {
 
         SC_BaseCard.modifierCards = new List<SC_BaseCard> ();
         SC_BaseCard.respondedCards = new Stack<SC_BaseCard> ();
+        SC_AttackCard.healthCostModifiers = new List<SC_AttackCard.HealthCostModifier> ();
 
         waitingPanel.SetActive (true);
 

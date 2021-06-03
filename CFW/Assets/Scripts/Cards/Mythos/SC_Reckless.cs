@@ -5,7 +5,7 @@ namespace Card {
         public override void ApplyModifiers () {
 
             if (activeCard.Caller == Caller && activeCard.Is (SC_Global.CardType.Aerial))
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += (activeCard as SC_OffensiveMove).cost.health;
+                (activeCard as SC_OffensiveMove).effectOnOpponent.health += (activeCard as SC_OffensiveMove).GetHealthCost (Caller);
 
         }
 

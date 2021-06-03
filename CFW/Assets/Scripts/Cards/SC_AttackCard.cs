@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using static SC_Global;
 
@@ -46,6 +47,21 @@ namespace Card {
 
         }
 
+        public delegate int HealthCostModifier (SC_BaseCard c, SC_Player p);
+
+        public static List<HealthCostModifier> healthCostModifiers;
+
+        public int GetHealthCost (SC_Player user) {
+
+            int h = cost.health;
+
+            foreach (HealthCostModifier m in healthCostModifiers)
+                h += m (this, user);
+
+            return h;
+
+        }
+
         public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
             return CanUse (user, 1, ignorePriority, ignoreLocks);
@@ -60,7 +76,7 @@ namespace Card {
 
         public bool CanPayCost (SC_Player user, int chain = 1) {
 
-            if (user.Health > cost.health * chain && user.Stamina >= cost.stamina * chain) {
+            if (user.Health > GetHealthCost (user) * chain && user.Stamina >= cost.stamina * chain) {
 
                 foreach (BodyPart b in user.BodyPartsHealth.Keys)
                     if (b == cost.bodyPartDamage.bodyPart && user.BodyPartsHealth[b] < cost.bodyPartDamage.damage * chain)
@@ -119,7 +135,7 @@ namespace Card {
 
             Caller.ApplySingleEffect ("Stamina", null, cost);
 
-            Caller.ApplySingleEffect ("Health", null, cost);
+            Caller.ApplySingleEffect ("Health", -GetHealthCost (Caller));
 
             if (cost.bodyPartDamage.bodyPart != BodyPart.None)
                 Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
