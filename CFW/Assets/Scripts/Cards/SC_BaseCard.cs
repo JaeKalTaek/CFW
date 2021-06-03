@@ -52,10 +52,14 @@ namespace Card {
 
         public List<CommonEffect> commonEffects;        
 
-        public enum CommonEffectType { Assess, MatchHeatEffect, SingleValueEffect,
-            BodyPartEffect, Tire, Break, Rest, Draw, Count, AlignmentChoice, DoubleTap,
-            Lock, Exchange, Chain, DiscardRandom, DiscardChosen, Refill, StartPin,
-            Response, Counter, Boost, Grab, Turn, Modifier, OnPlayTrigger, OnNewTurnTrigger }
+        public enum CommonEffectType {
+
+            Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest,
+            Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom,
+            DiscardChosen, Refill, StartPin, Response, Counter, Boost, Grab, Turn, Modifier,
+            OnPlayTrigger, OnNewTurnTrigger, OnNoAttackTurnTrigger
+
+        }
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
@@ -349,9 +353,7 @@ namespace Card {
 
             UICard.Flip (!UICard.FaceUp, 1);
 
-        }
-
-        public static event Action OnPlay;
+        }        
 
         IEnumerator Use (bool resumed = false) {
 
@@ -458,7 +460,7 @@ namespace Card {
             if (Is (CardType.Basic)) {
 
                 if (!Has (CommonEffectType.Break))
-                    NextTurn ();
+                    NextTurn (true);
                 else if (localPlayer.Turn)
                     UI.showBasicsButton.SetActive (true);
 
@@ -482,11 +484,11 @@ namespace Card {
         }
         #endregion
 
-        protected void NextTurn () {
+        protected void NextTurn (bool noAttack = false) {
 
             //DebugWithTime (StackTraceUtility.ExtractStackTrace ());
 
-            (Caller.IsLocalPlayer ? Caller : null)?.NextTurnServerRpc ();
+            (Caller.IsLocalPlayer ? Caller : null)?.NextTurnServerRpc (noAttack);
 
         }
 
@@ -745,6 +747,11 @@ namespace Card {
             modifierCards.Add (this);
 
         }
+        #endregion
+
+        #region Triggered effects
+        //On Play
+        public static event Action OnPlay;
 
         public void OnPlayTrigger () {
 
@@ -754,6 +761,7 @@ namespace Card {
 
         protected virtual void OnPlayTriggered () { }
 
+        //On New Turn
         public void OnNewTurnTrigger () {
 
             OnNewTurn += OnNewTurnTriggered;
@@ -761,6 +769,15 @@ namespace Card {
         }
 
         protected virtual void OnNewTurnTriggered () { }
+
+        //On No Attack Turn   
+        public void OnNoAttackTurnTrigger () {
+
+            OnNoAttackTurn += OnNoAttackTurnTriggered;
+
+        }
+
+        protected virtual void OnNoAttackTurnTriggered () { }
         #endregion
 
         #region Draw

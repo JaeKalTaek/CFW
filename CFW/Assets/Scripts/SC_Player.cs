@@ -425,15 +425,20 @@ public class SC_Player : NetworkBehaviour {
     #region Next turn
     public static event Action OnNewTurn;
 
-    [ServerRpc]
-    public void NextTurnServerRpc () {
+    public static event Action OnNoAttackTurn;
 
-        NextTurnClientRpc ();
+    [ServerRpc]
+    public void NextTurnServerRpc (bool noAttack = false) {
+
+        NextTurnClientRpc (noAttack);
 
     }
 
     [ClientRpc]
-    void NextTurnClientRpc () {
+    void NextTurnClientRpc (bool noAttack) {
+
+        if (noAttack)
+            OnNoAttackTurn?.Invoke ();
 
         if (IsLocalPlayer)
             localPlayer.Turn = false;
