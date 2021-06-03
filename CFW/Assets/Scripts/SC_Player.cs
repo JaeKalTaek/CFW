@@ -535,7 +535,7 @@ public class SC_Player : NetworkBehaviour {
 
             c.Discard (this, () => {
 
-                ActionOnCard (GetIntChoice ("DoubleDiscard2"), (ca) => {
+                ActionOnCard (GetIntChoice ("DoubleDiscard2") - (GetIntChoice ("DoubleDiscard") < GetIntChoice ("DoubleDiscard2") ? 1 : 0), (ca) => {
 
                     ca.Discard (this, () => {
 
