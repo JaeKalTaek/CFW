@@ -668,9 +668,7 @@ namespace Card {
 
                 lockingCard.UICard.ToGraveyard (1, () => {
 
-                    if (lockingCard.Is (CardType.Basic))
-                        Destroy (lockingCard.UICard.gameObject);
-                    else
+                    if (!lockingCard.Is (CardType.Basic))
                         lockingCard.Broken ();
 
                     if (!localPlayer.Unlocked)
