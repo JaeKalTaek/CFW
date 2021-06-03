@@ -91,6 +91,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ordered: 0
   cards:
+  - {fileID: -8522787692224678403, guid: d7b00a7699827cf49b4732d057213e36, type: 3}
   - {fileID: -610028904600705886, guid: 29e38e807531c9a44b76c9014bba633a, type: 3}
   - {fileID: 114920436494339884, guid: 4a7f9bea851b9304c89750043fb727ba, type: 3}
   - {fileID: 114887729522612654, guid: bbe9ff5e981d52c4d920f232e1175661, type: 3}
