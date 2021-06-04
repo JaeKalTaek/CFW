@@ -19,7 +19,7 @@ namespace Card {
 
         public override void FinishedUsing (bool countered = false) {
 
-            if (Caller.IsLocalPlayer)
+            if (!countered && Caller.IsLocalPlayer)
                 StartCoroutine (PlayCombo ());
 
         }
