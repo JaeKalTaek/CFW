@@ -401,7 +401,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void InterceptCardFinishClientRpc () {
 
-        interceptFinishCard = activeCard;
+        interceptNext = true;
 
     }
 

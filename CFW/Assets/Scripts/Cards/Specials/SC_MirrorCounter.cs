@@ -12,7 +12,7 @@ namespace Card {
 
         public override void CounterFinished () {
 
-            interceptFinishCard = this;
+            interceptNext = true;
 
             Caller.CopyAndStartUsing (respondedCards.Peek () == null ? originalCard : respondedCards.Peek ());
 

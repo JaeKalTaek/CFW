@@ -11,7 +11,9 @@ namespace Card {
 
             handSize = Caller.Hand.Count;
 
-            interceptFinishCard = this;
+            //interceptFinishCard = this;
+
+            interceptNext = true;
 
             yield return StartCoroutine (base.ApplyEffects ());
 

@@ -72,7 +72,11 @@ namespace Card {
 
         public bool Stolen { get; set; }
 
-        public static SC_BaseCard activeCard, lockingCard, originalCard, interceptFinishCard;
+        public static bool interceptNext;
+
+        public static SC_BaseCard activeCard, lockingCard, originalCard;
+
+        public SC_BaseCard interceptFinishCard;
 
         public static List<SC_BaseCard> modifierCards;
 
@@ -264,6 +268,8 @@ namespace Card {
             } else if (IsSpecial)
                 localPlayer.SpecialUsed = true;
 
+            TryInterceptFinish ();
+
             activeCard = this;
 
             boosting = true;
@@ -318,6 +324,8 @@ namespace Card {
         public virtual void Play (SC_Player c) {
 
             UI.messagePanel.SetActive (false);
+
+            TryInterceptFinish ();
 
             activeCard = this;
 
@@ -1421,6 +1429,18 @@ namespace Card {
 
             if (Has (CommonEffectType.OnFinishedPlayingTrigger))
                 OnFinishedPlaying -= OnFinishedPlayingTriggered;
+
+        }
+
+        void TryInterceptFinish () {
+
+            if (interceptNext) {
+
+                interceptNext = false;
+
+                interceptFinishCard = activeCard;
+
+            }
 
         }
 
