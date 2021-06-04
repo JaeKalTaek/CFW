@@ -207,6 +207,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         Flip (flip ?? !Card.Caller.IsLocalPlayer, speed);
 
+        if (Card.OnTheRing)
+            Card.DiscardedFromRing ();
+
         RecT.DOAnchorPos (Vector2.zero, speed).OnComplete (() => {
 
             action ();

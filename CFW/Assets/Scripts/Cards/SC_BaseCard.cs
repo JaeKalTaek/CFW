@@ -1371,6 +1371,10 @@ namespace Card {
 
         public virtual void DiscardedFromRing () {
 
+            (Caller.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots)[RingSlot].occupied = false;
+
+            RingSlot = -1;
+
             Counters = 0;
 
             if (Has (CommonEffectType.OnPlayTrigger))
