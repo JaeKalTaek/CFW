@@ -473,7 +473,20 @@ public class SC_Player : NetworkBehaviour {
 
         Turn = true;
 
-        OnNewTurn?.Invoke ();
+        if (OnNewTurn != null && OnNewTurn.GetInvocationList ().Length > 0) {
+
+            foreach (Delegate d in OnNewTurn.GetInvocationList ()) {
+
+                d.Method.Invoke (d.Target, null);
+
+                while (activeCard?.ApplyingEffects ?? false)
+                    yield return new WaitForEndOfFrame ();
+
+                activeCard = null;
+
+            }
+
+        }        
 
         if (IsLocalPlayer)
             UI.showBasicsButton.SetActive (true);
