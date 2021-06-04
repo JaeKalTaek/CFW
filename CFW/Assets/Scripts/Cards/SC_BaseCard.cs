@@ -76,7 +76,7 @@ namespace Card {
 
         public static SC_BaseCard activeCard, lockingCard, originalCard;
 
-        public SC_BaseCard interceptFinishCard;
+        protected SC_BaseCard interceptFinishCard;
 
         public static List<SC_BaseCard> modifierCards;
 
