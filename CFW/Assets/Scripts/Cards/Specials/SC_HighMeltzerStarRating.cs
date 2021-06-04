@@ -8,8 +8,6 @@ namespace Card {
 
         protected override void OnPlayTriggered () {
 
-            base.OnPlayTriggered ();
-
             if (activeCard.IsResponse || ((activeCard as SC_AttackCard)?.finisher ?? false))
                 Counters += 3;
 
