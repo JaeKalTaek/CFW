@@ -20,7 +20,7 @@ namespace Card {
 
                 UI.showBasicsButton.SetActive (false);
 
-                localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), OnTheRing);
+                localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), true);
 
             }                
 
