@@ -49,13 +49,7 @@ namespace Card {
 
             UI.messagePanel.SetActive (false);
 
-            SC_BaseCard target = (Caller.IsLocalPlayer ? UI.otherRingSlots : UI.localRingSlots)[0].slot.parent.GetChild (Caller.IntChoices["DestroyBackstory"]).GetComponentInChildren<SC_BaseCard> ();
-
-            (Caller.IsLocalPlayer ? UI.otherRingSlots : UI.localRingSlots)[target.RingSlot].occupied = false;
-
-            target.DiscardedFromRing ();
-
-            target.UICard.ToGraveyard (1, AppliedEffects, false);
+            (Caller.IsLocalPlayer ? UI.otherRingSlots : UI.localRingSlots)[0].slot.parent.GetChild (Caller.IntChoices["DestroyBackstory"]).GetComponent<SC_UI_Card> ().ToGraveyard (1, AppliedEffects, false);
 
             while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
