@@ -140,7 +140,7 @@ namespace Card {
 
             if (commonEffects != null) {
 
-                if ((Has (CommonEffectType.Response) || Has (CommonEffectType.Counter) || Has (CommonEffectType.Boost)) && !GetComponent<SC_CardMatcher> ())
+                if ((IsResponse || Has (CommonEffectType.Boost)) && !GetComponent<SC_CardMatcher> ())
                     gameObject.AddComponent<SC_CardMatcher> ();
 
                 if (Has (CommonEffectType.Grab) && !GetComponent<SC_CardGrabber> ())
@@ -193,7 +193,7 @@ namespace Card {
 
                 if (responding) {
 
-                    if (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter)) {
+                    if (IsResponse) {
 
                         if (!GetComponent<SC_CardMatcher> ().Matching (activeCard))
                             return false;
@@ -201,7 +201,7 @@ namespace Card {
                     } else
                         return false;
 
-                } else if (Is (CardType.Special) && (Has (CommonEffectType.Response) || Has (CommonEffectType.Counter))) {
+                } else if (Is (CardType.Special) && IsResponse) {
 
                     return false;
 
@@ -1344,6 +1344,8 @@ namespace Card {
             return false;
 
         }
+
+        public bool IsResponse { get { return Has (CommonEffectType.Response) || Has (CommonEffectType.Counter); } }
 
         public bool Ephemeral { get; set; }
 
