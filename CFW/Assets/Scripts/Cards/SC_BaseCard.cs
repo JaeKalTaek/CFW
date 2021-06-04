@@ -432,7 +432,7 @@ namespace Card {
                 if (finishedEffects == null)
                     finishedEffects = new List<CommonEffect> ();
 
-                if (interceptFinishCard && interceptFinishCard != this) {
+                if (interceptFinishCard) {
 
                     interceptFinishCard.InterceptFinish ();
 
@@ -500,11 +500,7 @@ namespace Card {
 
         }
 
-        protected virtual void InterceptFinish () {
-
-            interceptFinishCard = null;
-
-        }
+        protected virtual void InterceptFinish () { }
         #endregion
 
         protected void NextTurn (bool noAttack = false) {
@@ -1073,8 +1069,6 @@ namespace Card {
 
         #region Counter
         public void Counter () {
-
-            interceptFinishCard = null;
 
             if (respondedCards.Count > 0) {
 

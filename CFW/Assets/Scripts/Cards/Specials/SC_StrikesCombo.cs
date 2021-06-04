@@ -53,8 +53,6 @@ namespace Card {
 
             modifierCards.Remove (this);
 
-            interceptFinishCard = null;
-
             for (int i = 0; i < nbr; i++)
                 StartCoroutine (Caller.Graveyard.Cards[Caller.Graveyard.Cards.Count - 1].UICard.DiscardToDeck (Caller.Deck));
 
@@ -79,6 +77,8 @@ namespace Card {
         }
 
         protected override void InterceptFinish () {
+
+            interceptNext = true;
 
             comboNext = true;
 

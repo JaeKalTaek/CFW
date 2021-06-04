@@ -30,8 +30,6 @@ namespace Card {
 
         protected override void InterceptFinish () {
 
-            base.InterceptFinish ();
-
             base.CounterFinished ();
 
         }
