@@ -49,6 +49,9 @@ namespace Card {
 
             activeCard = null;
 
+            if (Caller.IsLocalPlayer)
+                UI.showBasicsButton.SetActive (true);
+
         }
 
     }
