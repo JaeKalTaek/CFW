@@ -1,6 +1,3 @@
-using System.Collections;
-using static SC_Player;
-
 namespace Card {
 
     public class SC_TournamentOfDeath : SC_BaseCard {
@@ -12,45 +9,25 @@ namespace Card {
 
         }
 
-        public override void OnRingClicked () {
+        public override void OnRingUseCounters (int counters = -1) {
 
-            base.OnRingClicked ();
-
-            if (Counters >= 3 && localPlayer == Caller && Caller.Turn && !activeCard) {
-
-                UI.showBasicsButton.SetActive (false);
-
-                localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), true);
-
-            }                
+            base.OnRingUseCounters (3);
 
         }
 
-        public override void Play (SC_Player c) {
+        protected override bool RingPlay () {
 
-            if (OnTheRing) {
+            Counters -= 3;
 
-                Counters -= 3;
+            activeCard = this;
 
-                activeCard = this;
+            SetCurrentEffect (new CommonEffect (CommonEffectType.Draw));
 
-                SetCurrentEffect (new CommonEffect (CommonEffectType.Draw));
+            StartCoroutine (ApplyEffect (Draw));
 
-                StartCoroutine (Effect ());
+            StartCoroutine (ClickedEffect ());
 
-            } else
-                base.Play (c);
-
-        }
-
-        IEnumerator Effect () {
-
-            yield return StartCoroutine (ApplyEffect (Draw));
-
-            activeCard = null;
-
-            if (Caller.IsLocalPlayer)
-                UI.showBasicsButton.SetActive (true);
+            return true;
 
         }
 

@@ -323,6 +323,9 @@ namespace Card {
         #region Usage
         public virtual void Play (SC_Player c) {
 
+            if (OnTheRing && RingPlay ())
+                return;
+
             UI.messagePanel.SetActive (false);
 
             TryInterceptFinish ();
@@ -363,6 +366,12 @@ namespace Card {
             UICard.Flip (!UICard.FaceUp, 1);
 
         }        
+
+        protected virtual bool RingPlay () {
+
+            return false;
+
+        }
 
         IEnumerator Use (bool resumed = false) {
 
@@ -1395,6 +1404,32 @@ namespace Card {
         public virtual void OnRingClicked () {
 
             OnRingClickedEvent?.Invoke (this);
+
+            OnRingUseCounters ();
+
+        }
+
+        public virtual void OnRingUseCounters (int counters = -1) {
+
+            if (counters != -1 && Counters >= counters && localPlayer == Caller && Caller.Turn && !activeCard) {
+
+                UI.showBasicsButton.SetActive (false);
+
+                localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), true);
+
+            }
+
+        }
+
+        protected IEnumerator ClickedEffect () {
+
+            while (ApplyingEffects)
+                yield return new WaitForEndOfFrame ();
+
+            activeCard = null;
+
+            if (Caller.IsLocalPlayer)
+                UI.showBasicsButton.SetActive (true);
 
         }
         #endregion

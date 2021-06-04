@@ -1,7 +1,3 @@
-using System.Collections;
-using UnityEngine;
-using static SC_Player;
-
 namespace Card {
 
     public class SC_LegendaryRivalry : SC_BaseCard {
@@ -13,48 +9,25 @@ namespace Card {
 
         }
 
-        public override void OnRingClicked () {
+        public override void OnRingUseCounters (int counters = -1) {
 
-            base.OnRingClicked ();
-
-            if (Counters >= 2 && localPlayer == Caller && Caller.Turn && !activeCard) {
-
-                UI.showBasicsButton.SetActive (false);
-
-                localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), true);
-
-            }
+            base.OnRingUseCounters (10);
 
         }
 
-        public override void Play (SC_Player c) {
+        protected override bool RingPlay () {
 
-            if (OnTheRing) {             
+            UICard.ToGraveyard (1, () => {
 
-                UICard.ToGraveyard (1, () => {                 
+                SetCurrentEffect (new CommonEffect (CommonEffectType.Grab));
 
-                    SetCurrentEffect (new CommonEffect (CommonEffectType.Grab));
+                GrabPerform ();
 
-                    GrabPerform ();
+                StartCoroutine (ClickedEffect ());
 
-                    StartCoroutine (Effect ());
+            }, false);
 
-                }, false);
-
-            } else
-                base.Play (c);
-
-        }
-
-        IEnumerator Effect () {
-
-            while (ApplyingEffects)
-                yield return new WaitForEndOfFrame ();
-
-            activeCard = null;
-
-            if (Caller.IsLocalPlayer)
-                UI.showBasicsButton.SetActive (true);
+            return true;
 
         }
 
