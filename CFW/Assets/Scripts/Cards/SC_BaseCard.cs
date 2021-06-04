@@ -456,6 +456,20 @@ namespace Card {
 
             }
 
+            if (OnFinishedPlaying != null && OnFinishedPlaying.GetInvocationList ().Length > 0) {
+
+                OnFinishedPlaying.Invoke ();
+
+                return;
+
+            }
+
+            BaseFinishedUsing ();
+
+        }
+
+        public virtual void BaseFinishedUsing (bool countered = false) {
+
             activeCard = originalCard = null;
 
             if (Is (CardType.Basic)) {
