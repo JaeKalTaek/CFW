@@ -997,9 +997,19 @@ namespace Card {
         #endregion
 
         #region Discard
+        public static int discardNbr = -1;
+
         void Discard (Action a) {
 
-            if (effectTarget.Hand.Count > 0) {
+            if (discardNbr == 0 || effectTarget.Hand.Count == 0) {
+
+                discardNbr = -1;
+
+                ApplyingEffects = false;
+
+            } else {
+
+                discardNbr = discardNbr == -1 ? Mathf.Max (0, CurrentEffect.effectValue - 1) : discardNbr - 1;
 
                 ApplyingEffects = true;
 
@@ -1018,11 +1028,7 @@ namespace Card {
 
         public void DiscardChosen () {
 
-            Discard (() => {
-
-                effectTarget.StartChoosingCard (ChoosingCard.Discard);
-
-            });
+            Discard (() => { effectTarget.StartChoosingCard (ChoosingCard.Discard); });
 
         }
 
@@ -1033,6 +1039,19 @@ namespace Card {
             Caller.Hand.Remove (this);
 
             SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
+
+            if (discardNbr != -1) {
+
+                a = () => {
+
+                    if (CurrentEffect.effectType == CommonEffectType.DiscardChosen)
+                        activeCard.DiscardChosen ();
+                    else
+                        activeCard.DiscardRandom ();
+
+                };
+
+            }
 
             UICard.ToGraveyard (GM.drawSpeed, a ?? AppliedEffects);
 
