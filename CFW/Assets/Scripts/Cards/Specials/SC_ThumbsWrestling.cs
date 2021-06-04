@@ -22,13 +22,13 @@ namespace Card {
 
             GM.shifumiPanel.SetActive (false);
 
-            SetCurrentEffect (new CommonEffect (CommonEffectType.Assess, true), Caller.IsLocalPlayer == b ? Receiver : Caller);
+            SetCurrentEffect (new CommonEffect (CommonEffectType.Assess, true, o: Caller.IsLocalPlayer == b));
 
             yield return StartCoroutine (ApplyEffect (Assess));
 
             ApplyingEffects = true;
 
-            SetCurrentEffect (CurrentEffect = new CommonEffect (CommonEffectType.Draw, v: 2), effectTarget = Caller.IsLocalPlayer != b ? Receiver : Caller);
+            SetCurrentEffect (new CommonEffect (CommonEffectType.Draw, v: 2, o: Caller.IsLocalPlayer != b));
 
             yield return StartCoroutine (ApplyEffect (Draw));
 

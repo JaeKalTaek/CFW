@@ -88,9 +88,9 @@ namespace Card {
 
             public int effectValue;
 
-            public CommonEffect (CommonEffectType t, bool m = false, int v = 0) {
+            public CommonEffect (CommonEffectType t, bool m = false, int v = 0, bool o = false) {
 
-                effectOnOpponent = true;
+                effectOnOpponent = o;
 
                 may = m;
 
@@ -531,11 +531,11 @@ namespace Card {
 
         }
 
-        public void SetCurrentEffect (CommonEffect e, SC_Player t = null) {
+        public void SetCurrentEffect (CommonEffect e) {
 
             CurrentEffect = e;
 
-            effectTarget = t ?? Caller;
+            effectTarget = e.effectOnOpponent ? Receiver : Caller;
 
         }
 
@@ -1131,7 +1131,7 @@ namespace Card {
 
             bool[] where = new bool[] { grabber.deck, grabber.discard, grabber.otherDiscard };
 
-            List<SC_BaseCard>[] lists = new List<SC_BaseCard>[] { Caller.Deck.cards, Caller.Graveyard.Cards, Receiver.Graveyard.Cards };
+            List<SC_BaseCard>[] lists = new List<SC_BaseCard>[] { effectTarget.Deck.cards, effectTarget.Graveyard.Cards, (effectTarget == Caller ? Receiver : Caller).Graveyard.Cards };
 
             Vector2 size = Resources.Load<RectTransform> ("Prefabs/P_Grab_Card").sizeDelta;
 
@@ -1153,7 +1153,7 @@ namespace Card {
 
                         if (grabber.Matching (c)) {
 
-                            if (Caller.IsLocalPlayer) {
+                            if (effectTarget.IsLocalPlayer) {
 
                                 SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
 
@@ -1179,7 +1179,7 @@ namespace Card {
 
             }
 
-            Caller.IntChoices["Grab"] = -1;
+            effectTarget.IntChoices["Grab"] = -1;
 
             GrabsRemaining = Mathf.Min (GrabsRemaining, y * 5 + x);
 
@@ -1191,7 +1191,7 @@ namespace Card {
 
                     StartCoroutine (Grabbing ());
 
-                    if (Caller.IsLocalPlayer) {
+                    if (effectTarget.IsLocalPlayer) {
 
                         y = Mathf.Max (0, y - 1 - (x == 0 ? 1 : 0));
 
@@ -1209,7 +1209,7 @@ namespace Card {
 
         IEnumerator NoGrabbing () {
 
-            if (Caller.IsLocalPlayer)
+            if (effectTarget.IsLocalPlayer)
                 UI.ShowMessage ("NoGrabbing");
 
             yield return new WaitForSeconds (.5f);
@@ -1222,16 +1222,16 @@ namespace Card {
 
         IEnumerator Grabbing () {
 
-            while (Caller.GetIntChoice ("Grab") == -1)
+            while (effectTarget.GetIntChoice ("Grab") == -1)
                 yield return new WaitForEndOfFrame ();
 
             for (int i = 0; i < Mathf.Max (CurrentEffect.effectValue, 1); i++) {
 
-                SC_CardZone zone = Caller.GetIntChoice ("Grab" + i) == 0 ? Caller.Deck : ((Caller.GetIntChoice ("Grab" + i) == 1 ? Caller.Graveyard : Receiver.Graveyard) as SC_CardZone);
+                SC_CardZone zone = effectTarget.GetIntChoice ("Grab" + i) == 0 ? effectTarget.Deck : ((effectTarget.GetIntChoice ("Grab" + i) == 1 ? effectTarget.Graveyard : (effectTarget == Caller ? Receiver : Caller).Graveyard) as SC_CardZone);
 
-                SC_BaseCard grabbed = zone.GetCards ().Find ((c) => { return c.Path == Caller.GetStringChoice ("Grab" + i); });
+                SC_BaseCard grabbed = zone.GetCards ().Find ((c) => { return c.Path == effectTarget.GetStringChoice ("Grab" + i); });
 
-                yield return StartCoroutine (zone.Grab (Caller.IsLocalPlayer, grabbed));
+                yield return StartCoroutine (zone.Grab (effectTarget.IsLocalPlayer, grabbed));
 
             }            
 
@@ -1243,13 +1243,13 @@ namespace Card {
 
             if (this as SC_AttackCard) {
 
-                CommonEffect effect;
+                CommonEffect effect = new CommonEffect ();
 
                 foreach (CommonEffect c in commonEffects)
                     if (c.effectType == CommonEffectType.Grab)
                         effect = c;
 
-                effectTarget = Caller;
+                SetCurrentEffect (effect);
 
                 GrabPerform ();
 
