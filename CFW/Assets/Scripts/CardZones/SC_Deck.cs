@@ -38,7 +38,7 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
         owner = Local ? localPlayer : otherPlayer;
 
-        StartCoroutine (Draw (GM.startHandSize, false, false));
+        StartCoroutine (Draw (GM.startHandSize, false));
 
         if (!local)
             RecT.anchorMin = RecT.anchorMax = RecT.pivot = Vector2.up;        
@@ -62,10 +62,10 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
     }
 
-    public IEnumerator Draw (int nbr, bool StartTurn, bool tween = true) {
+    public IEnumerator Draw (int nbr, bool tween = true) {
 
         for (int i = 0; i < nbr; i++)
-            yield return StartCoroutine (Draw (StartTurn && i == nbr - 1, tween));
+            yield return StartCoroutine (Draw (tween));
 
     }
 
@@ -76,7 +76,7 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
 
     }
 
-    public IEnumerator Draw (bool startTurn, bool tween = true) {
+    public IEnumerator Draw (bool tween = true) {
 
         if (owner.Hand.Count < GM.maxHandSize && (cards.Count > 0 || owner.Graveyard.Cards.Count > 0)) {
 
@@ -84,20 +84,6 @@ public class SC_Deck : SC_CardZone, IPointerEnterHandler, IPointerExitHandler {
                 yield return StartCoroutine (Refill ());
 
             yield return StartCoroutine (Grab (Local, cards[0], tween));
-
-        }
-
-        FinishDrawing (startTurn);
-
-    }
-
-    void FinishDrawing (bool startTurn) {
-
-        if (startTurn) {
-
-            owner.ApplySingleEffect ("Stamina", GM.staminaPerTurn);
-
-            owner.StartCoroutine (owner.StartTurn ());
 
         }
 

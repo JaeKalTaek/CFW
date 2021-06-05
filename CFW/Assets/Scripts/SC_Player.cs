@@ -440,36 +440,19 @@ public class SC_Player : NetworkBehaviour {
         if (noAttack)
             OnNoAttackTurn?.Invoke ();
 
-        if (IsLocalPlayer)
-            localPlayer.Turn = false;
-        else
-            otherPlayer.Turn = false;
+        Turn = false;
 
-        StartCoroutine ((IsLocalPlayer ? otherPlayer : localPlayer).Deck.Draw (true));
+        (IsLocalPlayer ? otherPlayer : localPlayer).StartCoroutine ((IsLocalPlayer ? otherPlayer : localPlayer).StartTurn ());
 
     }
 
     bool firstTurn;
 
+    public bool SkipDraw { get; set; }
+
     public IEnumerator StartTurn () {
 
-        if (!firstTurn) {
-
-            firstTurn = true;
-
-            foreach (SC_BaseCard c in new List<SC_BaseCard> (Hand)) {
-
-                c.Caller = this;
-
-                c.Receiver = IsLocalPlayer ? otherPlayer : localPlayer;
-
-                yield return c.StartCoroutine (c.FirstTurnEffect ());
-
-            }            
-
-        }        
-
-        SpecialUsed = false;
+        ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
         Turn = true;
 
@@ -486,7 +469,37 @@ public class SC_Player : NetworkBehaviour {
 
             }
 
-        }        
+        }
+
+        if (SkipDraw)
+            SkipDraw = false;
+        else {
+
+            Turn = false;
+
+            yield return StartCoroutine (Deck.Draw ());
+
+            Turn = true;
+
+        }
+
+        SpecialUsed = false;            
+
+        if (!firstTurn) {
+
+            firstTurn = true;
+
+            foreach (SC_BaseCard c in new List<SC_BaseCard> (Hand)) {
+
+                c.Caller = this;
+
+                c.Receiver = IsLocalPlayer ? otherPlayer : localPlayer;
+
+                yield return c.StartCoroutine (c.FirstTurnEffect ());
+
+            }
+
+        }
 
         if (IsLocalPlayer)
             UI.showBasicsButton.SetActive (true);
