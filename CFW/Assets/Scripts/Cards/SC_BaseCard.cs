@@ -726,7 +726,7 @@ namespace Card {
 
             lockingCard = this;
 
-            GM.Count = 0;
+            GM.Count = Receiver.Health <= 0 ? 1 : 0;
 
             UI.count.gameObject.SetActive (true);
 
