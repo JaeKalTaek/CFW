@@ -1213,11 +1213,7 @@ namespace Card {
 
                                 SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
 
-                                g.image.sprite = Resources.Load<Sprite> (c.Path);
-
-                                g.name = c.Path;
-
-                                g.SetOrigin (i);
+                                g.Setup (c, i);
 
                                 (g.transform.parent as RectTransform).anchoredPosition = new Vector2 (x * size.x + (x + 1) * xMargin, -y * size.y - (y + 1) * yMargin);
 
@@ -1253,6 +1249,8 @@ namespace Card {
 
                         UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
 
+                        SC_GrabCard.selectedCards = new List<SC_BaseCard> ();
+
                         UI.ShowGrabPanel ();
 
                     }
@@ -1264,6 +1262,8 @@ namespace Card {
         }
 
         IEnumerator NoGrabbing () {
+
+            SC_GrabCard.canGrab = null;
 
             if (effectTarget.IsLocalPlayer)
                 UI.ShowMessage ("NoGrabbing");
@@ -1280,6 +1280,8 @@ namespace Card {
 
             while (effectTarget.GetIntChoice ("Grab") == -1)
                 yield return new WaitForEndOfFrame ();
+
+            SC_GrabCard.canGrab = null;
 
             for (int i = 0; i < Mathf.Max (CurrentEffect.effectValue, 1); i++) {
 

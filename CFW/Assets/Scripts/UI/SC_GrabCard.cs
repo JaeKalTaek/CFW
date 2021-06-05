@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using Card;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -16,7 +18,17 @@ public class SC_GrabCard : MonoBehaviour, IPointerClickHandler {
 
     bool selected;
 
-    public void SetOrigin (int o) {
+    SC_BaseCard card;
+
+    public static List<SC_BaseCard> selectedCards;
+
+    public void Setup (SC_BaseCard c, int o) {
+
+        card = c;
+
+        name = card.Path;
+
+        image.sprite = Resources.Load<Sprite> (name);
 
         origin = o;
 
@@ -26,9 +38,14 @@ public class SC_GrabCard : MonoBehaviour, IPointerClickHandler {
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (selected || activeCard.GrabsRemaining > 0) {
+        if (selected || (activeCard.GrabsRemaining > 0 && (canGrab == null || canGrab (card)))) {
 
             selected ^= true;
+
+            if (selected)
+                selectedCards.Add (card);
+            else
+                selectedCards.Remove (card);
 
             activeCard.GrabsRemaining += selected ? -1 : 1;
 
@@ -43,5 +60,9 @@ public class SC_GrabCard : MonoBehaviour, IPointerClickHandler {
         }
 
     }
+
+    public delegate bool CanGrab (SC_BaseCard c);
+
+    public static CanGrab canGrab;
 
 }
