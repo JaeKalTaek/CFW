@@ -56,17 +56,23 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public void ShowBigCard (bool show) {
+
+        bigCard.transform.SetParent (show ? UI.hoveredParent : transform);
+
+        bigCard.SetActive (show);
+
+    }
+
     public void OnPointerEnter (PointerEventData eventData) {
 
         if (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
             counters.root.SetActive (false);
 
+            ShowBigCard (true);
+
             Card.CardHovered (true);
-
-            bigCard.transform.SetParent (UI.hoveredParent);
-
-            bigCard.SetActive (true);
 
             StartCoroutine (Hovered ());
 
@@ -91,19 +97,19 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             StopCoroutine (Hovered ());
 
+            ShowBigCard (false);
+
             Card.CardHovered (false);
-
-            bigCard.transform.SetParent (transform);
-
-            bigCard.SetActive (false);
 
         }
 
     }
 
+    public bool BlockClick { get; set; }
+
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (activeCard != Card) {
+        if (activeCard != Card && !BlockClick) {
 
             if (localPlayer.ChoosingCard != ChoosingCard.None && !Card.OnTheRing) {
 
