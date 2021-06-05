@@ -522,9 +522,9 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    public void ApplySingleEffect (string field, int? value = null, object effect = null) {
+    public void ApplySingleEffect (string field, int value) {
 
-        typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)) + (value ?? -(int) effect.GetType ().GetField (field.ToLower ()).GetValue (effect)));
+        typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)) + value);
 
         UI.SetValue (IsLocalPlayer, field, (int) typeof (SC_Player).GetProperty (field).GetValue (this));
 

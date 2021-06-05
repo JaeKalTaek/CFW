@@ -133,7 +133,7 @@ namespace Card {
 
         public virtual void PayCost () {
 
-            Caller.ApplySingleEffect ("Stamina", null, cost);
+            Caller.ApplySingleEffect ("Stamina", cost.stamina);
 
             Caller.ApplySingleEffect ("Health", -GetHealthCost (Caller));
 
