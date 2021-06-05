@@ -28,15 +28,15 @@ namespace Card {
 
         protected override IEnumerator ApplyEffects () {
 
-            yield return StartCoroutine (base.ApplyEffects ());
-
             if (Caller.GetIntChoice ("NumberChoice") != 0) {
 
-                Caller.ApplySingleEffect ("Stamina", -Caller.GetIntChoice ("NumberChoice"));
+                cost.stamina += Caller.GetIntChoice ("NumberChoice");
 
-                Receiver.ApplySingleEffect ("Health", -Caller.GetIntChoice ("NumberChoice"));
+                effectOnOpponent.health += Caller.GetIntChoice ("NumberChoice");
 
             }
+
+            yield return StartCoroutine (base.ApplyEffects ());            
 
         }
 
