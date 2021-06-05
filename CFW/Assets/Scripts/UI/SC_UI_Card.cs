@@ -64,9 +64,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public bool OverrideActiveHover { get; set; }
+
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
+        if ((Card != activeCard || OverrideActiveHover) && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
             counters.root.SetActive (false);
 

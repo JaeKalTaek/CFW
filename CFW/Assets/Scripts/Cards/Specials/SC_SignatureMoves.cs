@@ -90,6 +90,8 @@ namespace Card {
 
                 activeCard = this;
 
+                UICard.OverrideActiveHover = true;
+
                 ApplyingEffects = true;
 
                 Caller.IntChoices["SignatureMoveDraw"] = -1;
@@ -114,6 +116,8 @@ namespace Card {
 
             while (ApplyingEffects && Caller.IntChoices["SignatureMoveDraw"] == -1)
                 yield return new WaitForEndOfFrame ();
+
+            UICard.OverrideActiveHover = false;
 
             if (ApplyingEffects) {
 
