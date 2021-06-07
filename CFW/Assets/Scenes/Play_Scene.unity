@@ -5831,7 +5831,7 @@ MonoBehaviour:
   baseBodyPartHealth: 10
   startingAlignment: 0
   staminaPerTurn: 2
-  maxAlignment: 10
+  maxAlignment: 5
   playedDelay: 0.5
   responseTime: 1.5
   blockMatchHeatReset: 0
