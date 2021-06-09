@@ -50,20 +50,21 @@ MonoBehaviour:
     valueType: 3
     requirementType: 0
     requirementValue: 4
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 6
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 0
+    may: 1
     effectType: 0
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 0
-    effectType: 2
-    valueName: 3
-    effectValue: 2
-  - effectOnOpponent: 0
+    may: 0
     effectType: 1
     valueName: 0
     effectValue: 2
