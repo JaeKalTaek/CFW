@@ -9,13 +9,13 @@ public class SC_CardSearcherEditor : Editor {
 
         base.OnInspectorGUI ();
 
-        SC_CardMatcher cardMatcher = (target as SC_CardSearcher).GetComponent<SC_CardMatcher> ();
+        SC_CardGrabber cardGrabber = (target as SC_CardSearcher).GetComponent<SC_CardGrabber> ();
 
         if (GUILayout.Button ("Search")) {
 
             foreach (SC_BaseCard c in Resources.LoadAll<SC_BaseCard> ("")) {
 
-                if (cardMatcher.Matching (c))
+                if (cardGrabber.Matching (c))
                     Debug.Log (c.name);
 
             }
