@@ -52,6 +52,7 @@ MonoBehaviour:
     requirementType: 0
     requirementValue: 3
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -62,7 +63,7 @@ MonoBehaviour:
     may: 0
     effectType: 2
     valueName: 3
-    effectValue: 2
+    effectValue: 1
 --- !u!114 &4071644812558076778
 MonoBehaviour:
   m_ObjectHideFlags: 0
