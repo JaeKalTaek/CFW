@@ -135,7 +135,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void SetDeckClientRpc (string deckName) {
 
-        Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + "Deck"), GM.background);
+        Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + " Deck"), GM.background);
 
     }
 

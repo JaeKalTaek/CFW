@@ -13,7 +13,7 @@ public class SC_MainMenu : MonoBehaviour {
     void Start () {
 
         foreach (SC_Deck d in Resources.LoadAll<SC_Deck> ("Decks/"))
-            deckChoice.options.Add (new TMP_Dropdown.OptionData (d.name.Replace ("Deck", "")));
+            deckChoice.options.Add (new TMP_Dropdown.OptionData (d.name.Replace (" Deck", "")));
 
         deckChoice.RefreshShownValue ();
 
