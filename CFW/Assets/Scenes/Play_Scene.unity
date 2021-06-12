@@ -5908,7 +5908,7 @@ MonoBehaviour:
   staminaPerTurn: 2
   maxAlignment: 5
   playedDelay: 0.5
-  responseTime: 1.5
+  responseTime: 1.75
   blockMatchHeatReset: 0
 --- !u!114 &670482960
 MonoBehaviour:
