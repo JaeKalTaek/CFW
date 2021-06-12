@@ -523,16 +523,18 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    public void ApplySingleEffect (string field, int value, bool hit = false) {
+    public void ApplySingleEffect (string field, int value, bool hit = false) {        
 
         if (value != 0) {
+
+            int before = (int) typeof (SC_Player).GetProperty (field).GetValue (this);
 
             if (field == "Health" && !hit && Health + value <= 0)
                 Health = 1;
             else
                 typeof (SC_Player).GetProperty (field).SetValue (this, ((int) typeof (SC_Player).GetProperty (field).GetValue (this)) + value);
 
-            UI.SetValue (IsLocalPlayer, field, (int) typeof (SC_Player).GetProperty (field).GetValue (this));
+            UI.SetValue (IsLocalPlayer, field, (int) typeof (SC_Player).GetProperty (field).GetValue (this), before != (int) typeof (SC_Player).GetProperty (field).GetValue (this));
 
         }
 
@@ -544,9 +546,11 @@ public class SC_Player : NetworkBehaviour {
 
             ApplySingleEffect ("Health", Mathf.Min (BodyPartsHealth[part] - effect, 0), hit);
 
+            int before = BodyPartsHealth[part];
+
             BodyPartsHealth[part] = Mathf.Clamp (BodyPartsHealth[part] - effect, 0, GM.baseBodyPartHealth);
 
-            UI.SetValue (IsLocalPlayer, part.ToString (), BodyPartsHealth[part]);
+            UI.SetValue (IsLocalPlayer, part.ToString (), BodyPartsHealth[part], before != BodyPartsHealth[part]);
 
         }
 

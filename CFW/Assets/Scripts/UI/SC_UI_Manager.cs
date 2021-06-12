@@ -5,6 +5,7 @@ using static SC_Player;
 using static Card.SC_BaseCard;
 using static SC_Global;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -90,9 +91,14 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public void SetValue (bool local, string id, int value) {
+    public void SetValue (bool local, string id, int value, bool anim = false) {
 
-        (local ? localValues : otherValues).Find (id).GetChild (1).GetComponent<TextMeshProUGUI> ().text = value.ToString ();
+        TextMeshProUGUI t = (local ? localValues : otherValues).Find (id).GetChild (1).GetComponent<TextMeshProUGUI> ();
+
+        t.text = value.ToString ();
+
+        if (anim)
+            t.transform.DOScale (t.transform.localScale * 2f, .5f).OnComplete (() => { t.transform.DOScale (t.transform.localScale / 2f, .5f); });
 
     }
 
