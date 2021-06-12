@@ -45,9 +45,9 @@ namespace Card {
 
             base.NonMatchHeatEffects ();
 
-            Receiver.ApplySingleEffect ("Stamina", effectOnOpponent.stamina);
+            Receiver.ApplySingleEffect ("Stamina", -effectOnOpponent.stamina);
 
-            Receiver.ApplySingleEffect ("Health", effectOnOpponent.health, true);
+            Receiver.ApplySingleEffect ("Health", -effectOnOpponent.health, true);
 
             if (effectOnOpponent.health > 0)
                 OnOffensiveMoveDamage?.Invoke ();
