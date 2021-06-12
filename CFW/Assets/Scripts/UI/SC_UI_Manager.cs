@@ -5,7 +5,6 @@ using static SC_Player;
 using static Card.SC_BaseCard;
 using static SC_Global;
 using UnityEngine.UI;
-using Card;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -24,6 +23,8 @@ public class SC_UI_Manager : MonoBehaviour {
     public GameObject basicsPanel, showBasicsButton, hideBasicsButton;
 
     public Transform hoveredParent;
+
+    public GameObject activeTurn, nonActiveTurn;
 
     public RingSlot[] localRingSlots, otherRingSlots;
 
@@ -118,6 +119,13 @@ public class SC_UI_Manager : MonoBehaviour {
         basicsPanel.SetActive (show);        
 
         GM.localHand.gameObject.SetActive (!show);
+
+    }
+
+    public void UpdateTurn () {
+
+        activeTurn.SetActive (localPlayer.Turn);
+        nonActiveTurn.SetActive (!localPlayer.Turn);
 
     }
 

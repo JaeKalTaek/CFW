@@ -7,7 +7,6 @@ using static SC_Global;
 using MLAPI.Messaging;
 using System.Collections;
 using MLAPI.NetworkVariable;
-using UnityEngine.UI;
 using static Card.SC_BaseCard;
 using static SC_UI_Manager;
 
@@ -482,6 +481,8 @@ public class SC_Player : NetworkBehaviour {
             Turn = true;
 
         }
+
+        UI.UpdateTurn ();
 
         SpecialUsed = false;            
 
