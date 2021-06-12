@@ -696,8 +696,7 @@ namespace Card {
 
                 lockingCard.UICard.ToGraveyard (1, () => {
 
-                    if (!lockingCard.Is (CardType.Basic))
-                        lockingCard.Broken ();
+                    lockingCard.Broken ();
 
                     if (!localPlayer.Unlocked)
                         localPlayer.locked.Value = Locked.Unlocked;
