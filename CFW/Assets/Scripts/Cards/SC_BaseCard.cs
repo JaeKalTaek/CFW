@@ -647,7 +647,7 @@ namespace Card {
 
             });
 
-            StartCoroutine (effectTarget.Deck.Draw (false));
+            StartCoroutine (effectTarget.Deck.Draw ());
 
         }
         #endregion
@@ -838,7 +838,7 @@ namespace Card {
 
         protected IEnumerator Draw (SC_Player p, int d = 1) {
 
-            yield return StartCoroutine (p.Deck.Draw (Mathf.Max (1, d), false));
+            yield return StartCoroutine (p.Deck.Draw (Mathf.Max (1, d)));
 
             ApplyingEffects = false;
 
