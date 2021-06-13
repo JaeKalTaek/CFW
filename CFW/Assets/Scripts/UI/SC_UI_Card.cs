@@ -22,7 +22,11 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public RectTransform BigRec { get { return bigCard.transform as RectTransform; } }
 
+    public Image image, bigImage;
+
     public GameObject bigCard;
+
+    public GameObject highlight, bigHighlight;
 
     [Serializable]
     public struct Counters {
@@ -37,7 +41,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     bool IsBasic { get { return Card.Is (CardType.Basic); } }
 
-    public bool FaceUp { get { return GetComponent<Image> ().sprite.name != "CardBack"; } }
+    public bool FaceUp { get { return image.sprite.name != "CardBack"; } }
 
     void Awake () {
 
@@ -52,7 +56,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void SetImages (bool faceUp = true) {
 
-        GetComponent<Image> ().sprite = bigCard.GetComponent<Image> ().sprite = Resources.Load<Sprite> (faceUp ? Card.Path : "Sprites/CardBack");
+        image.sprite = bigImage.sprite = Resources.Load<Sprite> (faceUp ? Card.Path : "Sprites/CardBack");
 
     }
 
@@ -64,6 +68,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    #region Hover
     public bool OverrideActiveHover { get; set; }
 
     public void OnPointerEnter (PointerEventData eventData) {
@@ -106,7 +111,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         }
 
     }
+    #endregion
 
+    #region Click
     public bool BlockClick { get; set; }
 
     public void OnPointerClick (PointerEventData eventData) {
@@ -182,7 +189,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         }
 
-    }
+    }   
 
     void StopChoosing () {
 
@@ -193,7 +200,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         localPlayer.ChoosingCard = ChoosingCard.None;
 
     }
+    #endregion
 
+    #region Movement
     public void Flip (bool flip, float speed, bool faceUp = true) {
 
         if (flip)
@@ -280,5 +289,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         Destroy (gameObject);
 
     }
+    #endregion
 
 }
