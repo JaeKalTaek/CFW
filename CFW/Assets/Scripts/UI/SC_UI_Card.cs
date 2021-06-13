@@ -75,8 +75,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         if ((Card != activeCard || OverrideActiveHover) && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
-            counters.root.SetActive (false);
-
             ShowBigCard (true);
 
             Card.CardHovered (true);
@@ -99,8 +97,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     public void OnPointerExit (PointerEventData eventData) {
 
         if (bigCard.activeSelf) {
-
-            counters.root.SetActive (Card.Counters > 0);
 
             StopCoroutine (Hovered ());
 

@@ -42,7 +42,7 @@ namespace Card {
 
                 UICard.counters.nbr.text = UICard.bigCounters.nbr.text = counters.ToString ();
 
-                UICard.counters.root.SetActive (counters > 0 && !UICard.bigCard.activeSelf);
+                UICard.counters.root.SetActive (counters > 0);
 
                 UICard.bigCounters.root.SetActive (counters > 0);
 
