@@ -514,8 +514,6 @@ namespace Card {
 
         protected void NextTurn (bool noAttack = false) {
 
-            //DebugWithTime (StackTraceUtility.ExtractStackTrace ());
-
             (Caller.IsLocalPlayer ? Caller : null)?.NextTurnServerRpc (noAttack);
 
         }
