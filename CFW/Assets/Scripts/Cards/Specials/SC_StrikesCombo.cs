@@ -47,7 +47,7 @@ namespace Card {
 
         public IEnumerator FinishCombo (int nbr) {
 
-            yield return SC_Player.localPlayer.StartCoroutine (SC_Player.localPlayer.WaitForPlayers ());
+            yield return StartCoroutine (SC_Player.WaitForPlayers ());
 
             modifierCards.Remove (this);
 

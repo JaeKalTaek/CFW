@@ -680,14 +680,14 @@ public class SC_Player : NetworkBehaviour {
     #region Wait for players
     bool waiting = true;
 
-    public IEnumerator WaitForPlayers () {
+    public static IEnumerator WaitForPlayers () {
 
-        FinishWaitingServerRpc ();
+        localPlayer.FinishWaitingServerRpc ();
 
-        while (waiting || otherPlayer.waiting)
+        while (localPlayer.waiting || otherPlayer.waiting)
             yield return new WaitForEndOfFrame ();
 
-        waiting = otherPlayer.waiting = true;
+        localPlayer.waiting = otherPlayer.waiting = true;
 
     }
 
