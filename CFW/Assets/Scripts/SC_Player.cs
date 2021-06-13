@@ -451,6 +451,8 @@ public class SC_Player : NetworkBehaviour {
 
     public IEnumerator StartTurn () {
 
+        yield return WaitForPlayers ();
+
         ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
         Turn = true;
