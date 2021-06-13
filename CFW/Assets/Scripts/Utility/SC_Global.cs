@@ -78,7 +78,9 @@ public class SC_Global {
 
         { "DoubleDiscard2", "Choose a 2nd card to discard" },
 
-        { "Response", "You may respond to this card for now!" },
+        { "ResponseCan", "You may respond to this card for now!" },
+
+        { "ResponseCant", "You have no response to this card right now" },
 
         { "Responding", "Your opponent is responding to your play" },
 

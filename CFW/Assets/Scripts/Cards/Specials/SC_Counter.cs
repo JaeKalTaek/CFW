@@ -7,7 +7,7 @@ namespace Card {
 
         public override void CounterFinished () {
 
-            if (Caller.HasOnePlayableCardInHand ((c) => { return c as SC_OffensiveMove; })) {
+            if (Caller.HasOnePlayableCardInHand (true, (c) => { return c as SC_OffensiveMove; })) {
 
                 Caller.IntChoices["CounterCard"] = -1;
 

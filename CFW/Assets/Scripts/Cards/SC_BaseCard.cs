@@ -274,7 +274,7 @@ namespace Card {
 
             boosting = true;
 
-            if (!resume && !IsSpecial && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand ()) {
+            if (!resume && !IsSpecial && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand (false)) {
 
                 UI.ShowMessage ("Boost");
 
@@ -389,11 +389,11 @@ namespace Card {
 
                 if (!unblockable && Receiver.Unlocked && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
 
-                    if (Receiver.IsLocalPlayer) {
-
-                        UI.ShowMessage ("Response");
+                    if (Receiver.IsLocalPlayer) {                        
 
                         responding = true;
+
+                        UI.ShowMessage (Receiver.HasOnePlayableCardInHand (false) ? "ResponseCan" : "ResponseCant");
 
                     }
 

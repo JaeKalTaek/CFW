@@ -661,10 +661,10 @@ public class SC_Player : NetworkBehaviour {
 
     public delegate bool CardOfType (SC_BaseCard c);
 
-    public bool HasOnePlayableCardInHand (CardOfType ca = null) {
+    public bool HasOnePlayableCardInHand (bool ignorePrio, CardOfType ca = null) {
 
         foreach (SC_BaseCard c in Hand)
-            if ((ca == null || ca (c)) && c.CanUse (this, true))
+            if ((ca == null || ca (c)) && c.CanUse (this, ignorePrio))
                 return true;
 
         return false;
