@@ -79,7 +79,7 @@ namespace Card {
             if ((user.Health == 0 || user.Health > GetHealthCost (user) * chain) && user.Stamina >= cost.stamina * chain) {
 
                 foreach (BodyPart b in user.BodyPartsHealth.Keys)
-                    if (b == cost.bodyPartDamage.bodyPart && user.BodyPartsHealth[b] < cost.bodyPartDamage.damage * chain)
+                    if (b == cost.bodyPartDamage.bodyPart && (user.BodyPartsHealth[b] == 0 || user.BodyPartsHealth[b] < cost.bodyPartDamage.damage * chain))
                         return false;
 
                 return true;
