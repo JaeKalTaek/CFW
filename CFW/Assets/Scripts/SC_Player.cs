@@ -68,6 +68,7 @@ public class SC_Player : NetworkBehaviour {
     public static bool NoLock { get { return localPlayer.Unlocked && otherPlayer.Unlocked; } }
 
     public bool SpecialUsed { get; set; }
+    public bool FirstAttackPlayed { get; set; }
 
     #region Setup
     public override void NetworkStart () {
@@ -486,7 +487,7 @@ public class SC_Player : NetworkBehaviour {
 
         UI.UpdateTurn ();
 
-        SpecialUsed = false;            
+        SpecialUsed = FirstAttackPlayed = false;            
 
         if (!firstTurn) {
 

@@ -274,7 +274,7 @@ namespace Card {
 
             boosting = true;
 
-            if (!resume && !IsSpecial && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand (false)) {
+            if (localPlayer.Turn && !localPlayer.FirstAttackPlayed && !resume && !IsSpecial && !interceptFinishCard && localPlayer.HasOnePlayableCardInHand (false)) {
 
                 UI.ShowMessage ("Boost");
 
@@ -286,6 +286,9 @@ namespace Card {
 
             } else
                 boosting = false;
+
+            if (this as SC_AttackCard)
+                localPlayer.FirstAttackPlayed = true;
 
             yield return StartCoroutine (MakeChoices ());
 
