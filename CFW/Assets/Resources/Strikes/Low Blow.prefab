@@ -49,9 +49,12 @@ MonoBehaviour:
   - opponent: 0
     valueType: 3
     requirementType: 1
-    requirementValue: -4
+    requirementValue: -5
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 4
     valueName: 0
     effectValue: 0
@@ -71,3 +74,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 0
+  moveOfDoom: 0

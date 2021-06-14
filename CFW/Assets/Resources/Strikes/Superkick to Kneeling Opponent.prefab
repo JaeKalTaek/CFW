@@ -49,7 +49,9 @@ MonoBehaviour:
   - opponent: 1
     valueType: 2
     requirementType: 1
-    requirementValue: 3
+    requirementValue: 2
+  unblockable: 0
+  stayOnRing: 0
   commonEffects: []
   matchHeatGain: 3
   cost:
@@ -67,3 +69,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 2
+  moveOfDoom: 0

@@ -49,9 +49,12 @@ MonoBehaviour:
   - opponent: 1
     valueType: 2
     requirementType: 1
-    requirementValue: 3
+    requirementValue: 2
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 11
     valueName: 0
     effectValue: 0
