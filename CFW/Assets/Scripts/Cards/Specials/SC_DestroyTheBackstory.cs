@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static SC_UI_Manager;
 
 namespace Card {
 
@@ -10,8 +9,8 @@ namespace Card {
 
         public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            foreach (RingSlot r in user.IsLocalPlayer ? UI.otherRingSlots : UI.localRingSlots)
-                if (r.occupied)
+            foreach (SC_BaseCard c in (user.IsLocalPlayer ? UI.otherRingSlots : UI.localRingSlots)[0].slot.parent.GetComponentsInChildren<SC_BaseCard> ())
+                if (c.Is (SC_Global.CardType.Mytho))
                     goto HasTarget;
 
             return false;
