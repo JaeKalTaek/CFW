@@ -60,13 +60,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
-    public void ShowBigCard (bool show) {
+    #region Highlight
+    public void SetHighlight (bool on) {
 
-        bigCard.transform.SetParent (show ? UI.hoveredParent : transform);
+        highlight.SetActive (on);
 
-        bigCard.SetActive (show);
+        bigHighlight.SetActive (on);
 
     }
+    #endregion
 
     #region Hover
     public bool OverrideActiveHover { get; set; }
@@ -105,6 +107,14 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
             Card.CardHovered (false);
 
         }
+
+    }
+
+    public void ShowBigCard (bool show) {
+
+        bigCard.transform.SetParent (show ? UI.hoveredParent : transform);
+
+        bigCard.SetActive (show);
 
     }
     #endregion

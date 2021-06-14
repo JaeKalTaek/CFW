@@ -247,6 +247,8 @@ namespace Card {
 
         public IEnumerator StartPlaying (bool resume = false) {
 
+            UpdateHighlightedCards (false);
+
             if (responding || boosting) {
 
                 UI.messagePanel.SetActive (false);                
@@ -278,7 +280,11 @@ namespace Card {
 
                 UI.ShowMessage ("Boost");
 
+                UpdateHighlightedCards (true);
+
                 yield return new WaitForSeconds (GM.responseTime);
+
+                UpdateHighlightedCards (false);
 
                 UI.messagePanel.SetActive (false);
 
@@ -396,11 +402,21 @@ namespace Card {
 
                         responding = true;
 
-                        UI.ShowMessage (Receiver.HasOnePlayableCardInHand (false) ? "ResponseCan" : "ResponseCant");
+                        if (Receiver.HasOnePlayableCardInHand (false)) {
+
+                            UI.ShowMessage ("ResponseCan");
+
+                            UpdateHighlightedCards (true);
+
+                        } else
+                            UI.ShowMessage ("ResponseCant");
 
                     }
 
                     yield return new WaitForSeconds (GM.responseTime);
+
+                    if (Receiver.IsLocalPlayer)
+                        UpdateHighlightedCards (false);
 
                     responding = false;
 
@@ -497,14 +513,14 @@ namespace Card {
                 if (!Has (CommonEffectType.Break))
                     NextTurn (true);
                 else if (localPlayer.Turn)
-                    UI.showBasicsButton.SetActive (true);
+                    BecomeActive ();
 
             } else if (Caller.IsLocalPlayer) {
 
                 if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
                     StartPinfallChoice ();
                 else if (IsSpecial)
-                    UI.showBasicsButton.SetActive (true);
+                    BecomeActive ();
                 else
                     NextTurn ();
 
@@ -1450,7 +1466,7 @@ namespace Card {
             activeCard = null;
 
             if (Caller.IsLocalPlayer)
-                UI.showBasicsButton.SetActive (true);
+                BecomeActive ();
 
         }
         #endregion

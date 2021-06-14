@@ -506,7 +506,7 @@ public class SC_Player : NetworkBehaviour {
         }
 
         if (IsLocalPlayer)
-            UI.showBasicsButton.SetActive (true);
+            BecomeActive ();
 
     }
     #endregion
@@ -660,6 +660,28 @@ public class SC_Player : NetworkBehaviour {
     }
     #endregion
 
+    #region Hand related
+    public static void UpdateHighlightedCards (bool show) {
+
+        foreach (SC_BaseCard c in localPlayer.Hand) {
+
+            if (!show)
+                c.UICard.SetHighlight (false);
+            else if (c.CanUse (localPlayer, true))
+                c.UICard.SetHighlight (true);
+
+        }
+
+    }
+
+    public static void BecomeActive () {
+
+        UpdateHighlightedCards (true);
+
+        SC_UI_Manager.Instance.showBasicsButton.SetActive (true);
+
+    } 
+
     public delegate bool CardOfType (SC_BaseCard c);
 
     public bool HasOnePlayableCardInHand (bool ignorePrio, CardOfType ca = null) {
@@ -679,6 +701,7 @@ public class SC_Player : NetworkBehaviour {
         UI.ShowMessage (t.ToString ());
 
     }
+    #endregion
 
     #region Wait for players
     bool waiting = true;
