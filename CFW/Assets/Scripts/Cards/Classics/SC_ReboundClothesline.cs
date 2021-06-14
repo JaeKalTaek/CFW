@@ -36,7 +36,7 @@ namespace Card {
 
             if (CanUse (Caller)) {
 
-                UI.showBasicsButton.SetActive (false);
+                UI.basicsPanel.SetActive (false);
 
                 RingSlot = slot;
 

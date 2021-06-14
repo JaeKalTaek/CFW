@@ -174,8 +174,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 if (Card.CanUse (localPlayer)) {
 
-                    foreach (GameObject g in new GameObject[] { UI.basicsPanel, UI.showBasicsButton, UI.hideBasicsButton })
-                        g.SetActive (false);
+                    UI.basicsPanel.SetActive (false);
 
                     if (IsBasic) {
 

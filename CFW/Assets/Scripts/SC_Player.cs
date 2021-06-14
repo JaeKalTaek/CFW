@@ -678,7 +678,7 @@ public class SC_Player : NetworkBehaviour {
 
         UpdateHighlightedCards (true);
 
-        SC_UI_Manager.Instance.showBasicsButton.SetActive (true);
+        SC_UI_Manager.Instance.ShowBasics ();
 
     } 
 

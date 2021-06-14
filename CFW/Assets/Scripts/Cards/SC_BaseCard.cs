@@ -1448,13 +1448,8 @@ namespace Card {
 
         public virtual void OnRingUseCounters (int counters = -1) {
 
-            if (counters != -1 && Counters >= counters && localPlayer == Caller && Caller.Turn && !activeCard) {
-
-                UI.showBasicsButton.SetActive (false);
-
+            if (counters != -1 && Counters >= counters && localPlayer == Caller && Caller.Turn && !activeCard)
                 localPlayer.PlayCardServerRpc (UICard.transform.GetSiblingIndex (), true);
-
-            }
 
         }
 
