@@ -702,7 +702,7 @@ namespace Card {
         #region Simple Effects
         public void Tire () {
 
-            effectTarget.ApplySingleEffect ("Stamina", -GM.baseStamina);
+            effectTarget.ApplySingleEffect ("Stamina", Mathf.Min (0, -(effectTarget.Stamina - 2)));
 
         }
 
