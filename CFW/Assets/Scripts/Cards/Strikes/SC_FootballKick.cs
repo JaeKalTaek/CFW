@@ -7,7 +7,7 @@ namespace Card {
 
         public override bool CanUse (SC_Player user, bool ignorePriority = false, bool ignoreLocks = false) {
 
-            return base.CanUse (user, ignorePriority, ignoreLocks) && user.Alignment != 0;
+            return base.CanUse (user, ignorePriority, ignoreLocks) && !user.Neutral;
 
         }
 

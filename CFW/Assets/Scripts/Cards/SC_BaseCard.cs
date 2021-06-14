@@ -235,7 +235,7 @@ namespace Card {
 
             int value = (int) typeof (SC_Player).GetProperty (c.valueType.ToString ()).GetValue ((c.opponent && user.IsLocalPlayer) || (!c.opponent && !user.IsLocalPlayer) ? otherPlayer : localPlayer);
 
-            return c.requirementType == RequirementType.Minimum ? value > c.requirementValue : value < c.requirementValue;
+            return c.requirementType == RequirementType.Minimum ? value >= c.requirementValue : value <= c.requirementValue;
 
         }
         #endregion     
@@ -517,7 +517,7 @@ namespace Card {
 
             } else if (Caller.IsLocalPlayer) {
 
-                if (!countered && Receiver.Stamina < 3 && this as SC_OffensiveMove)
+                if (!countered && Receiver.Stamina <= 2 && this as SC_OffensiveMove)
                     StartPinfallChoice ();
                 else if (IsSpecial)
                     BecomeActive ();
@@ -1400,7 +1400,7 @@ namespace Card {
         public bool IsAlignmentCard (bool face) {
 
             foreach (CommonRequirement c in commonRequirements)
-                if (c.valueType == ValueName.Alignment && !c.opponent && ((!face && c.requirementType == RequirementType.Maximum && c.requirementValue <= 0) || (face && c.requirementType == RequirementType.Minimum && c.requirementValue >= 0)))
+                if (c.valueType == ValueName.Alignment && !c.opponent && ((!face && c.requirementType == RequirementType.Maximum && c.requirementValue < 0) || (face && c.requirementType == RequirementType.Minimum && c.requirementValue > 0)))
                     return true;
 
             return false;
