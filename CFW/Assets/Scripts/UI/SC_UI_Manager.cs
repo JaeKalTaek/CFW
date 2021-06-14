@@ -6,6 +6,7 @@ using static Card.SC_BaseCard;
 using static SC_Global;
 using UnityEngine.UI;
 using DG.Tweening;
+using System.Collections;
 
 public class SC_UI_Manager : MonoBehaviour {
 
@@ -25,7 +26,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public Transform hoveredParent;
 
-    public GameObject activeTurn, nonActiveTurn;
+    public RectTransform turnIndicator;
+    public float turnIndicatorRotation;
 
     public RingSlot[] localRingSlots, otherRingSlots;
 
@@ -121,10 +123,9 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
-    public void UpdateTurn () {
+    public IEnumerator UpdateTurn (bool active) {
 
-        activeTurn.SetActive (localPlayer.Turn);
-        nonActiveTurn.SetActive (!localPlayer.Turn);
+        yield return turnIndicator.DORotate (new Vector3 (0, 0, turnIndicatorRotation.F (active)), .5f).WaitForCompletion ();
 
     }
 

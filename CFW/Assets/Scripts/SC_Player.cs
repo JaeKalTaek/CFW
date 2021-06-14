@@ -20,9 +20,9 @@ public class SC_Player : NetworkBehaviour {
 
     public List<SC_BaseCard> Hand { get; set; }
 
-    SC_GameManager GM { get { return SC_GameManager.Instance; } }
+    static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
-    SC_UI_Manager UI { get { return Instance; } }
+    static SC_UI_Manager UI { get { return Instance; } }
 
     public static SC_Player localPlayer, otherPlayer;
 
@@ -277,8 +277,11 @@ public class SC_Player : NetworkBehaviour {
 
         GM.waitPanel.SetActive (false);
 
-        if ((start && !IsLocalPlayer) || (!start && IsLocalPlayer))
-            localPlayer.NextTurnServerRpc ();
+        UI.turnIndicator.rotation = Quaternion.Euler (0, 0, UI.turnIndicatorRotation.F (start == IsLocalPlayer));
+
+        UI.turnIndicator.gameObject.SetActive (true);
+
+        (start == IsLocalPlayer ? localPlayer : otherPlayer).StartCoroutine ((start == IsLocalPlayer ? localPlayer : otherPlayer).StartTurn ());
 
     }
     #endregion
@@ -446,13 +449,16 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    bool firstTurn;
+    bool firstTurnDone;
 
     public bool SkipDraw { get; set; }
 
     public IEnumerator StartTurn () {
 
         yield return WaitForPlayers ();
+
+        if (localPlayer.firstTurnDone || otherPlayer.firstTurnDone)
+            yield return StartCoroutine (UI.UpdateTurn (IsLocalPlayer));
 
         ApplySingleEffect ("Stamina", GM.staminaPerTurn);
 
@@ -485,13 +491,11 @@ public class SC_Player : NetworkBehaviour {
 
         }
 
-        UI.UpdateTurn ();
-
         SpecialUsed = FirstAttackPlayed = false;            
 
-        if (!firstTurn) {
+        if (!firstTurnDone) {
 
-            firstTurn = true;
+            firstTurnDone = true;
 
             foreach (SC_BaseCard c in new List<SC_BaseCard> (Hand)) {
 
@@ -665,7 +669,7 @@ public class SC_Player : NetworkBehaviour {
 
         List<SC_BaseCard> cards = new List<SC_BaseCard> (localPlayer.Hand);
 
-        foreach (Transform t in SC_UI_Manager.Instance.basicsPanel.transform)
+        foreach (Transform t in UI.basicsPanel.transform)
             if (t.gameObject.activeSelf)
                 cards.Add (t.GetComponentInChildren<SC_BaseCard> ());
 
@@ -680,9 +684,9 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    public static void BecomeActive () {        
+    public static void BecomeActive () {
 
-        SC_UI_Manager.Instance.ShowBasics ();
+        UI.ShowBasics ();
 
         UpdateHighlightedCards (true);
 
