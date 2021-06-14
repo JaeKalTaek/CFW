@@ -64,4 +64,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 3
-    breakCost: 6
+    breakCost: 5
