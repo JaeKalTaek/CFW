@@ -115,7 +115,7 @@ public class SC_UI_Manager : MonoBehaviour {
     public void ShowBasics () {
 
         for (int i = 0; i < 11; i++)
-                basicsPanel.transform.GetChild (i).gameObject.SetActive (NoLock ? (0 <= i && i <= 2) : (localPlayer.Unlocked ? (otherPlayer.Pinned ? i == 9 : i == 10) : (localPlayer.Pinned ? (4 == i || i == 5) : (6 <= i && i <= 8))));
+            basicsPanel.transform.GetChild (i).gameObject.SetActive (NoLock ? (0 <= i && i <= 2) : (localPlayer.Unlocked ? (otherPlayer.Pinned ? i == 9 : i == 10) : (localPlayer.Pinned ? (4 == i || i == 5) : (6 <= i && i <= 8))));
 
         basicsPanel.SetActive (true);
 

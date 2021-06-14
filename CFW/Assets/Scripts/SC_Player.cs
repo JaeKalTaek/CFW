@@ -663,7 +663,13 @@ public class SC_Player : NetworkBehaviour {
     #region Hand related
     public static void UpdateHighlightedCards (bool show) {
 
-        foreach (SC_BaseCard c in localPlayer.Hand) {
+        List<SC_BaseCard> cards = new List<SC_BaseCard> (localPlayer.Hand);
+
+        foreach (Transform t in SC_UI_Manager.Instance.basicsPanel.transform)
+            if (t.gameObject.activeSelf)
+                cards.Add (t.GetComponentInChildren<SC_BaseCard> ());
+
+        foreach (SC_BaseCard c in cards) {
 
             if (!show)
                 c.UICard.SetHighlight (false);
@@ -674,11 +680,11 @@ public class SC_Player : NetworkBehaviour {
 
     }
 
-    public static void BecomeActive () {
-
-        UpdateHighlightedCards (true);
+    public static void BecomeActive () {        
 
         SC_UI_Manager.Instance.ShowBasics ();
+
+        UpdateHighlightedCards (true);
 
     } 
 
