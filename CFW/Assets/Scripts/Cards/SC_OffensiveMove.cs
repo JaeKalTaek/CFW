@@ -41,9 +41,9 @@ namespace Card {
 
         public int moveOfDoom;
 
-        public override void NonMatchHeatEffects () {
+        public override void BasicEffects () {
 
-            base.NonMatchHeatEffects ();
+            base.BasicEffects ();
 
             Receiver.ApplySingleEffect ("Stamina", -effectOnOpponent.stamina);
 

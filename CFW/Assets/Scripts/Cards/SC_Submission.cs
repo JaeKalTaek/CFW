@@ -40,13 +40,20 @@ namespace Card {
 
         protected override IEnumerator ApplyEffects () {            
 
+            yield return StartCoroutine (base.ApplyEffects ());
+
+            if (!interceptFinishCard)
+                yield return StartCoroutine (ApplyEffect (Lock));
+
+        }
+
+        public override void BasicEffects () {
+
+            base.BasicEffects ();
+
             Receiver.ApplySingleEffect ("Stamina", -effect.stamina);
 
             ApplyBodyPartDamage ();
-
-            yield return StartCoroutine (base.ApplyEffects ());
-
-            yield return StartCoroutine (ApplyEffect (Lock));
 
         }
 

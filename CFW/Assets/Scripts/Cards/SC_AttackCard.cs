@@ -6,7 +6,7 @@ using static SC_Global;
 
 namespace Card {
 
-    public class SC_AttackCard : SC_BaseCard {
+    public abstract class SC_AttackCard : SC_BaseCard {
 
         [Header("Attack Card Variables")]
         [Tooltip("Match Heat gained when using this card (irrelevent if Finisher)")]
@@ -110,27 +110,6 @@ namespace Card {
 
         }
 
-        protected override IEnumerator ApplyEffects () {
-
-            if (interceptFinishCard) {
-
-                GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
-
-                NonMatchHeatEffects ();
-
-            } else {
-
-                if (!Ephemeral)
-                    GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
-
-                NonMatchHeatEffects ();
-
-                yield return StartCoroutine (base.ApplyEffects ());
-
-            }
-
-        }
-
         public virtual void PayCost () {
 
             Caller.ApplySingleEffect ("Stamina", -cost.stamina);
@@ -139,11 +118,22 @@ namespace Card {
 
             if (cost.bodyPartDamage.bodyPart != BodyPart.None)
                 Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+
         }
 
-        public virtual void NonMatchHeatEffects () {
+        protected override IEnumerator ApplyEffects () {
 
-            PayCost ();
+            BasicEffects ();
+
+            if (!interceptFinishCard)
+                yield return StartCoroutine (base.ApplyEffects ());
+
+        }        
+
+        public virtual void BasicEffects () {
+
+            if (interceptFinishCard || !Ephemeral)
+                GM.AddMatchHeat (finisher ? GM.maxMatchHeat : matchHeatGain, !finisher);
 
         }
 

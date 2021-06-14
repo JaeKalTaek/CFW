@@ -57,8 +57,7 @@ namespace Card {
             Assess, MatchHeatEffect, SingleValueEffect, BodyPartEffect, Tire, Break, Rest,
             Draw, Count, AlignmentChoice, DoubleTap, Lock, Exchange, Chain, DiscardRandom,
             DiscardChosen, Refill, StartPin, Response, Counter, Boost, Grab, Turn, Modifier,
-            OnPlayTrigger, OnNewTurnTrigger, OnNoAttackTurnTrigger, OnOffensiveMoveDamageTrigger,
-            OnFinishedPlayingTrigger
+            OnPlayTrigger, OnNewTurnTrigger, OnNoAttackTurnTrigger, OnOffensiveMoveDamageTrigger, OnFinishedPlayingTrigger
 
         }
 
@@ -388,6 +387,8 @@ namespace Card {
 
             while (ApplyingEffects)
                 yield return new WaitForEndOfFrame ();
+
+            (this as SC_AttackCard)?.PayCost ();
 
             if (!resumed) {
 
