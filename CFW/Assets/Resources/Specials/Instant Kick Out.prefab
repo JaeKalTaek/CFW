@@ -59,6 +59,8 @@ MonoBehaviour:
     effectType: 19
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - StartPinfall
 --- !u!114 &4071644812558076778
 MonoBehaviour:
   m_ObjectHideFlags: 0

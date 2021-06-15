@@ -9,6 +9,7 @@ using static Card.SC_BaseCard;
 using static SC_Global;
 using System.Collections;
 using TMPro;
+using System.Collections.Generic;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
@@ -81,7 +82,61 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             Card.CardHovered (true);
 
+            SetupKeywordRemindersPanel ();
+
             StartCoroutine (Hovered ());
+
+        }
+
+    }
+
+    void SetupKeywordRemindersPanel () {
+
+        string reminders = "";
+
+        List<string> keywords = new List<string> ();
+
+        foreach (CommonEffect ce in Card.commonEffects)
+            if (!keywords.Contains (ce.effectType.ToString ()))
+                keywords.Add (ce.effectType.ToString ());
+
+        keywords.AddRange (Card.additionalKeywords);
+
+        if ((Card as SC_AttackCard)?.finisher ?? false)
+            keywords.Add ("Finisher");
+
+        if (Card.unblockable)
+            keywords.Add ("Unblockable");
+
+        for (int i = 0; i < keywords.Count; i++) {
+
+            if (KeywordReminders.TryGetValue (keywords[i], out string r)) {
+
+                reminders += r;
+
+                if (i < keywords.Count - 1)
+                    reminders += "\n\n";
+
+            }
+
+        }
+
+        if (reminders != "") {
+
+            UI.keywordsReminder.panel.anchoredPosition = BigRec.anchoredPosition + Vector2.left * (BigRec.sizeDelta.x / 2);
+
+            if (BigRec.anchoredPosition.x - (BigRec.sizeDelta.x / 2) - UI.keywordsReminder.panel.sizeDelta.x < 0)
+                UI.keywordsReminder.panel.anchoredPosition += Vector2.right * (BigRec.sizeDelta.x + UI.keywordsReminder.panel.sizeDelta.x);
+
+            float y = Card.OnTheRing ? BigRec.anchoredPosition.y - (UI.keywordsReminder.panel.sizeDelta.y / 2) : (BigRec.sizeDelta.y - UI.keywordsReminder.panel.sizeDelta.y) / 2;
+
+            UI.keywordsReminder.panel.anchoredPosition = new Vector2 (UI.keywordsReminder.panel.anchoredPosition.x, y);
+
+            UI.keywordsReminder.text.text = reminders;
+
+            UI.keywordsReminder.panel.gameObject.SetActive (true);
+
+            UI.keywordsReminder.view.verticalNormalizedPosition = 1;
 
         }
 
@@ -89,8 +144,14 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     IEnumerator Hovered () {
 
-        while (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card))
+        while (Card != activeCard && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
+
+            if (UI.keywordsReminder.panel.gameObject.activeSelf)
+                UI.keywordsReminder.view.verticalNormalizedPosition = Mathf.Clamp01 (UI.keywordsReminder.view.verticalNormalizedPosition + Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * UI.keywordsReminder.view.scrollSensitivity);
+
             yield return new WaitForEndOfFrame ();
+
+        }
 
         OnPointerExit (new PointerEventData (EventSystem.current));
 
@@ -98,13 +159,15 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerExit (PointerEventData eventData) {
 
-        if (bigCard.activeSelf) {
+        if (bigCard.activeSelf) {            
 
             StopCoroutine (Hovered ());
 
             ShowBigCard (false);
 
             Card.CardHovered (false);
+
+            UI.keywordsReminder.panel.gameObject.SetActive (false);
 
         }
 

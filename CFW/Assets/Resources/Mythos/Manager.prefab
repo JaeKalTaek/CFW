@@ -54,3 +54,6 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Heel
+  - Face

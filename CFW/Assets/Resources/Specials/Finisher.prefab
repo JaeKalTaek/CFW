@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Finisher
 --- !u!114 &-5948495371845716667
 MonoBehaviour:
   m_ObjectHideFlags: 0

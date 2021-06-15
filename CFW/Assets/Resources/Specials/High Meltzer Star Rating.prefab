@@ -55,6 +55,11 @@ MonoBehaviour:
     effectType: 24
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Counter
+  - Response
+  - Finisher
+  - Grab
 --- !u!114 &-5948495371845716667
 MonoBehaviour:
   m_ObjectHideFlags: 0

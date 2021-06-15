@@ -48,12 +48,15 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 0
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Grab
 --- !u!114 &6336319126753748573
 MonoBehaviour:
   m_ObjectHideFlags: 0

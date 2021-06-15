@@ -63,3 +63,7 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  additionalKeywords:
+  - Face
+  - Neutral
+  - Heel

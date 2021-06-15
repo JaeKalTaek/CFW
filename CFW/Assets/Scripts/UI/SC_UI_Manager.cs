@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TMPro;
 using UnityEngine;
 using static SC_Player;
@@ -84,6 +84,19 @@ public class SC_UI_Manager : MonoBehaviour {
     }
 
     public GrabUI grabUI;
+
+    [Serializable]
+    public struct KeywordsReminder {
+
+        public RectTransform panel;
+
+        public ScrollRect view;
+
+        public TextMeshProUGUI text;
+
+    }
+
+    public KeywordsReminder keywordsReminder;
 
     void Awake () {
 

@@ -46,4 +46,8 @@ MonoBehaviour:
   matchHeat: 3
   types: 06000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects: []
+  additionalKeywords:
+  - Assess

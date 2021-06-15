@@ -48,12 +48,15 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 20
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Chain
 --- !u!114 &-60489627825508671
 MonoBehaviour:
   m_ObjectHideFlags: 0

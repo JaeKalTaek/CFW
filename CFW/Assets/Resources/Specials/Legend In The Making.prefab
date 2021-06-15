@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Grab
 --- !u!114 &-8089598463312857639
 MonoBehaviour:
   m_ObjectHideFlags: 0

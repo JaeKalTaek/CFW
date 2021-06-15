@@ -49,3 +49,5 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 1
   commonEffects: []
+  additionalKeywords:
+  - Exchange

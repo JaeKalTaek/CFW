@@ -46,11 +46,15 @@ MonoBehaviour:
   matchHeat: 13
   types: 00000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 1
+    may: 0
     effectType: 4
     valueName: 0
     effectValue: 0
+  additionalKeywords: []
   matchHeatGain: 3
   cost:
     stamina: 2
@@ -67,3 +71,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 1
+  moveOfDoom: 0

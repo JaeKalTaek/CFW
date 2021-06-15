@@ -64,6 +64,9 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -2
+  additionalKeywords:
+  - Heel
+  - Neutral
 --- !u!114 &-60489627825508671
 MonoBehaviour:
   m_ObjectHideFlags: 0

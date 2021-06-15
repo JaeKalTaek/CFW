@@ -54,6 +54,8 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Break
   matchHeatGain: 2
   cost:
     stamina: 2

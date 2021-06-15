@@ -46,7 +46,12 @@ MonoBehaviour:
   matchHeat: 11
   types: 03000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects: []
+  additionalKeywords:
+  - Heel
+  - Face
   matchHeatGain: 0
   cost:
     stamina: 0
@@ -63,3 +68,4 @@ MonoBehaviour:
       otherBodyPart: 0
       both: 0
       damage: 0
+  moveOfDoom: 0

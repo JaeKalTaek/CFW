@@ -48,6 +48,7 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -59,6 +60,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Break
 --- !u!114 &5498828102289977847
 MonoBehaviour:
   m_ObjectHideFlags: 0

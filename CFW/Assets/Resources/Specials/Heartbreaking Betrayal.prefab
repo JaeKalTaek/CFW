@@ -72,3 +72,6 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -4
+  additionalKeywords:
+  - Face
+  - Heel

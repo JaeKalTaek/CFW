@@ -64,6 +64,9 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  additionalKeywords:
+  - Heel
+  - FaceCard
 --- !u!114 &-495530055598923969
 MonoBehaviour:
   m_ObjectHideFlags: 0
