@@ -1220,7 +1220,7 @@ namespace Card {
 
             for (int i = 0; i < 3; i++) {
 
-                 if (where [i]) {
+                if (where [i]) {
 
                     foreach (SC_BaseCard c in lists[i]) {
 
@@ -1262,9 +1262,9 @@ namespace Card {
 
                     if (effectTarget.IsLocalPlayer) {
 
-                        y = Mathf.Max (0, y - 1 - (x == 0 ? 1 : 0));
+                        y += (x == 0 ? -1 : 0) + 1;
 
-                        UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, size.y * (y + 2) + yMargin * (y + 3));
+                        UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, Mathf.Max (960, size.y * y + yMargin * (y + 1)));
 
                         SC_GrabCard.selectedCards = new List<SC_BaseCard> ();
 
