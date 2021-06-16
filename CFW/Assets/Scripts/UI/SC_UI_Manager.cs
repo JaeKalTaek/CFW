@@ -100,11 +100,33 @@ public class SC_UI_Manager : MonoBehaviour {
 
     public KeywordsReminder keywordsReminder;
 
+    [Serializable]
+    public struct History {
+
+        public GameObject panel;
+
+        public ScrollRect view;
+
+        public RectTransform content;
+
+        public RectTransform linePrefab, cardPrefab;
+
+    }
+
+    public History history;
+
     void Awake () {
 
         Instance = this;
 
         knowYourOpponentChoice.onSubmit.AddListener (KnowYourOpponentConfirmedChoice);
+
+    }
+
+    void Update () {
+
+        if (Input.GetKeyDown (KeyCode.H))
+            ShowHistory ();
 
     }
 
@@ -315,6 +337,46 @@ public class SC_UI_Manager : MonoBehaviour {
         grabUI.panel.SetActive (false);
 
         localPlayer.SetIntChoiceServerRpc ("Grab", 0);
+
+    }
+    #endregion
+
+    #region History
+    void ShowHistory () {
+
+        if (history.content.childCount > 0) {
+
+            history.panel.SetActive (!history.panel.activeSelf);
+
+            history.view.verticalNormalizedPosition = 0;
+
+        }
+
+    }
+
+    public void AddCardToHistory (Image m, bool you) {
+
+        if (history.content.childCount < GM.Turn) {
+
+            RectTransform l = Instantiate (history.linePrefab, history.content);
+
+            l.anchoredPosition = new Vector2 (l.anchoredPosition.x, -(l.sizeDelta.y + 50) * (GM.Turn - 1));
+
+            l.GetComponentInChildren<TextMeshProUGUI> ().text = "Turn " + GM.Turn;
+
+        }
+
+        RectTransform c = Instantiate (history.cardPrefab, history.content.GetChild (GM.Turn - 1));
+
+        c.anchoredPosition = new Vector2 (c.anchoredPosition.x + (history.content.GetChild (GM.Turn - 1).childCount - 2) * c.sizeDelta.x, c.anchoredPosition.y);
+
+        c.GetComponent<Image> ().sprite = m.sprite;
+
+        c.GetComponentInChildren<TextMeshProUGUI> ().text = you ? "YOU" : "OPPONENT";
+
+        history.content.sizeDelta = new Vector2 (0, Mathf.Max (1080, history.content.childCount * (history.linePrefab.sizeDelta.y + 50)));
+
+        history.view.verticalNormalizedPosition = 0;
 
     }
     #endregion

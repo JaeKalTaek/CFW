@@ -66,6 +66,8 @@ public class SC_GameManager : MonoBehaviour {
 
     }
 
+    public int Turn { get; set; }
+
     void Start () {
 
         SC_BaseCard.modifierCards = new List<SC_BaseCard> ();

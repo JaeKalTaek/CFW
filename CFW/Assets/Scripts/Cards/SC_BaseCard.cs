@@ -385,6 +385,9 @@ namespace Card {
 
         IEnumerator Use (bool resumed = false) {
 
+            if (!resumed && (originalCard == this || !Ephemeral || interceptFinishCard))
+                UI.AddCardToHistory (UICard.image, Caller.IsLocalPlayer);
+
             OnPlay?.Invoke ();
 
             while (ApplyingEffects)

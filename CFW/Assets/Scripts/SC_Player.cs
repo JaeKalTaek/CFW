@@ -509,6 +509,8 @@ public class SC_Player : NetworkBehaviour {
 
         }
 
+        GM.Turn++;
+
         if (IsLocalPlayer)
             BecomeActive ();
 
