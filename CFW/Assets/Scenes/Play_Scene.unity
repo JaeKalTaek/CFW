@@ -5709,6 +5709,7 @@ MonoBehaviour:
   enlargeCardFactor: 2.25
   drawSpeed: 1
   playedSizeMultiplicator: 2
+  maxDragDistanceToPlay: 200
   baseHealth: 20
   baseStamina: 10
   baseBodyPartHealth: 10

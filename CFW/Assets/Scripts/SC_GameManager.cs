@@ -34,6 +34,8 @@ public class SC_GameManager : MonoBehaviour {
 
     public float yOffset, enlargeCardFactor, drawSpeed, playedSizeMultiplicator;
 
+    public float maxDragDistanceToPlay;
+
     [Header ("Values")]
     [Header ("Base Values")]
     public int baseHealth;
