@@ -183,16 +183,16 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     #endregion
 
     #region Click
-    public bool BlockClick { get; set; }
+    public bool CantPlay { get; set; }
 
     public void OnPointerClick (PointerEventData eventData) {
 
-        if (activeCard != Card && !BlockClick) {
+        if (activeCard != Card && !CantPlay) {
 
             if (localPlayer.ChoosingCard != ChoosingCard.None && !Card.OnTheRing) {
 
                 switch (localPlayer.ChoosingCard) {
-                    
+
                     case ChoosingCard.Discard:
                         localPlayer.DiscardServerRpc (transform.GetSiblingIndex ());
                         StopChoosing ();

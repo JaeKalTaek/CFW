@@ -70,7 +70,7 @@ namespace Card {
 
                     c.UICard.ShowBigCard (false);
 
-                    transform.GetChild (transform.childCount - 1).GetComponent<SC_UI_Card> ().BlockClick = b;
+                    transform.GetChild (transform.childCount - 1).GetComponent<SC_UI_Card> ().CantPlay = b;
 
                     transform.GetChild (transform.childCount - 1).GetComponent<SC_UI_Card> ().ShowBigCard (b);
 
@@ -143,7 +143,7 @@ namespace Card {
 
                 (Caller.IsLocalPlayer ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
 
-                c.BlockClick = false;
+                c.CantPlay = false;
 
                 if (GetComponentsInChildren<SC_BaseCard> ().Length == 1) {
 
