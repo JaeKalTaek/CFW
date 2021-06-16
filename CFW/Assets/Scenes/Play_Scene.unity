@@ -5709,7 +5709,7 @@ MonoBehaviour:
   enlargeCardFactor: 2.25
   drawSpeed: 1
   playedSizeMultiplicator: 2
-  maxDragDistanceToPlay: 200
+  maxDragDistanceToPlay: 300
   baseHealth: 20
   baseStamina: 10
   baseBodyPartHealth: 10
@@ -13725,6 +13725,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3208b8324a03fc4aa8c95c2f6aa91d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canva: {fileID: 670482963}
   localValues: {fileID: 338365020}
   otherValues: {fileID: 941922592}
   count: {fileID: 298349227}

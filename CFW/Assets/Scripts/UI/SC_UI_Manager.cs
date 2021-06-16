@@ -12,6 +12,8 @@ public class SC_UI_Manager : MonoBehaviour {
 
     static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
+    public RectTransform canva;
+
     public static SC_UI_Manager Instance;
 
     public Transform localValues, otherValues;
@@ -150,6 +152,7 @@ public class SC_UI_Manager : MonoBehaviour {
 
     }
 
+    #region Three choices
     public void ShowThreeChoices (string[] texts) {
 
         for (int i = 0; i < 3; i++) {
@@ -173,6 +176,7 @@ public class SC_UI_Manager : MonoBehaviour {
         localPlayer.SetIntChoiceServerRpc ("ThreeChoices", choice);
 
     }
+    #endregion
 
     #region Alignment choice
     public void ShowAlignmentChoice (int value) {
@@ -322,5 +326,11 @@ public class SC_UI_Manager : MonoBehaviour {
         endText.transform.parent.gameObject.SetActive (true);
 
     }   
+
+    public Vector2 MousePosUI () {
+
+        return Vector2.Scale (Camera.main.ScreenToViewportPoint (Input.mousePosition), canva.sizeDelta);
+
+    }
 
 }

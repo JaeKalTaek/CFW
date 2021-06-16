@@ -11,7 +11,7 @@ using System.Collections;
 using TMPro;
 using System.Collections.Generic;
 
-public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
+public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler , IEndDragHandler {
 
     public SC_BaseCard Card { get; set; }
 
@@ -76,7 +76,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        if ((Card != activeCard || OverrideActiveHover) && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
+        if (!dragging && (Card != activeCard || OverrideActiveHover) && (IsBasic || Card.OnTheRing || localPlayer.Hand.Contains (Card) || lockingCard == Card)) {
 
             ShowBigCard (true);
 
@@ -158,8 +158,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     public void OnPointerExit (PointerEventData eventData) {
-
-        if (bigCard.activeSelf) {            
+            
+        if (bigCard.activeSelf && !dragging) {            
 
             StopCoroutine (Hovered ());
 
@@ -174,6 +174,8 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
     }
 
     public void ShowBigCard (bool show) {
+
+        //image.gameObject.SetActive (!show);
 
         bigCard.transform.SetParent (show ? UI.hoveredParent : transform);
 
@@ -233,29 +235,36 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
                 }
 
-            } else if (bigCard.activeSelf) {
-
-                if (Card.CanUse (localPlayer)) {
-
-                    UI.basicsPanel.SetActive (false);
-
-                    if (IsBasic) {
-
-                        GM.localHand.gameObject.SetActive (true);
-
-                        localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
-
-                    } else
-                        Card.StartCoroutine (Card.StartPlaying ());
-
-                    OnPointerExit (new PointerEventData (EventSystem.current));
-
-                } else if (localPlayer.Turn && Card.OnTheRing)
-                    Card.OnRingClicked ();
-
-            }
+            } else
+                TryPlay ();
 
         }
+
+    }
+
+    void TryPlay () {
+
+        if (bigCard.activeSelf) {
+
+            if (Card.CanUse (localPlayer)) {
+
+                UI.basicsPanel.SetActive (false);
+
+                if (IsBasic) {
+
+                    GM.localHand.gameObject.SetActive (true);
+
+                    localPlayer.StartUsingBasicServerRpc (transform.GetSiblingIndex ());
+
+                } else
+                    Card.StartCoroutine (Card.StartPlaying ());
+
+                OnPointerExit (new PointerEventData (EventSystem.current));
+
+            } else if (localPlayer.Turn && Card.OnTheRing)
+                Card.OnRingClicked ();
+
+        }        
 
     }   
 
@@ -266,6 +275,54 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         UI.messagePanel.SetActive (false);
 
         localPlayer.ChoosingCard = ChoosingCard.None;
+
+    }
+    #endregion
+
+    #region Drag
+    static bool dragging;
+
+    Vector2 offset, basePos;
+
+    void IBeginDragHandler.OnBeginDrag (PointerEventData eventData) {
+
+        if (!Card.OnTheRing && bigCard.activeSelf && Card != lockingCard) {
+
+            UI.keywordsReminder.panel.gameObject.SetActive (false);
+
+            dragging = true;
+
+            basePos = BigRec.anchoredPosition;
+
+            offset = basePos - UI.MousePosUI ();
+
+        }
+
+    }
+
+    void IDragHandler.OnDrag (PointerEventData eventData) {
+
+        if (dragging)
+            BigRec.anchoredPosition = UI.MousePosUI () + offset;
+
+    }
+
+    void IEndDragHandler.OnEndDrag (PointerEventData eventData) {
+
+        if (dragging) {
+
+            dragging = false;
+
+            bool inDistance = Vector2.Distance (BigRec.anchoredPosition, basePos) <= GM.maxDragDistanceToPlay;
+
+            BigRec.anchoredPosition = basePos;
+
+            if (activeCard != Card && !CantPlay && inDistance && Card.CanUse (localPlayer))
+                TryPlay ();
+            else
+                OnPointerExit (eventData);            
+
+        }
 
     }
     #endregion
@@ -356,7 +413,7 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         Destroy (gameObject);
 
-    }
+    }    
     #endregion
 
 }
