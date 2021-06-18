@@ -1649,8 +1649,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 5, y: 0.015014648}
+  m_SizeDelta: {x: -10, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &198501696
 MonoBehaviour:
@@ -6376,7 +6376,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1507990381}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.99996203
+  m_Size: 0.9999922
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -13001,7 +13001,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.99996203}
+  m_AnchorMax: {x: 1, y: 0.9999922}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -14175,6 +14175,10 @@ MonoBehaviour:
   hoveredParent: {fileID: 1153753375}
   turnIndicator: {fileID: 315613879}
   turnIndicatorRotation: 75
+  staminaColor: {r: 0.007843138, g: 0.45490196, b: 0.99607843, a: 1}
+  healthColor: {r: 0.99607843, g: 0.003921569, b: 0.1764706, a: 1}
+  darkGrey: {r: 0.75686276, g: 0.7882353, b: 0.80784315, a: 1}
+  lightGrey: {r: 0.90588236, g: 0.9490196, b: 0.972549, a: 1}
   localRingSlots:
   - slot: {fileID: 1766137335}
     occupied: 0
@@ -18627,6 +18631,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147245590694614}
     nbr: {fileID: 4042245631609231277}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176637638020855
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18650,6 +18688,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147245653827471}
     nbr: {fileID: 4042245631672353524}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176637739063780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18673,6 +18745,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147245754271900}
     nbr: {fileID: 4042245631705699815}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176637962926763
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18696,6 +18802,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147245408758739}
     nbr: {fileID: 4042245631388497576}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176638716680390
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18719,6 +18859,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147244583684542}
     nbr: {fileID: 4042245632751015109}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176638723914333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18742,6 +18916,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147244576500517}
     nbr: {fileID: 4042245632741471838}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176638940007542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18765,6 +18973,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147244221848846}
     nbr: {fileID: 4042245632416432245}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176639265063455
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18788,6 +19030,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147244026811239}
     nbr: {fileID: 4042245632225594908}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176639297929133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18811,6 +19087,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147244061044437}
     nbr: {fileID: 4042245632191411118}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176639493186932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18834,6 +19144,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147243735888908}
     nbr: {fileID: 4042245631828765047}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!114 &114176639584246283
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18857,6 +19201,40 @@ MonoBehaviour:
   bigCounters:
     root: {fileID: 2281147243841948531}
     nbr: {fileID: 4042245632007968264}
+  offensiveMoveValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  offensiveMoveBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    healthCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaDamage: {fileID: 0}
+    healthDamage: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+  submissionValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
+  submissionBigValues:
+    parent: {fileID: 0}
+    lines: []
+    staminaCost: {fileID: 0}
+    bodyPartsCost: {fileID: 0}
+    staminaReduction: {fileID: 0}
+    bodyPartsDamage: {fileID: 0}
+    breakCost: {fileID: 0}
 --- !u!222 &222234132176216563
 CanvasRenderer:
   m_ObjectHideFlags: 0
