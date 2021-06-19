@@ -4,9 +4,9 @@ namespace Card {
 
         public override void Boost () {
 
-            base.Boost ();
-
             (respondedCards.Peek () as SC_OffensiveMove).effectOnOpponent.health += 2;
+
+            base.Boost ();
 
         }
 

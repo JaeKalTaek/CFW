@@ -1,12 +1,16 @@
+using System.Collections;
+
 namespace Card {
 
     public class SC_HulkOut : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        protected override IEnumerator ApplyEffects () {
 
-            (activeCard as SC_OffensiveMove).effectOnOpponent /= 2;
+            yield return StartCoroutine (base.ApplyEffects ());
 
-            base.ApplyModifiers ();
+            (respondedCards.Peek () as SC_OffensiveMove).effectOnOpponent /= 2;
+
+            respondedCards.Peek ().UpdateValuesUI ();
 
         }
 

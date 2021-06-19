@@ -34,6 +34,8 @@ namespace Card {
 
                 effectOnOpponent.health += Caller.GetIntChoice ("NumberChoice");
 
+                UpdateValuesUI ();
+
             }
 
             yield return StartCoroutine (base.ApplyEffects ());            

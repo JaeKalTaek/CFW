@@ -57,6 +57,15 @@ namespace Card {
 
         }
 
+        public override void UpdateValuesUI (bool first = false, Transform[][] lines = null) {
+
+            base.UpdateValuesUI (first, new Transform[][] { UICard.submissionValues.lines, UICard.submissionBigValues.lines });
+
+            UICard.SetAttackValue ("staminaReduction", effect.stamina, false);
+            UICard.SetAttackValue ("breakCost", effect.breakCost, false);
+
+        }
+
     }
 
 }

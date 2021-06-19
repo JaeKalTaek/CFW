@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static SC_Global;
 
 namespace Card {
@@ -59,6 +60,54 @@ namespace Card {
                 h += m (this, user);
 
             return h;
+
+        }
+
+        public override void UpdateValuesUI (bool first = false, Transform[][] lines = null) {
+
+            if (first) {
+
+                BodyPart bp = ((this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage).bodyPart;
+
+                foreach (Transform[] t in lines) {
+
+                    for (int i = 0; i < t.Length; i++) {
+
+                        foreach (Transform bg in t[i]) {
+
+                            if (i == t.Length - 1 && cost.bodyPartDamage.bodyPart == BodyPart.None && bp == BodyPart.None)
+                                bg.gameObject.SetActive (false);
+                            else
+                                bg.GetComponent<Image> ().color = (i % 2 != (t.Length % 2)) == (cost.bodyPartDamage.bodyPart != BodyPart.None || bp != BodyPart.None) ? UI.darkGrey : UI.lightGrey;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            UICard.SetAttackValue ("staminaCost", cost.stamina, false);
+
+            UICard.SetAttackValue ("bodyPartsCost", cost.bodyPartDamage.bodyPart == BodyPart.None ? "" : cost.bodyPartDamage.bodyPart + " - " + cost.bodyPartDamage.damage, true);
+
+            OffensiveBodyPartDamage b = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+
+            string s = "";
+
+            if (b.bodyPart != BodyPart.None) {
+
+                s += b.bodyPart;
+
+                if (b.otherBodyPart != BodyPart.None)
+                    s += " " + (b.both ? "&" : "or") + " " + b.otherBodyPart;
+
+                s += " - " + b.damage;
+
+            }
+
+            UICard.SetAttackValue ("bodyPartsDamage", s, true);
 
         }
 

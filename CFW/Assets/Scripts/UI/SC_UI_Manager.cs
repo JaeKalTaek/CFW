@@ -31,6 +31,9 @@ public class SC_UI_Manager : MonoBehaviour {
     public RectTransform turnIndicator;
     public float turnIndicatorRotation;
 
+    public Color staminaColor, healthColor;
+    public Color darkGrey, lightGrey;
+
     public RingSlot[] localRingSlots, otherRingSlots;
 
     [Serializable]

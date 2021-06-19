@@ -69,11 +69,7 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
-  - effectOnOpponent: 0
-    may: 0
-    effectType: 23
-    valueName: 0
-    effectValue: 0
+  additionalKeywords: []
 --- !u!114 &-3493061722601533711
 MonoBehaviour:
   m_ObjectHideFlags: 0

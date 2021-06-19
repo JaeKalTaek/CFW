@@ -30,6 +30,8 @@ namespace Card {
 
                 (grabbed as SC_Submission).cost = new SC_AttackCard.Cost ();
 
+                grabbed.UpdateValuesUI ();
+
                 SC_Player.OnNewTurn += RemoveEffect;
 
             }
@@ -41,6 +43,8 @@ namespace Card {
             grabbed.commonEffects.RemoveAt (grabbed.commonEffects.Count - 1);
 
             (grabbed as SC_Submission).cost = savedCost;
+
+            grabbed.UpdateValuesUI ();
 
             SC_Player.OnNewTurn -= RemoveEffect;
 

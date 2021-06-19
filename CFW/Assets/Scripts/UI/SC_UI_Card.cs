@@ -44,6 +44,34 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public bool FaceUp { get { return image.sprite.name != "CardBack"; } }
 
+    [Serializable]
+    public struct OffensiveMoveValues {
+
+        public GameObject parent;
+        public Transform[] lines;
+        public TextMeshProUGUI staminaCost, healthCost, bodyPartsCost;
+        public TextMeshProUGUI staminaDamage, healthDamage, bodyPartsDamage;
+
+    }
+
+    [Serializable]
+    public struct SubmissionValues {
+
+        public GameObject parent;
+        public Transform[] lines;
+        public TextMeshProUGUI staminaCost, bodyPartsCost;
+        public TextMeshProUGUI staminaReduction, bodyPartsDamage;
+        public TextMeshProUGUI breakCost;
+
+    }
+
+    [Header ("Attack cards texts")]
+    public OffensiveMoveValues offensiveMoveValues;
+    public OffensiveMoveValues offensiveMoveBigValues;
+
+    public SubmissionValues submissionValues, submissionBigValues;
+
+
     void Awake () {
 
         BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
@@ -59,7 +87,51 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         image.sprite = bigImage.sprite = Resources.Load<Sprite> (faceUp ? Card.Path : "Sprites/CardBack");
 
+        ShowAttackValues (faceUp);
+
     }
+
+    #region Attack values
+    public void SetAttackValue (string id, int value, bool health) {
+
+        SetAttackValue (id, value.ToString (), health);
+
+    }
+
+    public void SetAttackValue (string id, string text, bool health) {
+
+        SetAttackValue (Card as SC_OffensiveMove ? offensiveMoveValues : (object) submissionValues, id, text, health);
+
+        SetAttackValue (Card as SC_OffensiveMove ? offensiveMoveBigValues : (object) submissionBigValues, id, text, health);
+
+    }
+
+    void SetAttackValue (object o, string id, string text, bool health) {
+
+        TextMeshProUGUI t = o.GetType ().GetField (id).GetValue (o) as TextMeshProUGUI;
+
+        t.text = text == "0" ? "---" : text.ToString ();
+
+        t.color = text == "0" ? Color.black : (health ? UI.healthColor : UI.staminaColor);
+
+    }
+
+    void ShowAttackValues (bool show) {
+
+        if (Card as SC_OffensiveMove) {
+
+            offensiveMoveValues.parent.SetActive (show);
+            offensiveMoveBigValues.parent.SetActive (show);
+
+        } else if (Card as SC_Submission) {
+
+            submissionValues.parent.SetActive (show);
+            submissionBigValues.parent.SetActive (show);
+
+        }
+
+    }
+    #endregion
 
     #region Highlight
     public void SetHighlight (bool on) {
@@ -358,8 +430,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
             if (Card.Ephemeral)
                 Destroy (gameObject);
-            else
-                target.Cards.Add (Card);            
+            else {
+
+                ShowAttackValues (false);
+
+                target.Cards.Add (Card);
+
+            }
             
         });
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using static SC_Global;
 
@@ -55,6 +55,17 @@ namespace Card {
             ApplyBodyPartDamage ();
 
         }
+
+        public override void UpdateValuesUI (bool first = false, Transform[][] lines = null) {
+
+            base.UpdateValuesUI (first, new Transform[][] { UICard.offensiveMoveValues.lines, UICard.offensiveMoveBigValues.lines });
+
+            UICard.SetAttackValue ("healthCost", cost.health, true);            
+
+            UICard.SetAttackValue ("staminaDamage", effectOnOpponent.stamina, false);
+            UICard.SetAttackValue ("healthDamage", effectOnOpponent.health, true);
+
+        }        
 
         public static event Action OnOffensiveMoveDamage;        
 

@@ -19,6 +19,8 @@ namespace Card {
 
                         effect.stamina += b ? 1 : 0;
 
+                        UpdateValuesUI (); 
+
                         MakingChoices = false;
 
                     });

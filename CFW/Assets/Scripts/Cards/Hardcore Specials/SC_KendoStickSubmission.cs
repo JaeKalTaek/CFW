@@ -22,9 +22,12 @@ namespace Card {
 
         public override void Boost () {
 
-            base.Boost ();
-
             ((respondedCards.Count > 0 ? respondedCards.Peek () : lockingCard) as SC_Submission).effect.bodyPartDamage.damage += 2;
+
+            if (respondedCards.Count > 0)
+                base.Boost ();
+            else
+                lockingCard.UpdateValuesUI ();
 
         }
 

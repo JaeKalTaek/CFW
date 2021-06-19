@@ -1170,6 +1170,8 @@ namespace Card {
 
             originalCard = null;
 
+            respondedCards.Peek ()?.UpdateValuesUI ();
+
         }
 
         public void BoostFinished () {
@@ -1422,6 +1424,8 @@ namespace Card {
 
             c.Card = Instantiate (Resources.Load<SC_BaseCard> (c.name), c.transform);
 
+            c.Card.UpdateValuesUI (true);
+
             return c;
 
         }
@@ -1510,6 +1514,8 @@ namespace Card {
             }
 
         }
+
+        public virtual void UpdateValuesUI (bool first = false, Transform[][] lines = null) { }
 
     }
 

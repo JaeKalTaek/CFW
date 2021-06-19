@@ -19,6 +19,8 @@ namespace Card {
 
                         effectOnOpponent.health += b ? 2 : 0;
 
+                        UpdateValuesUI ();
+
                         MakingChoices = false;
 
                     });

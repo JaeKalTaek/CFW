@@ -34,6 +34,8 @@ namespace Card {
 
                 effectOnOpponent.stamina += Caller.GetIntChoice ("NumberChoice");
 
+                UpdateValuesUI ();
+
             }
 
             yield return StartCoroutine (base.ApplyEffects ());            

@@ -23,6 +23,8 @@ namespace Card {
                 else if (grabbed as SC_Submission)
                     (grabbed as SC_Submission).effect *= 2;
 
+                grabbed.UpdateValuesUI ();
+
                 SC_Player.OnNewTurn += RemoveEffect;
 
             }
@@ -31,12 +33,18 @@ namespace Card {
 
         void RemoveEffect () {
 
-            grabbed.cost /= 2;
+            if (grabbed) {
 
-            if (grabbed as SC_OffensiveMove)
-                (grabbed as SC_OffensiveMove).effectOnOpponent /= 2;
-            else if (grabbed != lockingCard && grabbed as SC_Submission)
-                (grabbed as SC_Submission).effect /= 2;
+                grabbed.cost /= 2;
+
+                if (grabbed as SC_OffensiveMove)
+                    (grabbed as SC_OffensiveMove).effectOnOpponent /= 2;
+                else if (grabbed != lockingCard && grabbed as SC_Submission)
+                    (grabbed as SC_Submission).effect /= 2;
+
+                grabbed.UpdateValuesUI ();
+
+            }
 
             SC_Player.OnNewTurn -= RemoveEffect;
 
