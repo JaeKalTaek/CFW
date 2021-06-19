@@ -383,19 +383,19 @@ namespace Card {
 
         }
 
-        IEnumerator Use (bool resumed = false) {
-
-            if (!resumed && (originalCard == this || !Ephemeral || interceptFinishCard))
-                UI.AddCardToHistory (UICard.image, Caller.IsLocalPlayer);
-
-            OnPlay?.Invoke ();
-
-            while (ApplyingEffects)
-                yield return new WaitForEndOfFrame ();
-
-            (this as SC_AttackCard)?.PayCost ();
+        IEnumerator Use (bool resumed = false) {                  
 
             if (!resumed) {
+
+                if (originalCard == this || !Ephemeral || interceptFinishCard)
+                    UI.AddCardToHistory (UICard.image, Caller.IsLocalPlayer);
+
+                OnPlay?.Invoke ();
+
+                while (ApplyingEffects)
+                    yield return new WaitForEndOfFrame ();
+
+                (this as SC_AttackCard)?.PayCost ();
 
                 foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
                     c.ApplyModifiers ();
