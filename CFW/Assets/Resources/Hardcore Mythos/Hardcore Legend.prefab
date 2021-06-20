@@ -49,8 +49,9 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 1
   commonEffects:
-  - effectOnOpponent: 0
+  - effectOnOpponent: 1
     may: 0
     effectType: 23
     valueName: 0
     effectValue: 0
+  additionalKeywords: []
