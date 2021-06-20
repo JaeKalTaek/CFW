@@ -4,6 +4,7 @@ using MLAPI;
 using MLAPI.SceneManagement;
 using System.Text;
 using TMPro;
+using MLAPI.Transports.PhotonRealtime;
 
 public class SC_MainMenu : MonoBehaviour {
 
@@ -23,6 +24,7 @@ public class SC_MainMenu : MonoBehaviour {
 
         SC_Player.deckName = deckChoice.options[deckChoice.value].text;
 
+        (NetworkManager.Singleton.NetworkConfig.NetworkTransport as PhotonRealtimeTransport).RoomName = "CFW_Room_" + matchCode.text;
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
         NetworkManager.Singleton.StartHost ();        
         NetworkSceneManager.SwitchScene ("Play_Scene");      
@@ -31,7 +33,7 @@ public class SC_MainMenu : MonoBehaviour {
 
     private void ApprovalCheck (byte[] connectionData, ulong clientId, NetworkManager.ConnectionApprovedDelegate callback) {
 
-        callback (true, null, matchCode.text == Encoding.ASCII.GetString (connectionData), null, null);
+        callback (true, null, true, null, null);
 
     }
 
@@ -39,7 +41,7 @@ public class SC_MainMenu : MonoBehaviour {
 
         SC_Player.deckName = deckChoice.options[deckChoice.value].text;
 
-        NetworkManager.Singleton.NetworkConfig.ConnectionData = Encoding.ASCII.GetBytes (matchCode.text);
+        (NetworkManager.Singleton.NetworkConfig.NetworkTransport as PhotonRealtimeTransport).RoomName = "CFW_Room_" + matchCode.text;
         NetworkManager.Singleton.StartClient ();
 
     }
