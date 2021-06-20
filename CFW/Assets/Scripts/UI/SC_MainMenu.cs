@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using MLAPI;
 using MLAPI.SceneManagement;
-using System.Text;
 using TMPro;
 using MLAPI.Transports.PhotonRealtime;
 
