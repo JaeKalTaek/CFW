@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using static SC_Global;
@@ -95,7 +94,7 @@ namespace Card {
 
             UICard.SetAttackValue ("staminaCost", GetCost.stamina, false);
 
-            UICard.SetAttackValue ("bodyPartsCost", GetCost.bodyPartDamage.bodyPart == BodyPart.None ? "" : GetCost.bodyPartDamage.bodyPart + " - " + GetCost.bodyPartDamage.damage, true);
+            UICard.SetAttackValue ("bodyPartsCost", GetCost.bodyPartDamage.bodyPart == BodyPart.None ? "0" : GetCost.bodyPartDamage.bodyPart + " - " + GetCost.bodyPartDamage.damage, true);
 
             OffensiveBodyPartDamage b = (this as SC_OffensiveMove)?.GetEffect.bodyPartDamage ?? (this as SC_Submission).GetEffect.bodyPartDamage;
 
@@ -112,7 +111,7 @@ namespace Card {
 
             }
 
-            UICard.SetAttackValue ("bodyPartsDamage", s, true);
+            UICard.SetAttackValue ("bodyPartsDamage", s == "" ? "0" : s, true);
 
         }
 
