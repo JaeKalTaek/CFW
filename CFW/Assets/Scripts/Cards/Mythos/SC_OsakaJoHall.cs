@@ -4,7 +4,7 @@ namespace Card {
 
         protected override void OnNewTurnTriggered () {
 
-            if (GM.MatchHeat >= 15)
+            if (GM.MatchHeat >= 15 && (Caller.Turn ? Caller : Receiver).Unlocked)
                 (Caller.Turn ? Caller : Receiver).ApplySingleEffect ("Stamina", 1);
 
         }

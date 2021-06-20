@@ -51,7 +51,7 @@ MonoBehaviour:
   commonEffects:
   - effectOnOpponent: 0
     may: 0
-    effectType: 23
+    effectType: 25
     valueName: 0
     effectValue: 0
   additionalKeywords:
