@@ -8,7 +8,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            (respondedCards.Peek () as SC_OffensiveMove).effectOnOpponent /= 2;
+            (respondedCards.Peek () as SC_OffensiveMove).effect = (respondedCards.Peek () as SC_OffensiveMove).GetEffect / 2;
 
             respondedCards.Peek ().UpdateValuesUI ();
 

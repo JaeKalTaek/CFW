@@ -352,7 +352,7 @@ public class SC_Player : NetworkBehaviour {
 
         SC_Deck.OrganizeHand (IsLocalPlayer ? GM.localHand : GM.otherHand);
 
-        Hand.Add (c.Card);
+        AddCard (c.Card);
 
         if (IsLocalPlayer) {
 
@@ -667,6 +667,14 @@ public class SC_Player : NetworkBehaviour {
     #endregion
 
     #region Hand related
+    public void AddCard (SC_BaseCard c) {
+
+        Hand.Add (c);
+
+        c.ApplyAllModifiersToCard (this, true);
+
+    }
+
     public static void UpdateHighlightedCards (bool show) {
 
         List<SC_BaseCard> cards = new List<SC_BaseCard> (localPlayer.Hand);

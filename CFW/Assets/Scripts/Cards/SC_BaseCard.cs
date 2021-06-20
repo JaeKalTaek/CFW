@@ -397,8 +397,8 @@ namespace Card {
 
                 (this as SC_AttackCard)?.PayCost ();
 
-                foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
-                    c.ApplyModifiers ();
+                /*foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
+                    c.ApplyModifiers ();*/
 
                 yield return new WaitForSeconds (GM.playedDelay);
 
@@ -788,13 +788,7 @@ namespace Card {
 
             effectTarget.Alignment *= -1;
 
-        }
-
-        public void Modifier () {
-
-            modifierCards.Add (this);
-
-        }
+        }        
         #endregion
 
         #region Triggered effects
@@ -1351,6 +1345,55 @@ namespace Card {
 
         }
         #endregion
+
+        #region Modifiers
+        public static List<SC_BaseCard> additionalCardsToModify;
+
+        public static List<SC_BaseCard> GetCardsToModify (List<SC_BaseCard> hand) {
+
+            List<SC_BaseCard> l = new List<SC_BaseCard> (hand);
+
+            l.AddRange (additionalCardsToModify);
+
+            return l;
+
+        }
+
+        public void Modifier () {
+
+            modifierCards.Add (this);
+
+            AddRemoveModifier (true);
+
+        }
+
+        protected virtual void AddRemoveModifier (bool add) {
+
+            foreach (SC_BaseCard c in GetCardsToModify (effectTarget.Hand)) {
+
+                ApplyModifiersToCard (c, add);
+
+                c.UpdateValuesUI ();
+
+            }
+
+            if (!add)
+                modifierCards.Remove (this);
+
+        }
+
+        public void ApplyAllModifiersToCard (SC_Player owner, bool add) {
+
+            foreach (SC_BaseCard m in modifierCards)
+                if (m.effectTarget.IsLocalPlayer == owner.IsLocalPlayer)
+                    m.ApplyModifiersToCard (this, add);
+
+            UpdateValuesUI ();
+
+        }
+
+        public virtual void ApplyModifiersToCard (SC_BaseCard c, bool add) { }
+        #endregion
         #endregion
 
         public void StartPinfallChoice () {
@@ -1363,12 +1406,6 @@ namespace Card {
                     NextTurn ();
 
             });
-
-        }
-
-        public virtual void ApplyModifiers () {
-
-            modifierCards.Remove (this);
 
         }
 
@@ -1485,9 +1522,7 @@ namespace Card {
             Counters = 0;
 
             if (Has (CommonEffectType.OnPlayTrigger))
-                OnPlay -= OnPlayTriggered;
-
-            modifierCards.Remove (this);
+                OnPlay -= OnPlayTriggered;            
 
             if (Has (CommonEffectType.OnNewTurnTrigger))
                 OnNewTurn -= OnNewTurnTriggered;
@@ -1500,6 +1535,9 @@ namespace Card {
 
             if (Has (CommonEffectType.OnFinishedPlayingTrigger))
                 OnFinishedPlaying -= OnFinishedPlayingTriggered;
+
+            if (Has (CommonEffectType.Modifier))
+                AddRemoveModifier (false);
 
         }
 

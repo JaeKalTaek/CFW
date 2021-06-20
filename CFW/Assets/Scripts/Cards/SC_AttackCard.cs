@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,18 +48,23 @@ namespace Card {
 
         }
 
-        public delegate int HealthCostModifier (SC_BaseCard c, SC_Player p);
+        [HideInInspector]
+        public Cost costModifiers;
 
-        public static List<HealthCostModifier> healthCostModifiers;
+        public Cost GetCost {
 
-        public int GetHealthCost (SC_Player user) {
+            get {
 
-            int h = cost.health;
+                Cost c = cost;
 
-            foreach (HealthCostModifier m in healthCostModifiers)
-                h += m (this, user);
+                c.stamina = Mathf.Max (Mathf.Min (c.stamina, 1), c.stamina + costModifiers.stamina);
+                c.health = Mathf.Max (Mathf.Min (c.health, 1), c.health + costModifiers.health);
+                if (c.bodyPartDamage.bodyPart != BodyPart.None)
+                    c.bodyPartDamage.damage = Mathf.Max (Mathf.Min (c.bodyPartDamage.damage, 1), c.bodyPartDamage.damage + costModifiers.bodyPartDamage.damage);
 
-            return h;
+                return c;
+
+            }
 
         }
 
@@ -67,7 +72,7 @@ namespace Card {
 
             if (first) {
 
-                BodyPart bp = ((this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage).bodyPart;
+                BodyPart bp = ((this as SC_OffensiveMove)?.effect.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage).bodyPart;
 
                 foreach (Transform[] t in lines) {
 
@@ -75,10 +80,10 @@ namespace Card {
 
                         foreach (Transform bg in t[i]) {
 
-                            if (i == t.Length - 1 && cost.bodyPartDamage.bodyPart == BodyPart.None && bp == BodyPart.None)
+                            if (i == t.Length - 1 && GetCost.bodyPartDamage.bodyPart == BodyPart.None && bp == BodyPart.None)
                                 bg.gameObject.SetActive (false);
                             else
-                                bg.GetComponent<Image> ().color = (i % 2 != (t.Length % 2)) == (cost.bodyPartDamage.bodyPart != BodyPart.None || bp != BodyPart.None) ? UI.darkGrey : UI.lightGrey;
+                                bg.GetComponent<Image> ().color = (i % 2 != (t.Length % 2)) == (GetCost.bodyPartDamage.bodyPart != BodyPart.None || bp != BodyPart.None) ? UI.darkGrey : UI.lightGrey;
 
                         }
 
@@ -88,11 +93,11 @@ namespace Card {
 
             }
 
-            UICard.SetAttackValue ("staminaCost", cost.stamina, false);
+            UICard.SetAttackValue ("staminaCost", GetCost.stamina, false);
 
-            UICard.SetAttackValue ("bodyPartsCost", cost.bodyPartDamage.bodyPart == BodyPart.None ? "" : cost.bodyPartDamage.bodyPart + " - " + cost.bodyPartDamage.damage, true);
+            UICard.SetAttackValue ("bodyPartsCost", GetCost.bodyPartDamage.bodyPart == BodyPart.None ? "" : GetCost.bodyPartDamage.bodyPart + " - " + GetCost.bodyPartDamage.damage, true);
 
-            OffensiveBodyPartDamage b = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+            OffensiveBodyPartDamage b = (this as SC_OffensiveMove)?.GetEffect.bodyPartDamage ?? (this as SC_Submission).GetEffect.bodyPartDamage;
 
             string s = "";
 
@@ -125,10 +130,10 @@ namespace Card {
 
         public bool CanPayCost (SC_Player user, int chain = 1) {
 
-            if ((user.Health == 0 || user.Health > GetHealthCost (user) * chain) && user.Stamina >= cost.stamina * chain) {
+            if ((user.Health == 0 || user.Health > GetCost.health * chain) && user.Stamina >= GetCost.stamina * chain) {
 
                 foreach (BodyPart b in user.BodyPartsHealth.Keys)
-                    if (b == cost.bodyPartDamage.bodyPart && (user.BodyPartsHealth[b] == 0 || user.BodyPartsHealth[b] < cost.bodyPartDamage.damage * chain))
+                    if (b == GetCost.bodyPartDamage.bodyPart && (user.BodyPartsHealth[b] == 0 || user.BodyPartsHealth[b] < GetCost.bodyPartDamage.damage * chain))
                         return false;
 
                 return true;
@@ -142,7 +147,7 @@ namespace Card {
 
             yield return StartCoroutine (base.MakeChoices ());
 
-            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effect.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
 
             if (bodyPartDamage.otherBodyPart != BodyPart.None && !bodyPartDamage.both) {
 
@@ -161,12 +166,12 @@ namespace Card {
 
         public virtual void PayCost () {
 
-            Caller.ApplySingleEffect ("Stamina", -cost.stamina);
+            Caller.ApplySingleEffect ("Stamina", -GetCost.stamina);
 
-            Caller.ApplySingleEffect ("Health", -GetHealthCost (Caller));
+            Caller.ApplySingleEffect ("Health", -GetCost.health);
 
-            if (cost.bodyPartDamage.bodyPart != BodyPart.None)
-                Caller.ApplySingleBodyEffect (cost.bodyPartDamage.bodyPart, cost.bodyPartDamage.damage);
+            if (GetCost.bodyPartDamage.bodyPart != BodyPart.None)
+                Caller.ApplySingleBodyEffect (GetCost.bodyPartDamage.bodyPart, GetCost.bodyPartDamage.damage);
 
         }
 
@@ -188,7 +193,7 @@ namespace Card {
 
         public void ApplyBodyPartDamage () {
 
-            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (this as SC_Submission).effect.bodyPartDamage;
+            OffensiveBodyPartDamage bodyPartDamage = (this as SC_OffensiveMove)?.GetEffect.bodyPartDamage ?? (this as SC_Submission).GetEffect.bodyPartDamage;
 
             if (bodyPartDamage.bodyPart != BodyPart.None && (bodyPartDamage.both || bodyPartDamage.otherBodyPart == BodyPart.None || bodyPartDamage.bodyPart == (BodyPart) Caller.GetIntChoice ("BodyPart")))
                 Receiver.ApplySingleBodyEffect (bodyPartDamage.bodyPart, bodyPartDamage.damage, true);

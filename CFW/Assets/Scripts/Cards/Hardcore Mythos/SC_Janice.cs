@@ -2,13 +2,13 @@ namespace Card {
 
     public class SC_Janice : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Caller == Caller && (activeCard as SC_OffensiveMove) && activeCard.Is (SC_Global.CardType.Hardcore)) {
+            if ((c as SC_OffensiveMove) && c.Is (SC_Global.CardType.Hardcore)) {
 
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 1;
+                (c as SC_OffensiveMove).effectModifiers.health += add ? 1 : -1;
 
-                (activeCard as SC_OffensiveMove).effectOnOpponent.bodyPartDamage.damage += 1;
+                (c as SC_OffensiveMove).effectModifiers.bodyPartDamage.damage += add ? 1 : -1;
 
             }
 

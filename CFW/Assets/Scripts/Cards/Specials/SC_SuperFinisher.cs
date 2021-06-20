@@ -19,7 +19,7 @@ namespace Card {
                 grabbed.cost *= 2;
 
                 if (grabbed as SC_OffensiveMove)
-                    (grabbed as SC_OffensiveMove).effectOnOpponent *= 2;
+                    (grabbed as SC_OffensiveMove).effect *= 2;
                 else if (grabbed as SC_Submission)
                     (grabbed as SC_Submission).effect *= 2;
 
@@ -38,7 +38,7 @@ namespace Card {
                 grabbed.cost /= 2;
 
                 if (grabbed as SC_OffensiveMove)
-                    (grabbed as SC_OffensiveMove).effectOnOpponent /= 2;
+                    (grabbed as SC_OffensiveMove).effect /= 2;
                 else if (grabbed != lockingCard && grabbed as SC_Submission)
                     (grabbed as SC_Submission).effect /= 2;
 

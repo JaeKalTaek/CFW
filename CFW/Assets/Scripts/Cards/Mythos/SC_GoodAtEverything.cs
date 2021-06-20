@@ -2,10 +2,10 @@ namespace Card {
 
     public class SC_GoodAtEverything : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Caller == Caller && activeCard.Is (SC_Global.CardType.Classic))
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 1;
+            if (c.Is (SC_Global.CardType.Classic))
+                (c as SC_OffensiveMove).effectModifiers.health += add ? 1 : -1;
 
         }
 

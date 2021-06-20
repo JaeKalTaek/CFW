@@ -40,7 +40,7 @@ public class SC_CardGrabber : SC_CardMatcher {
 
             if (card as SC_AttackCard) {
 
-                OffensiveBodyPartDamage obpd = (card as SC_OffensiveMove)?.effectOnOpponent.bodyPartDamage ?? (card as SC_Submission).effect.bodyPartDamage;
+                OffensiveBodyPartDamage obpd = (card as SC_OffensiveMove)?.effect.bodyPartDamage ?? (card as SC_Submission).effect.bodyPartDamage;
 
                 if (obpd.bodyPart != bodyPartTarget && obpd.otherBodyPart != bodyPartTarget)
                     return false;

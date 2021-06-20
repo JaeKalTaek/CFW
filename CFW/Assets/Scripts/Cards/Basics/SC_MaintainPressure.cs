@@ -11,8 +11,8 @@ namespace Card {
 
             (lockingCard as SC_Submission).ApplyBodyPartDamage ();
 
-            if ((lockingCard as SC_Submission).cost.bodyPartDamage.bodyPart != BodyPart.None)
-                Caller.ApplySingleBodyEffect ((lockingCard as SC_Submission).cost.bodyPartDamage.bodyPart, (lockingCard as SC_Submission).cost.bodyPartDamage.damage);
+            if ((lockingCard as SC_Submission).GetCost.bodyPartDamage.bodyPart != BodyPart.None)
+                Caller.ApplySingleBodyEffect ((lockingCard as SC_Submission).GetCost.bodyPartDamage.bodyPart, (lockingCard as SC_Submission).GetCost.bodyPartDamage.damage);
 
         }
 

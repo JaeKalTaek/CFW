@@ -54,7 +54,7 @@ public abstract class SC_CardZone : MonoBehaviour {
 
         }
 
-        (local ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
+        (local ? SC_Player.localPlayer : SC_Player.otherPlayer).AddCard (c.Card);
 
     }
 

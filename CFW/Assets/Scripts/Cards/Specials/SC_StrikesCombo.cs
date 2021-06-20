@@ -24,6 +24,15 @@ namespace Card {
 
         }
 
+        protected override void AddRemoveModifier (bool add) { }
+
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
+
+            if (c.Is (SC_Global.CardType.Strike))
+                c.unblockable = true;
+
+        }
+
         bool comboNext;
 
         IEnumerator PlayCombo () {
@@ -65,12 +74,6 @@ namespace Card {
                     NextTurn ();
 
             }
-
-        }
-
-        public override void ApplyModifiers () {
-
-            activeCard.unblockable = true;
 
         }
 

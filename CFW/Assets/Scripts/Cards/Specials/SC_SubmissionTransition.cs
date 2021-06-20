@@ -26,9 +26,9 @@ namespace Card {
 
                 grabbed.commonEffects.Add (new CommonEffect (CommonEffectType.Break));
 
-                savedCost = (grabbed as SC_Submission).cost;
+                savedCost = (grabbed as SC_Submission).costModifiers;
 
-                (grabbed as SC_Submission).cost = new SC_AttackCard.Cost ();
+                (grabbed as SC_Submission).costModifiers = (grabbed as SC_Submission).cost * -1;
 
                 grabbed.UpdateValuesUI ();
 
@@ -42,7 +42,7 @@ namespace Card {
 
             grabbed.commonEffects.RemoveAt (grabbed.commonEffects.Count - 1);
 
-            (grabbed as SC_Submission).cost = savedCost;
+            (grabbed as SC_Submission).costModifiers = savedCost;
 
             grabbed.UpdateValuesUI ();
 

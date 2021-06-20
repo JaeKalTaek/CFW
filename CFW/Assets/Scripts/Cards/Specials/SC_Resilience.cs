@@ -11,8 +11,8 @@ namespace Card {
 
             SC_OffensiveMove c = respondedCards.Peek () as SC_OffensiveMove;
 
-            c.effectOnOpponent.bodyPartDamage.damage = Mathf.Max (1, c.effectOnOpponent.bodyPartDamage.damage - 2);
-            c.effectOnOpponent.health = Mathf.Max (1, c.effectOnOpponent.health - 2);
+            c.effectModifiers.bodyPartDamage.damage -= 2;
+            c.effectModifiers.health -= 2;
 
             c.UpdateValuesUI ();
 

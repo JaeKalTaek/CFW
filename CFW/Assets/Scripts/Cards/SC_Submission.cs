@@ -38,6 +38,26 @@ namespace Card {
 
         }
 
+        [HideInInspector]
+        public Effect effectModifiers;
+
+        public Effect GetEffect {
+
+            get {
+
+                Effect e = effect;
+
+                e.stamina = Mathf.Max (Mathf.Min (e.stamina, 1), e.stamina + effectModifiers.stamina);
+                e.breakCost = Mathf.Max (Mathf.Min (e.breakCost, 1), e.breakCost + effectModifiers.breakCost);
+                if (e.bodyPartDamage.bodyPart != BodyPart.None)
+                    e.bodyPartDamage.damage = Mathf.Max (Mathf.Min (e.bodyPartDamage.damage, 1), e.bodyPartDamage.damage + effectModifiers.bodyPartDamage.damage);
+
+                return e;
+
+            }
+
+        }
+
         protected override IEnumerator ApplyEffects () {            
 
             yield return StartCoroutine (base.ApplyEffects ());
@@ -51,7 +71,7 @@ namespace Card {
 
             base.BasicEffects ();
 
-            Receiver.ApplySingleEffect ("Stamina", -effect.stamina);
+            Receiver.ApplySingleEffect ("Stamina", -GetEffect.stamina);
 
             ApplyBodyPartDamage ();
 
@@ -61,8 +81,8 @@ namespace Card {
 
             base.UpdateValuesUI (first, new Transform[][] { UICard.submissionValues.lines, UICard.submissionBigValues.lines });
 
-            UICard.SetAttackValue ("staminaReduction", effect.stamina, false);
-            UICard.SetAttackValue ("breakCost", effect.breakCost, false);
+            UICard.SetAttackValue ("staminaReduction", GetEffect.stamina, false);
+            UICard.SetAttackValue ("breakCost", GetEffect.breakCost, false);
 
         }
 

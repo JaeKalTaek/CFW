@@ -49,9 +49,13 @@ namespace Card {
 
         public override void Play (SC_Player c) {
 
-            if (OnTheRing)
+            if (OnTheRing) {
+
                 stayOnRing = false;
-            else {
+
+                additionalCardsToModify.Remove (this);
+
+            } else {
 
                 foreach (RingSlot r in (c.IsLocalPlayer ? UI.localRingSlots : UI.otherRingSlots))
                     if (!r.occupied)
@@ -60,7 +64,10 @@ namespace Card {
                 stayOnRing = false;
 
             }
-            OpenSlot:
+        OpenSlot:
+
+            if (stayOnRing)
+                additionalCardsToModify.Add (this);
 
             base.Play (c);
 

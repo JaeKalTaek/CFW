@@ -2,10 +2,10 @@ namespace Card {
 
     public class SC_Reckless : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Caller == Caller && activeCard.Is (SC_Global.CardType.Aerial))
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += (activeCard as SC_OffensiveMove).GetHealthCost (Caller);
+            if (c.Is (SC_Global.CardType.Aerial))
+                (c as SC_OffensiveMove).effectModifiers.health += (c as SC_OffensiveMove).cost.health * (add ? 1 : -1);
 
         }
 

@@ -1,34 +1,16 @@
-using System.Collections;
-using static Card.SC_AttackCard;
-
 namespace Card {
 
     public class SC_LuchadorMasks : SC_BaseCard {
 
-        HealthCostModifier m;
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-        protected override IEnumerator ApplyEffects () {
+            if (c.Is (SC_Global.CardType.Aerial)) {
 
-            yield return StartCoroutine (base.ApplyEffects ());
+                (c as SC_OffensiveMove).costModifiers.health += add ? 1 : -1;
 
-            m = (c, p) => { return p == Caller && c.Is (SC_Global.CardType.Aerial) ? 1 : 0; };
+                (c as SC_OffensiveMove).effectModifiers.health += add ? 2 : -2;
 
-            healthCostModifiers.Add (m);
-
-        }
-
-        public override void ApplyModifiers () {
-
-            if (activeCard.Caller == Caller && activeCard.Is (SC_Global.CardType.Aerial))
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 2;
-
-        }
-
-        public override void DiscardedFromRing () {
-
-            base.DiscardedFromRing ();
-
-            healthCostModifiers.Remove (m);
+            }
 
         }
 

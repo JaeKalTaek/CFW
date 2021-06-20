@@ -8,7 +8,7 @@ namespace Card {
 
             yield return StartCoroutine (base.ApplyEffects ());
 
-            Receiver.ApplySingleEffect ("Health", -(respondedCards.Peek () as SC_OffensiveMove).effectOnOpponent.health);
+            Receiver.ApplySingleEffect ("Health", -(respondedCards.Peek () as SC_OffensiveMove).GetEffect.health);
 
         }
 

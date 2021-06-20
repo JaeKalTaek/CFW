@@ -8,7 +8,7 @@ namespace Card {
         
         [Header("Offensive Move Variables")]      
         [Tooltip("Effects of this offensive move on your opponent")]
-        public Effect effectOnOpponent;        
+        public Effect effect;        
 
         [Serializable]
         public struct Effect {
@@ -39,17 +39,37 @@ namespace Card {
 
         }
 
+        [HideInInspector]
+        public Effect effectModifiers;
+
+        public Effect GetEffect {
+
+            get {
+
+                Effect e = effect;
+
+                e.stamina = Mathf.Max (Mathf.Min (e.stamina, 1), e.stamina + effectModifiers.stamina);
+                e.health = Mathf.Max (Mathf.Min (e.health, 1), e.health + effectModifiers.health);
+                if (e.bodyPartDamage.bodyPart != BodyPart.None)
+                    e.bodyPartDamage.damage = Mathf.Max (Mathf.Min (e.bodyPartDamage.damage, 1), e.bodyPartDamage.damage + effectModifiers.bodyPartDamage.damage);
+
+                return e;
+
+            }
+
+        }
+
         public int moveOfDoom;
 
         public override void BasicEffects () {
 
             base.BasicEffects ();
 
-            Receiver.ApplySingleEffect ("Stamina", -effectOnOpponent.stamina);
+            Receiver.ApplySingleEffect ("Stamina", -GetEffect.stamina);
 
-            Receiver.ApplySingleEffect ("Health", -effectOnOpponent.health, true);
+            Receiver.ApplySingleEffect ("Health", -GetEffect.health, true);
 
-            if (effectOnOpponent.health > 0)
+            if (GetEffect.health > 0)
                 OnOffensiveMoveDamage?.Invoke ();
 
             ApplyBodyPartDamage ();
@@ -60,10 +80,10 @@ namespace Card {
 
             base.UpdateValuesUI (first, new Transform[][] { UICard.offensiveMoveValues.lines, UICard.offensiveMoveBigValues.lines });
 
-            UICard.SetAttackValue ("healthCost", cost.health, true);            
+            UICard.SetAttackValue ("healthCost", GetCost.health, true);            
 
-            UICard.SetAttackValue ("staminaDamage", effectOnOpponent.stamina, false);
-            UICard.SetAttackValue ("healthDamage", effectOnOpponent.health, true);
+            UICard.SetAttackValue ("staminaDamage", GetEffect.stamina, false);
+            UICard.SetAttackValue ("healthDamage", GetEffect.health, true);
 
         }        
 

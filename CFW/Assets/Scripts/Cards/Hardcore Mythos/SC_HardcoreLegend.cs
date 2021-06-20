@@ -1,16 +1,14 @@
-using UnityEngine;
-
 namespace Card {
 
     public class SC_HardcoreLegend : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Receiver == Caller && (activeCard as SC_OffensiveMove) && activeCard.Is (SC_Global.CardType.Hardcore))
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health = Mathf.Max (1, (activeCard as SC_OffensiveMove).effectOnOpponent.health - 1);            
+            if ((c as SC_OffensiveMove) && c.Is (SC_Global.CardType.Hardcore))
+                (c as SC_OffensiveMove).effectModifiers.health -= add ? 1 : -1;
 
         }
-
+        
     }
 
 }

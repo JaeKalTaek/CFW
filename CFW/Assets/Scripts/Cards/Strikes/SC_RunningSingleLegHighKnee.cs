@@ -9,7 +9,7 @@ namespace Card {
 
             yield return StartCoroutine (base.MakeChoices ());
 
-            if (localPlayer.Stamina > cost.stamina + 2) {
+            if (localPlayer.Stamina > GetCost.stamina + 2) {
 
                 yield return StartCoroutine (MakeChoice (() => {
 
@@ -17,7 +17,7 @@ namespace Card {
 
                         cost.stamina += b ? 2 : 0;
 
-                        effectOnOpponent.health += b ? 2 : 0;
+                        effect.health += b ? 2 : 0;
 
                         UpdateValuesUI ();
 

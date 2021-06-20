@@ -2,10 +2,10 @@ namespace Card {
 
     public class SC_NoEscape : SC_BaseCard {
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Caller == Caller && activeCard.Is (SC_Global.CardType.Submission))
-                (activeCard as SC_Submission).effect.stamina += 1;
+            if (c.Is (SC_Global.CardType.Submission))
+                (c as SC_Submission).effectModifiers.stamina += add ? 1 : -1;
 
         }
 

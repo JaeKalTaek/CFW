@@ -18,18 +18,16 @@ namespace Card {
 
             boostedCardName = respondedCards.Peek ().Path;
 
-            SC_Player.OnNewTurn += base.ApplyModifiers;
+            SC_Player.OnNewTurn += () => modifierCards.Remove (this);
 
         }
 
-        public override void ApplyModifiers () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            if (activeCard.Has (CommonEffectType.Counter))
-                base.ApplyModifiers ();
-            else if (activeCard.Path == boostedCardName && activeCard.Caller == Caller) 
-                activeCard.commonEffects.Add (new CommonEffect (CommonEffectType.Chain, v: 2));
+            if (c.Path == boostedCardName)
+                c.commonEffects.Add (new CommonEffect (CommonEffectType.Chain, v: 2));
 
-        }    
+        }
 
     }
 

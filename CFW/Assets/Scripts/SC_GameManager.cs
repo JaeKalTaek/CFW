@@ -68,11 +68,12 @@ public class SC_GameManager : MonoBehaviour {
 
     public int Turn { get; set; }
 
+    #region Setup
     void Start () {
 
         SC_BaseCard.modifierCards = new List<SC_BaseCard> ();
+        SC_BaseCard.additionalCardsToModify = new List<SC_BaseCard> ();
         SC_BaseCard.respondedCards = new Stack<SC_BaseCard> ();
-        SC_AttackCard.healthCostModifiers = new List<SC_AttackCard.HealthCostModifier> ();
 
         waitingPanel.SetActive (true);
 
@@ -87,16 +88,6 @@ public class SC_GameManager : MonoBehaviour {
 
     }
 
-    public int blockMatchHeatReset;
-
-    public void AddMatchHeat (int gain, bool canReset = false) {
-
-        MatchHeat = blockMatchHeatReset == 0 && canReset && MatchHeat == maxMatchHeat ? resetMatchHeat : Mathf.Min (maxMatchHeat, MatchHeat + gain);
-
-        matchHeatText.text = MatchHeat.ToString();
-
-    }    
-
     void SetAllValues (bool local) {
 
         UI.SetValue (local, "Health", baseHealth);
@@ -105,12 +96,34 @@ public class SC_GameManager : MonoBehaviour {
 
         UI.SetValue (local, "Alignment", startingAlignment);
 
-        foreach (BodyPart bP in Enum.GetValues(typeof(BodyPart)))
+        foreach (BodyPart bP in Enum.GetValues (typeof (BodyPart)))
             if (bP != BodyPart.None)
-                UI.SetValue (local, bP.ToString(), baseBodyPartHealth);
+                UI.SetValue (local, bP.ToString (), baseBodyPartHealth);
 
     }
+    #endregion
 
+    #region Match Heat
+    public delegate void OnMatchHeatChanged (int oldValue);
+    public static event OnMatchHeatChanged OnMatchHeatChangedEvent;
+
+    public int blockMatchHeatReset;
+
+    public void AddMatchHeat (int gain, bool canReset = false) {
+
+        int o = MatchHeat;
+
+        MatchHeat = blockMatchHeatReset == 0 && canReset && MatchHeat == maxMatchHeat ? resetMatchHeat : Mathf.Min (maxMatchHeat, MatchHeat + gain);
+
+        if (o != MatchHeat)
+            OnMatchHeatChangedEvent?.Invoke (o);
+
+        matchHeatText.text = MatchHeat.ToString();
+
+    }
+    #endregion    
+
+    #region Choose start turn
     public void ShowTurnPanel(bool choose) {
 
         (choose ? chooseTurnPanel : waitPanel).SetActive (true);
@@ -124,5 +137,6 @@ public class SC_GameManager : MonoBehaviour {
         localPlayer.StartGameServerRpc (yes);
 
     }
+    #endregion
 
 }

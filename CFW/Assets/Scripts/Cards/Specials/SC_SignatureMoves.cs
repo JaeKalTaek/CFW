@@ -48,6 +48,8 @@ namespace Card {
 
                 Caller.Hand.Remove (target.Card);
 
+                additionalCardsToModify.Add (target.Card);
+
                 SC_Deck.OrganizeHand (Caller.IsLocalPlayer ? GM.localHand : GM.otherHand);
 
                 target.RecT.anchorMin = target.RecT.anchorMax = target.RecT.pivot = Vector2.one * .5f;
@@ -142,6 +144,8 @@ namespace Card {
                 yield return c.transform.DOLocalMove (target, GM.drawSpeed, true).WaitForCompletion ();
 
                 (Caller.IsLocalPlayer ? SC_Player.localPlayer : SC_Player.otherPlayer).Hand.Add (c.Card);
+
+                additionalCardsToModify.Remove (c.Card);
 
                 c.CantPlay = false;
 

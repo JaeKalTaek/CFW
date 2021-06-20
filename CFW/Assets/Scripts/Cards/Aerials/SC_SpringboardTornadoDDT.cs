@@ -12,8 +12,8 @@ namespace Card {
 
             yield return StartCoroutine (MakeChoice (() => {
 
-                if (localPlayer.Stamina > cost.stamina)
-                    UI.ShowNumberChoiceUI (Mathf.Min (3, localPlayer.Stamina - cost.stamina));
+                if (localPlayer.Stamina > GetCost.stamina)
+                    UI.ShowNumberChoiceUI (Mathf.Min (3, localPlayer.Stamina - GetCost.stamina));
                 else {
 
                     localPlayer.SetIntChoiceServerRpc ("NumberChoice", 0);
@@ -32,7 +32,7 @@ namespace Card {
 
                 cost.stamina += Caller.GetIntChoice ("NumberChoice");
 
-                effectOnOpponent.health += Caller.GetIntChoice ("NumberChoice");
+                effect.health += Caller.GetIntChoice ("NumberChoice");
 
                 UpdateValuesUI ();
 

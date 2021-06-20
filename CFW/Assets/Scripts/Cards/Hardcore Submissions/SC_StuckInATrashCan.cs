@@ -1,40 +1,16 @@
-using System.Collections;
-using static SC_Player;
-
 namespace Card {
 
-    public class SC_StuckInATrashCan : SC_Submission {        
+    public class SC_StuckInATrashCan : SC_Submission {
 
-        protected override IEnumerator ApplyEffects () {
+        public override void ApplyModifiersToCard (SC_BaseCard c, bool add) {
 
-            yield return StartCoroutine (base.ApplyEffects ());
+            if (c.Is (SC_Global.CardType.Strike)) {
 
-            cardHovered = new OnCardHovered ((c, b) => {
+                c.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
 
-                if (localPlayer == Caller && !activeCard && c.Is (SC_Global.CardType.Strike)) {
+                (c as SC_OffensiveMove).effectModifiers.health += add ? 2 : -2;
 
-                    if (b)
-                        c.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
-                    else
-                        c.commonEffects.RemoveAt (0);
-
-                }
-
-            });
-
-            OnCardHoveredEvent += cardHovered;
-
-        }
-
-        public override void ApplyModifiers () {            
-
-            if (activeCard.Is (SC_Global.CardType.Strike)) {
-
-                activeCard.commonEffects.Insert (0, new CommonEffect (CommonEffectType.Break));
-
-                (activeCard as SC_OffensiveMove).effectOnOpponent.health += 2;                
-
-            }            
+            }
 
         }
 
@@ -42,9 +18,7 @@ namespace Card {
 
             base.Broken ();
 
-            base.ApplyModifiers ();
-
-            OnCardHoveredEvent -= cardHovered;
+            AddRemoveModifier (false);
 
         }
 
