@@ -49,6 +49,7 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 1
   commonEffects: []
+  additionalKeywords: []
   matchHeatGain: 2
   cost:
     stamina: 1
@@ -57,9 +58,23 @@ MonoBehaviour:
       bodyPart: 0
       damage: 0
   finisher: 0
-  effectOnOpponent:
+  costModifiers:
+    stamina: 0
+    health: 0
+    bodyPartDamage:
+      bodyPart: 0
+      damage: 0
+  effect:
     stamina: 1
     health: 2
+    bodyPartDamage:
+      bodyPart: 0
+      otherBodyPart: 0
+      both: 0
+      damage: 0
+  effectModifiers:
+    stamina: 0
+    health: 0
     bodyPartDamage:
       bodyPart: 0
       otherBodyPart: 0
