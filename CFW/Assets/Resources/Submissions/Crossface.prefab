@@ -43,12 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a876632474707854991c39cc4ecd2624, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  matchHeat: 17
+  matchHeat: 16
   types: 05000000
   commonRequirements: []
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  additionalKeywords: []
   matchHeatGain: 0
   cost:
     stamina: 3
@@ -57,6 +58,12 @@ MonoBehaviour:
       bodyPart: 0
       damage: 0
   finisher: 1
+  costModifiers:
+    stamina: 0
+    health: 0
+    bodyPartDamage:
+      bodyPart: 0
+      damage: 0
   effect:
     stamina: 3
     bodyPartDamage:
@@ -65,3 +72,11 @@ MonoBehaviour:
       both: 0
       damage: 4
     breakCost: 5
+  effectModifiers:
+    stamina: 0
+    bodyPartDamage:
+      bodyPart: 0
+      otherBodyPart: 0
+      both: 0
+      damage: 0
+    breakCost: 0
