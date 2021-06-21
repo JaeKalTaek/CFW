@@ -1194,8 +1194,6 @@ namespace Card {
 
             activeCard = this;
 
-            GrabsRemaining = Mathf.Max (CurrentEffect.effectValue, 1);
-
             ApplyingEffects = true;
 
             SC_CardGrabber grabber = GetComponent<SC_CardGrabber> ();
@@ -1209,9 +1207,7 @@ namespace Card {
             foreach (Transform t in UI.grabUI.container)
                 Destroy (t.gameObject);
 
-            float xMargin = (UI.grabUI.container.rect.width - (size.x * 5)) / 6f;
-
-            float yMargin = xMargin;
+            float margin = (UI.grabUI.container.rect.width - (size.x * 5)) / 6f;
 
             int x = 0;
             int y = 0;
@@ -1230,7 +1226,7 @@ namespace Card {
 
                                 g.Setup (c, i);
 
-                                (g.transform.parent as RectTransform).anchoredPosition = new Vector2 (x * size.x + (x + 1) * xMargin, -y * size.y - (y + 1) * yMargin);
+                                (g.transform.parent as RectTransform).anchoredPosition = new Vector2 (x * size.x + (x + 1) * margin, -y * size.y - (y + 1) * margin);
 
                             }
 
@@ -1244,17 +1240,17 @@ namespace Card {
 
                 }
 
-            }
+            }            
 
             effectTarget.IntChoices["Grab"] = -1;
 
-            GrabsRemaining = Mathf.Min (GrabsRemaining, y * 5 + x);
+            GrabsRemaining = Mathf.Min (Mathf.Max (CurrentEffect.effectValue, 1), y * 5 + x);
 
             if (GrabsRemaining == 0)
                 StartCoroutine (NoGrabbing ());
             else {
 
-                May (() => {
+                May (() => {                    
 
                     StartCoroutine (Grabbing ());
 
@@ -1262,7 +1258,7 @@ namespace Card {
 
                         y += (x == 0 ? -1 : 0) + 1;
 
-                        UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, Mathf.Max (960, size.y * y + yMargin * (y + 1)));
+                        UI.grabUI.container.sizeDelta = new Vector2 (UI.grabUI.container.sizeDelta.x, Mathf.Max (960, size.y * y + margin * (y + 1)));
 
                         SC_GrabCard.selectedCards = new List<SC_BaseCard> ();
 
