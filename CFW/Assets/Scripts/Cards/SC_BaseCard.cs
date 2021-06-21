@@ -397,9 +397,6 @@ namespace Card {
 
                 (this as SC_AttackCard)?.PayCost ();
 
-                /*foreach (SC_BaseCard c in new List<SC_BaseCard> (modifierCards))
-                    c.ApplyModifiers ();*/
-
                 yield return new WaitForSeconds (GM.playedDelay);
 
                 if (!unblockable && Receiver.Unlocked && (!Is (CardType.Basic) || Has (CommonEffectType.Lock))) {
