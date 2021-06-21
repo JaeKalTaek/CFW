@@ -7,8 +7,7 @@ using MLAPI.Transports.PhotonRealtime;
 
 public class SC_MainMenu : MonoBehaviour {
 
-    public InputField matchCode;
-    public TMP_Dropdown deckChoice;
+    public GameObject deckBuilderPanel;
 
     void Start () {
 
@@ -18,6 +17,10 @@ public class SC_MainMenu : MonoBehaviour {
         deckChoice.RefreshShownValue ();
 
     }
+
+    #region Online Play
+    public InputField matchCode;
+    public TMP_Dropdown deckChoice;
 
     public void Host () {
 
@@ -44,5 +47,18 @@ public class SC_MainMenu : MonoBehaviour {
         NetworkManager.Singleton.StartClient ();
 
     }
-    
+    #endregion
+
+    public void ShowDeckBuilder () {
+
+        deckBuilderPanel.SetActive (true);
+
+    }
+
+    public void ShowOnlinePlay () {
+
+        deckBuilderPanel.SetActive (false);
+
+    }
+
 }
