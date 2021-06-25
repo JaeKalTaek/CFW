@@ -48,12 +48,15 @@ MonoBehaviour:
   types: 0200000006000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 21
     valueName: 0
     effectValue: 2
+  cardText: Grab 2 hardcore cards.
+  additionalKeywords: []
 --- !u!114 &7481448016163628909
 MonoBehaviour:
   m_ObjectHideFlags: 0

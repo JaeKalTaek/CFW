@@ -49,6 +49,7 @@ MonoBehaviour:
   unblockable: 1
   stayOnRing: 0
   commonEffects: []
+  cardText: Match Heat + 2. Unblockable.
   additionalKeywords: []
   matchHeatGain: 2
   cost:

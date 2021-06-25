@@ -63,6 +63,7 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: 'Requires : Face or Neutral. Stamina + 2. Alignment + 2.'
   additionalKeywords:
   - Face
   - Neutral

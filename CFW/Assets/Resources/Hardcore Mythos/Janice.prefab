@@ -54,3 +54,5 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Boost all damage from hardcore offensive moves you play by 1.
+  additionalKeywords: []

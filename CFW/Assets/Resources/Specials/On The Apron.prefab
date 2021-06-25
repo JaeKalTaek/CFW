@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -95480983537133666}
   - component: {fileID: -60489627825508671}
   m_Layer: 0
-  m_Name: OnTheApron
+  m_Name: On The Apron
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -48,12 +48,16 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 20
     valueName: 0
     effectValue: 0
+  cardText: 'Boost: non-strike offensive move. Boost the health cost and damage of
+    that move by 3.'
+  additionalKeywords: []
 --- !u!114 &-60489627825508671
 MonoBehaviour:
   m_ObjectHideFlags: 0

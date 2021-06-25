@@ -55,6 +55,7 @@ MonoBehaviour:
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: 'Counter: Offensive move. Finisher.'
   additionalKeywords: []
   matchHeatGain: 0
   cost:

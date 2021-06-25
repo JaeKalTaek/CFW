@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: "Match Heat + 1. Second move of doom. After this card has been played,
+    you may\x03grab a card with third move of doom."
   additionalKeywords: []
   matchHeatGain: 1
   cost:

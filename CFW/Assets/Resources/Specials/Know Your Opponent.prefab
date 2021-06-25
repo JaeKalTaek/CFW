@@ -46,4 +46,9 @@ MonoBehaviour:
   matchHeat: 8
   types: 06000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects: []
+  cardText: Give the name of a card. If that card is in the hand or deck of your
+    opponent, put it in the discard.
+  additionalKeywords: []

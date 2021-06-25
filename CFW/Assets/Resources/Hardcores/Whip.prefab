@@ -54,6 +54,12 @@ MonoBehaviour:
     effectType: 13
     valueName: 0
     effectValue: 3
+  - effectOnOpponent: 0
+    may: 0
+    effectType: 13
+    valueName: 0
+    effectValue: 3
+  cardText: Match Heat + 1. Chain 3.
   additionalKeywords: []
   matchHeatGain: 1
   cost:

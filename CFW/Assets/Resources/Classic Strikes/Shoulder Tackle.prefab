@@ -60,6 +60,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 1. Chain 1. After this card has been played for the last
+    time, you may grab a card with second move of doom.
   additionalKeywords: []
   matchHeatGain: 1
   cost:

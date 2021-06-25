@@ -46,6 +46,8 @@ MonoBehaviour:
   matchHeat: 14
   types: 06000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -67,3 +69,5 @@ MonoBehaviour:
     effectType: 17
     valueName: 0
     effectValue: 0
+  cardText: Break. Your opponent may assess. Tire your opponent. Play Pinfall.
+  additionalKeywords: []

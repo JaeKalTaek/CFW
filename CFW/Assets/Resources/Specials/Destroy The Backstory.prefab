@@ -49,3 +49,5 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: "Put a mythos card that\u2019s on the ring in the discard."
+  additionalKeywords: []

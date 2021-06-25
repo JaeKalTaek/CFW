@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 0
     valueName: 0
     effectValue: 0
+  cardText: During your first turn, if this card is in your hand after your draw,
+    you may discard it to grab any card. Assess.
   additionalKeywords:
   - Grab
 --- !u!114 &6336319126753748573

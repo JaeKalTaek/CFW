@@ -54,6 +54,7 @@ MonoBehaviour:
     effectType: 12
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 1. Exchange.
   additionalKeywords: []
   matchHeatGain: 1
   cost:

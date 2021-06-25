@@ -48,12 +48,15 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: 'Counter: Any card.'
+  additionalKeywords: []
 --- !u!114 &4071644812558076778
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -55,6 +55,9 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  cardText: This card stays on the ring. At the beginning of your turn, put a counter
+    on this card. When there are 10 counters on it, discard this card and grab any
+    card.
   additionalKeywords:
   - Grab
 --- !u!114 &-8089598463312857639

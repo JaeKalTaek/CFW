@@ -46,12 +46,18 @@ MonoBehaviour:
   matchHeat: 1
   types: 04000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 1
     valueName: 0
     effectValue: 1
   - effectOnOpponent: 0
+    may: 0
     effectType: 9
     valueName: 0
     effectValue: 1
+  cardText: 'Match Heat + 1. Alignment + 1 or Alignment - 1. '
+  additionalKeywords: []

@@ -54,3 +54,6 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Aerial offensive moves you play inflict their base health cost as bonus
+    health damage.
+  additionalKeywords: []

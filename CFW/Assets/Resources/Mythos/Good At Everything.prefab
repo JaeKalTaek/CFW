@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6274978370742008012}
   - component: {fileID: 9180107624933897471}
   m_Layer: 0
-  m_Name: GoodAtEverything
+  m_Name: Good At Everything
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54,3 +54,5 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Boost health damage of classic offensive moves you play by 1.
+  additionalKeywords: []

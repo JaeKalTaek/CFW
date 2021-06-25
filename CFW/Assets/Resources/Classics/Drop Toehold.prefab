@@ -54,6 +54,7 @@ MonoBehaviour:
     effectType: 4
     valueName: 0
     effectValue: 0
+  cardText: Tire your opponent.
   additionalKeywords: []
   matchHeatGain: 0
   cost:

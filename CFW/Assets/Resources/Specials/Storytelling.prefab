@@ -48,6 +48,7 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -59,6 +60,9 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: 'Requires: 15 or more cards among the two discards. Match heat + 3. Grab
+    any card, including from any of the two discards.'
+  additionalKeywords: []
 --- !u!114 &-6985299432840185470
 MonoBehaviour:
   m_ObjectHideFlags: 0

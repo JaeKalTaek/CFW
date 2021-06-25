@@ -53,6 +53,7 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: 'Requires: Opponent Stamina <= 2. Match Heat + 3.'
   additionalKeywords: []
   matchHeatGain: 3
   cost:

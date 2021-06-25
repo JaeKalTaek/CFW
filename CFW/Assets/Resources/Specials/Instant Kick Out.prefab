@@ -59,6 +59,7 @@ MonoBehaviour:
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: 'Requires: Alignment == 5. Counter: Card with start pinfall.'
   additionalKeywords:
   - StartPinfall
 --- !u!114 &4071644812558076778

@@ -70,6 +70,10 @@ MonoBehaviour:
     effectType: 1
     valueName: 0
     effectValue: 3
+  cardText: This card stays on the ring and enters with 5 counters on it. Both players
+    grab a finisher. Match heat + 3. It stays at 20 as long as this card is on the
+    ring. Remove a counter from this card after an attack has been played, if it
+    has 0 left, put it in the discard.
   additionalKeywords:
   - Finisher
 --- !u!114 &-5948495371845716667

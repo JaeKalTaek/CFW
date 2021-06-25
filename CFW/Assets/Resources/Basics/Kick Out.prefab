@@ -63,3 +63,6 @@ MonoBehaviour:
     effectType: 2
     valueName: 2
     effectValue: 1
+  cardText: 'Requires: Stamina >= 5. Break. Match Heat + pinfall count. Stamina +
+    1.'
+  additionalKeywords: []

@@ -54,6 +54,7 @@ MonoBehaviour:
     effectType: 10
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 2. Double Tap. Last move of doom.
   additionalKeywords: []
   matchHeatGain: 2
   cost:

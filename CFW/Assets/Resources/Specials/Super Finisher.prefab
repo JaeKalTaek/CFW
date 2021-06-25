@@ -55,6 +55,7 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: Grab a finisher. Double its cost and effect values this turn.
   additionalKeywords:
   - Finisher
 --- !u!114 &5498828102289977847

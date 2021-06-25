@@ -63,6 +63,10 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: "Requires : Face or Neutral. If your opponent is heel or neutral, they
+    may inflict you 2 health damage.\x03If your opponent is face or neutral, they
+    may draw a card. If your opponent did either, draw a card. Draw a card.  Alignment
+    + 2."
   additionalKeywords:
   - Face
   - Neutral

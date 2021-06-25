@@ -55,6 +55,7 @@ MonoBehaviour:
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: 'Counter: Classic offensive move. Match Heat + 2.'
   additionalKeywords: []
   matchHeatGain: 2
   cost:

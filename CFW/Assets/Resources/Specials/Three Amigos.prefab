@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 20
     valueName: 0
     effectValue: 0
+  cardText: "Boost: offensive move with \u201CSuplex\u201D in its name. \x03Give
+    the boosted card: Chain 2."
   additionalKeywords:
   - Chain
 --- !u!114 &-60489627825508671

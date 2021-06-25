@@ -48,6 +48,7 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
@@ -59,6 +60,10 @@ MonoBehaviour:
     effectType: 7
     valueName: 0
     effectValue: 0
+  cardText: "Requires: Being able to pay the active offensive move\u2019s cost. Counter:
+    Offensive move. Your opponent may draw. Play the countered card, ignoring all
+    of its non-basic effects."
+  additionalKeywords: []
 --- !u!114 &4071644812558076778
 MonoBehaviour:
   m_ObjectHideFlags: 0

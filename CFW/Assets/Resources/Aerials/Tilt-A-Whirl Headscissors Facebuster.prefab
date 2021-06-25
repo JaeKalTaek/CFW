@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 2. After this card has been played, you may grab a submission
+    card that targets the neck.
   additionalKeywords: []
   matchHeatGain: 2
   cost:

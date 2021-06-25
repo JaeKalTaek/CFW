@@ -64,6 +64,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: 'Requires: Alignment >= 2. Response: Offensive move. Divide all effects
+    of that move on you by 2 (rounded down). Alignment + 2.'
   additionalKeywords: []
 --- !u!114 &8792855683385278771
 MonoBehaviour:

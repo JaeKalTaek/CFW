@@ -49,6 +49,8 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: 'Requires:  Heel or Face. Match Heat + 1. Chain X, with X being the absolute
+    value of your Alignment.'
   additionalKeywords:
   - Heel
   - Face

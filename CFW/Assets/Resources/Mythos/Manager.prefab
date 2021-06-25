@@ -54,6 +54,8 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  cardText: 'At the beginning of your turn, if you are Heel or Face: Match Heat +
+    1.'
   additionalKeywords:
   - Heel
   - Face

@@ -46,12 +46,19 @@ MonoBehaviour:
   matchHeat: 7
   types: 0200000006000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 1
+    may: 0
     effectType: 15
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 1
+    may: 0
     effectType: 15
     valueName: 0
     effectValue: 0
+  cardText: 'Requires: 4 or more hardcore cards in your discard. Your opponent discards
+    2 cards of their choice.'
+  additionalKeywords: []

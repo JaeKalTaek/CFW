@@ -48,12 +48,16 @@ MonoBehaviour:
   types: 0200000006000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 20
     valueName: 0
     effectValue: 0
+  cardText: "Boost: submission.\x03or\x03Requires: you have an active submission.
+    Boost the damage of that\x03submission by 2."
+  additionalKeywords: []
 --- !u!114 &-60489627825508671
 MonoBehaviour:
   m_ObjectHideFlags: 0

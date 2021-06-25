@@ -46,8 +46,13 @@ MonoBehaviour:
   matchHeat: 1
   types: 04000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 8
     valueName: 0
     effectValue: 0
+  cardText: Count + 1.
+  additionalKeywords: []

@@ -55,6 +55,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 4. After this card has been played, you may grab an aerial
+    card and play it.
   additionalKeywords: []
   matchHeatGain: 4
   cost:

@@ -54,4 +54,6 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: "Reduce health damage from\x03hardcore offensive moves your opponent
+    plays by 1, to a minimum of 1."
   additionalKeywords: []

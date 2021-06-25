@@ -63,5 +63,7 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -2
+  cardText: 'Requires : Heel. Your opponent discards a card at random. Alignment
+    - 2.'
   additionalKeywords:
   - Heel

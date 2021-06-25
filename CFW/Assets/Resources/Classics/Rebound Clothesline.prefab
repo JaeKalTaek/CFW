@@ -49,6 +49,8 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 1
   commonEffects: []
+  cardText: You can play this card from the ring. Match Heat + 2. After this card
+    has been played from your hand, you may put it on the ring.
   additionalKeywords: []
   matchHeatGain: 2
   cost:

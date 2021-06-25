@@ -69,6 +69,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 2
     effectValue: -2
+  cardText: "Requires : Alignment == -5. Boost: a card with start pinfall.\x03or\x03Requires:
+    an active pinfall. Opponent stamina -2. Alignment - 2."
   additionalKeywords:
   - StartPinfall
 --- !u!114 &-60489627825508671

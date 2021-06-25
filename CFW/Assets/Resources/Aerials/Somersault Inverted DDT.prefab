@@ -54,6 +54,7 @@ MonoBehaviour:
     effectType: 10
     valueName: 0
     effectValue: 0
+  cardText: Finisher. Double Tap.
   additionalKeywords: []
   matchHeatGain: 0
   cost:

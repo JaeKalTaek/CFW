@@ -54,6 +54,8 @@ MonoBehaviour:
     effectType: 13
     valueName: 0
     effectValue: 4
+  cardText: Match Heat + 1. You may discard two cards from your hand to trigger Chain
+    4.
   additionalKeywords: []
   matchHeatGain: 1
   cost:

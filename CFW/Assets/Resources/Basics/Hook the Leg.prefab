@@ -46,8 +46,13 @@ MonoBehaviour:
   matchHeat: 1
   types: 04000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 2
     valueName: 2
     effectValue: -1
+  cardText: Stamina - 1.
+  additionalKeywords: []

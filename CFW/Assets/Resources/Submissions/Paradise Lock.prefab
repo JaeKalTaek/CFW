@@ -54,6 +54,8 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Match Heat + 2. While this submission is active, strikes in your hand
+    have break and reduce opponent stamina by 1 more.
   additionalKeywords:
   - Break
   matchHeatGain: 2
@@ -64,6 +66,12 @@ MonoBehaviour:
       bodyPart: 0
       damage: 0
   finisher: 0
+  costModifiers:
+    stamina: 0
+    health: 0
+    bodyPartDamage:
+      bodyPart: 0
+      damage: 0
   effect:
     stamina: 2
     bodyPartDamage:
@@ -72,3 +80,11 @@ MonoBehaviour:
       both: 0
       damage: 0
     breakCost: 6
+  effectModifiers:
+    stamina: 0
+    bodyPartDamage:
+      bodyPart: 0
+      otherBodyPart: 0
+      both: 0
+      damage: 0
+    breakCost: 0

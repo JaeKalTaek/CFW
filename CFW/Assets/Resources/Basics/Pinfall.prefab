@@ -58,5 +58,7 @@ MonoBehaviour:
     effectType: 11
     valueName: 0
     effectValue: 0
+  cardText: "Requires: Opponent Stamina =< 2. Start pinfall (You start the count,
+    this card becomes a \u201Clocking card\u201D, and both players are now locked)."
   additionalKeywords:
   - StartPinfall

@@ -49,6 +49,8 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: Match Heat + 3. As you play this card, you can pay up to 3 stamina to
+    boost its health damage on the opponent by 1 for each point of stamina paid.
   additionalKeywords: []
   matchHeatGain: 3
   cost:

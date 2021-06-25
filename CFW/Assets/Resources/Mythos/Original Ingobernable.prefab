@@ -54,5 +54,6 @@ MonoBehaviour:
     effectType: 26
     valueName: 0
     effectValue: 0
+  cardText: Whenever you end a turn without having played an attack card, rest.
   additionalKeywords:
   - Rest

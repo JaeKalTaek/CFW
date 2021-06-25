@@ -60,6 +60,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: 'Requires: you have an active submission. Match Heat + 2. Grab a submission.
+    Give it break and ignore its cost this turn.'
   additionalKeywords:
   - Break
 --- !u!114 &5498828102289977847

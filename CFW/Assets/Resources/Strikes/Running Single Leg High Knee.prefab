@@ -49,6 +49,8 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: "As you play this card, you may pay\x032 stamina to inflict 2 bonus health
+    damage. Finisher."
   additionalKeywords: []
   matchHeatGain: 0
   cost:

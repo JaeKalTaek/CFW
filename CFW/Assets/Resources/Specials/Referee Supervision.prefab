@@ -54,5 +54,7 @@ MonoBehaviour:
     effectType: 24
     valueName: 0
     effectValue: 0
+  cardText: This card stays on the ring. When your opponent plays a heel card, discard
+    this card and your opponent discards 1 card at random.
   additionalKeywords:
   - HeelCard

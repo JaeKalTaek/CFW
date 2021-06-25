@@ -48,12 +48,16 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: 'Counter: Aerial offensive move. Inflict the health damage of the countered
+    card to your opponent.'
+  additionalKeywords: []
 --- !u!114 &-8262007619034058644
 MonoBehaviour:
   m_ObjectHideFlags: 0

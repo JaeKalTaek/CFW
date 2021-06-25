@@ -49,5 +49,6 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 0
   commonEffects: []
+  cardText: Play a game of ShiFuMi, the winner draws 2 cards, the loser may assess.
   additionalKeywords:
   - Assess

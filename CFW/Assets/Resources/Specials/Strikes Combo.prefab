@@ -60,6 +60,9 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Grab 3 strikes with a match heat value of 7 or less. Give them unblockable
+    and play them in a row, ignoring their other non-basic effects. Shuffle them
+    back into your deck after they have been played. Finish your turn.
   additionalKeywords:
   - Unblockable
 --- !u!114 &5267202509733104657

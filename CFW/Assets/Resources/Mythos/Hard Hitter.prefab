@@ -54,3 +54,5 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: The strike offensive moves you play inflict 1 bonus health damage.
+  additionalKeywords: []

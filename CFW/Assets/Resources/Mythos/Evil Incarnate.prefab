@@ -54,5 +54,6 @@ MonoBehaviour:
     effectType: 24
     valueName: 0
     effectValue: 0
+  cardText: 'Whenever you play a Heel card: Opponent stamina - 1.'
   additionalKeywords:
   - HeelCard

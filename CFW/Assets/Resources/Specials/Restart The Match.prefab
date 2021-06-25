@@ -46,20 +46,29 @@ MonoBehaviour:
   matchHeat: 11
   types: 06000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 1
+    may: 0
     effectType: 16
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 1
+    may: 0
     effectType: 7
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 0
+    may: 0
     effectType: 16
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 0
+    may: 0
     effectType: 7
     valueName: 0
     effectValue: 2
+  cardText: Both players shuffle their discard with their deck and draw one card.
+    Draw a card.
+  additionalKeywords: []

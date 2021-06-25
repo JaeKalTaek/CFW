@@ -68,6 +68,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -2
+  cardText: 'Requires : Heel or Neutral. Opponent Stamina - 1. Your opponent discards
+    a card of their choice. Alignment - 2.'
   additionalKeywords:
   - Heel
   - Neutral

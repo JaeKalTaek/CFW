@@ -54,5 +54,7 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  cardText: "At the beginning of each player\u2019s turn, if the Match Heat is 15
+    or more and they are not locked, they gain 1 Stamina."
   additionalKeywords:
   - Locked

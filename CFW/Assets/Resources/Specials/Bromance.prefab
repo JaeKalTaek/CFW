@@ -68,3 +68,5 @@ MonoBehaviour:
     effectType: 1
     valueName: 0
     effectValue: 2
+  cardText: 'Requires: Alignment == 5. Rest. You may assess. Match Heat + 2.'
+  additionalKeywords: []

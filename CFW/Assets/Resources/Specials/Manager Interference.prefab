@@ -58,3 +58,6 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -3
+  cardText: "Requires: Alignment <= -3. Opponent stamina - 2.\x03or\x03Opponent health
+    - 3.\x03or\x03Target opponent body part:\x03Health - 2. Alignment - 2."
+  additionalKeywords: []

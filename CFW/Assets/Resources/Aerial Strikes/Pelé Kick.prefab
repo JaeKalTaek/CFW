@@ -55,6 +55,7 @@ MonoBehaviour:
     effectType: 18
     valueName: 0
     effectValue: 0
+  cardText: 'Response: Non-aerial offensive move. Match Heat + 2.'
   additionalKeywords: []
   matchHeatGain: 2
   cost:

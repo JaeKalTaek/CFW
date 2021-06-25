@@ -63,6 +63,8 @@ namespace Card {
 
         public enum ValueName { None, Health, Stamina, Alignment }
 
+        public string cardText;
+
         public List<string> additionalKeywords;
 
         public SC_Player Caller { get; set; }

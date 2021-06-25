@@ -63,3 +63,5 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: 'Requires: Alignment >= 3. Stamina + 3. Alignment + 2.'
+  additionalKeywords: []

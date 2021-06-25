@@ -55,6 +55,10 @@ MonoBehaviour:
     effectType: 24
     valueName: 0
     effectValue: 0
+  cardText: This card stays on the ring. Whenever a counter, a response or a finisher
+    is played, put 3 counters on this card. During your turn, you can discard this
+    card from the ring to grab an attack with match heat value lower or equal to
+    the number of counters that were on this card.
   additionalKeywords:
   - Counter
   - Response

@@ -60,6 +60,12 @@ MonoBehaviour:
     effectType: 25
     valueName: 0
     effectValue: 0
+  cardText: This card stays on the ring. Grab 3 attack cards with different match
+    heat values 15 or less and put them over this card on the ring in ascending order
+    of their match heat value. At the beginning of your turn you may draw from this
+    pile instead of your deck. Discard this card from the ring when there is no card
+    over it.
+  additionalKeywords: []
 --- !u!114 &-8089598463312857639
 MonoBehaviour:
   m_ObjectHideFlags: 0

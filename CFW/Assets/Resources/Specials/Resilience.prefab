@@ -69,6 +69,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: 'Requires: Alignment >= 3. Response: Offensive move. Reduce all damage
+    of that move by 2 to a minimum of 1. Opponent stamina - 2. Alignment + 2.'
   additionalKeywords: []
 --- !u!114 &-3493061722601533711
 MonoBehaviour:

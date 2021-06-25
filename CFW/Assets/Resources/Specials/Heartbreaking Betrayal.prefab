@@ -72,6 +72,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: -4
+  cardText: 'Requires : Face and opponent is Face. Opponent Health - 4. Opponent
+    Stamina - 3. Alignment - 4.'
   additionalKeywords:
   - Face
   - Heel

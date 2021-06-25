@@ -64,6 +64,8 @@ MonoBehaviour:
     effectType: 2
     valueName: 3
     effectValue: 2
+  cardText: 'Requires: Alignment >= 3. Counter: Special card. Alignment + 2.'
+  additionalKeywords: []
 --- !u!114 &4071644812558076778
 MonoBehaviour:
   m_ObjectHideFlags: 0

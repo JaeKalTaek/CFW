@@ -48,12 +48,16 @@ MonoBehaviour:
   types: 06000000
   commonRequirements: []
   unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
     may: 0
     effectType: 19
     valueName: 0
     effectValue: 0
+  cardText: "Counter: Offensive move. You may play an offensive move.\x03If you do,
+    ignore all of its non-basic effects, and your opponent may draw."
+  additionalKeywords: []
 --- !u!114 &-8262007619034058644
 MonoBehaviour:
   m_ObjectHideFlags: 0

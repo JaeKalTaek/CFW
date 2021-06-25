@@ -46,12 +46,19 @@ MonoBehaviour:
   matchHeat: 1
   types: 04000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 5
     valueName: 0
     effectValue: 0
   - effectOnOpponent: 0
+    may: 0
     effectType: 2
     valueName: 2
     effectValue: 1
+  cardText: "Requires: Stamina >= active submission\u2019s break cost. Break. Match
+    Heat + submission count. Stamina + 1."
+  additionalKeywords: []

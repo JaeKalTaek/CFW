@@ -46,8 +46,13 @@ MonoBehaviour:
   matchHeat: 5
   types: 06000000
   commonRequirements: []
+  unblockable: 0
+  stayOnRing: 0
   commonEffects:
   - effectOnOpponent: 0
+    may: 0
     effectType: 3
     valueName: 0
     effectValue: -4
+  cardText: 'Target body part : Health + 4.'
+  additionalKeywords: []

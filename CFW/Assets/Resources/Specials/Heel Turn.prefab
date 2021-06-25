@@ -64,6 +64,8 @@ MonoBehaviour:
     effectType: 21
     valueName: 0
     effectValue: 0
+  cardText: "Requires : Face. Set your Alignment to the\x03opposite of your Alignment.
+    Grab a heel card."
   additionalKeywords:
   - Face
   - HeelCard

@@ -49,5 +49,7 @@ MonoBehaviour:
   unblockable: 0
   stayOnRing: 1
   commonEffects: []
+  cardText: Whenever you play a strike with exchange, your opponent must accept the
+    exchange at least once if they can.
   additionalKeywords:
   - Exchange

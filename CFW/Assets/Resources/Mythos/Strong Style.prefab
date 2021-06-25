@@ -54,3 +54,7 @@ MonoBehaviour:
     effectType: 23
     valueName: 0
     effectValue: 0
+  cardText: Boost health damage of the strikes you play by 1. As long as the match
+    heat is 15 or more, reduce health damage from offensive moves your opponent plays
+    by 1, to a minimum of 1.
+  additionalKeywords: []
