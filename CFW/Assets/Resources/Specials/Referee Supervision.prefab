@@ -58,3 +58,4 @@ MonoBehaviour:
     this card and your opponent discards 1 card at random.
   additionalKeywords:
   - HeelCard
+  - Discard

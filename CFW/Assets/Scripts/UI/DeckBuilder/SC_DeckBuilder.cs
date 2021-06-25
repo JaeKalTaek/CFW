@@ -280,9 +280,11 @@ public class SC_DeckBuilder : MonoBehaviour {
 
                 if (t.isOn) {
 
-                    if (Enum.TryParse (t.transform.parent.GetComponentInChildren<TextMeshProUGUI> ().text.Replace (" ", ""), out CommonEffectType ty)) {
+                    string s = t.transform.parent.GetComponentInChildren<TextMeshProUGUI> ().text.Replace (" ", "");
 
-                        if (!c.Has (ty) && !c.additionalKeywords.Contains (ty.ToString ())) {
+                    if (Enum.TryParse (s, out CommonEffectType ty)) {
+
+                        if (!c.Has (ty) && !c.additionalKeywords.Contains (s)) {
 
                             skip = true;
 
@@ -290,13 +292,18 @@ public class SC_DeckBuilder : MonoBehaviour {
 
                         }
 
-                    } else {
+                    } else if (s == "Discard") {
 
-                        skip = true;
+                        if (!c.Has (CommonEffectType.DiscardChosen) && !c.Has (CommonEffectType.DiscardRandom) && !c.additionalKeywords.Contains (s)) {
 
-                        continue;
+                            skip = true;
 
-                    }
+                            continue;
+
+                        }
+
+                    } else
+                        Debug.LogError ("WRONG COMMON EFFECT FILTER");
 
                 }
 
