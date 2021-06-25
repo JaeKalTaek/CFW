@@ -54,6 +54,6 @@ MonoBehaviour:
     effectType: 24
     valueName: 0
     effectValue: 0
-  cardText: Whenever you play a hardcore card, put a counter on this card.  Onced
-    during each of your turns, you may remove 3 counters from this card to draw.
+  cardText: "Whenever you play a hardcore card, put a counter on this card.  Once
+    during each of your turns,\x03you may remove 3 counters from this card to draw. "
   additionalKeywords: []
