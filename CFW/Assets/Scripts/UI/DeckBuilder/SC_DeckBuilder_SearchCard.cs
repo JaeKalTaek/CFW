@@ -11,16 +11,28 @@ public class SC_DeckBuilder_SearchCard : MonoBehaviour, IPointerClickHandler {
 
     bool selected;
 
-    public void OnPointerClick (PointerEventData eventData) {
+    void Start () {
 
-        selected ^= true;
+        selected = SC_DeckBuilder.cardsInDeck.Contains (Card);
 
         image.color = new Color (1, 1, 1, selected ? .5f : 1);
 
-        if (selected)
-            SC_DeckBuilder.AddCard (Card);
-        else
-            SC_DeckBuilder.RemoveCard (Card);
+    }
+
+    public void OnPointerClick (PointerEventData eventData) {
+
+        if (!Card.Is (SC_Global.CardType.Basic)) {
+
+            selected ^= true;
+
+            image.color = new Color (1, 1, 1, selected ? .5f : 1);
+
+            if (selected)
+                SC_DeckBuilder.AddCard (Card);
+            else
+                SC_DeckBuilder.RemoveCard (Card);
+
+        }
 
     }
 

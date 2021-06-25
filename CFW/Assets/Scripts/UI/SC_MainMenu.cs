@@ -11,6 +11,8 @@ public class SC_MainMenu : MonoBehaviour {
 
     void Start () {
 
+        deckBuilderPanel.SetActive (false);
+
         foreach (SC_Deck d in Resources.LoadAll<SC_Deck> ("Decks/"))
             deckChoice.options.Add (new TMP_Dropdown.OptionData (d.name.Replace (" Deck", "")));
 
