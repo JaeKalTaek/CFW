@@ -12,7 +12,7 @@ using static SC_UI_Manager;
 
 public class SC_Player : NetworkBehaviour {
 
-    public static string deckName;
+    public static string deckCode;
 
 	public SC_Deck Deck { get; set; }
 
@@ -121,7 +121,7 @@ public class SC_Player : NetworkBehaviour {
         Alignment = GM.startingAlignment;
 
         if (IsLocalPlayer)
-            SetDeckServerRpc (deckName);
+            SetDeckServerRpc (deckCode);
 
     }
 
@@ -135,7 +135,8 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void SetDeckClientRpc (string deckName) {
 
-        Deck = Instantiate (Resources.Load<SC_Deck> ("Decks/" + deckName + " Deck"), GM.background);
+        Deck = Instantiate (Resources.Load<SC_Deck> ("Prefabs/P_Deck"), GM.background);
+        Deck.cards = CodeToCardsList (deckCode);
 
     }
 

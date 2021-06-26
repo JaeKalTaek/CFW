@@ -25,8 +25,6 @@ public class SC_DeckBuilder : MonoBehaviour {
     public GameObject moreFiltersPanel;
     public TextMeshProUGUI moreFiltersButtonText;
 
-    public static List<SC_BaseCard> list;
-
     public SC_DecksManager deckManager;
 
     #region Filters
@@ -89,8 +87,6 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         size = Resources.Load<RectTransform> ("Prefabs/Cards/P_UI_Card").sizeDelta * searchCardSize;
 
-        list = new List<SC_BaseCard> (Resources.LoadAll<SC_BaseCard> (""));
-
         dropdownFilters = transform.GetComponentsInChildren<TMP_Dropdown> ();
 
         minMaxFilters = new MinMaxFilter[] { matchHeatFilter, attackCardStaminaCost, attackCardBodyPartsCostValue,
@@ -106,7 +102,7 @@ public class SC_DeckBuilder : MonoBehaviour {
         }
 
         #region Set minimum and maximum attack filter values
-        foreach (SC_BaseCard c in list) {
+        foreach (SC_BaseCard c in allCards) {
 
             SC_AttackCard a = c as SC_AttackCard;
 
@@ -261,7 +257,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         int i, x, y = x = i = 0;               
 
-        foreach (SC_BaseCard c in list) {
+        foreach (SC_BaseCard c in allCards) {
 
             #region Oracle filter
             if (oracle.text != "" && !c.HasText (oracle.text) && !c.name.ToLower ().Contains (oracle.text.ToLower ()))

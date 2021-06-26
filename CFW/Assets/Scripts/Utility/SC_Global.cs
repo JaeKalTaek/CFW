@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Card;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SC_Global {
+
+    public static List<SC_BaseCard> allCards;
 
     [Serializable]
     public struct BodyPartDamage {
@@ -145,6 +148,29 @@ public class SC_Global {
     public static void DebugWithTime (object s) {
 
         Debug.Log (s + ": " + DateTime.Now + ":" + DateTime.Now.Millisecond);
+
+    }
+
+    public static string CardsListToCode (List<SC_BaseCard> list) {
+
+        string code = "";
+
+        foreach (SC_BaseCard c in list)
+            code += c.id + ";";
+
+        return code;
+
+    }
+
+    public static List<SC_BaseCard> CodeToCardsList (string s) {
+
+        List<SC_BaseCard> l = new List<SC_BaseCard> ();
+
+        foreach (string d in s.Split (new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            if (int.TryParse (d, out int id))
+                l.Add (allCards[id]);
+
+        return l;
 
     }
 

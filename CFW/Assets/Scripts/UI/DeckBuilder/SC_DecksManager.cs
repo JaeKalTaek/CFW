@@ -22,9 +22,7 @@ public class SC_DecksManager : MonoBehaviour {
 
         loadedDecks = new Dictionary<string, SC_LoadedDeck> ();
 
-        deckName.onValueChanged.AddListener ((s) => { UpdateCanSaveDeck (); });
-
-        SC_SavedDataManager.LoadDecks ();
+        deckName.onValueChanged.AddListener ((s) => { UpdateCanSaveDeck (); });        
 
         foreach (KeyValuePair<string, string> deck in SC_SavedDataManager.savedData.decks)
             CreateDeck (deck.Key, deck.Value);
@@ -55,10 +53,7 @@ public class SC_DecksManager : MonoBehaviour {
 
     public void Save () {
 
-        string deck = "";
-
-        foreach (SC_BaseCard c in SC_DeckBuilder.cardsInDeck)
-            deck += c.id + ";";
+        string deck = SC_Global.CardsListToCode (SC_DeckBuilder.cardsInDeck);
 
         if (loadedDecks.ContainsKey (deckName.text))
             loadedDecks[deckName.text].Setup (deckName.text, deck);
@@ -84,9 +79,8 @@ public class SC_DecksManager : MonoBehaviour {
         foreach (Transform t in SC_DeckBuilder.Instance.deck)
             Destroy (t.gameObject);
 
-        foreach (string d in chosenDeck.Split (new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries))
-            if (int.TryParse (d, out int id))
-                SC_DeckBuilder.AddCard (SC_DeckBuilder.list[id]);
+        foreach (SC_BaseCard c in SC_Global.CodeToCardsList (chosenDeck))
+            SC_DeckBuilder.AddCard (c);
 
     }
 
