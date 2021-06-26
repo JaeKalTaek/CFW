@@ -25,7 +25,7 @@ public class SC_DeckBuilder : MonoBehaviour {
     public GameObject moreFiltersPanel;
     public TextMeshProUGUI moreFiltersButtonText;
 
-    List<SC_BaseCard> list;
+    public static List<SC_BaseCard> list;
 
     public SC_DecksManager deckManager;
 

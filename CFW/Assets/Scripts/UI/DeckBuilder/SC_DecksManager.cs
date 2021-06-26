@@ -58,7 +58,7 @@ public class SC_DecksManager : MonoBehaviour {
         string deck = "";
 
         foreach (SC_BaseCard c in SC_DeckBuilder.cardsInDeck)
-            deck += c.Path + ";";
+            deck += c.id + ";";
 
         if (loadedDecks.ContainsKey (deckName.text))
             loadedDecks[deckName.text].Setup (deckName.text, deck);
@@ -85,7 +85,8 @@ public class SC_DecksManager : MonoBehaviour {
             Destroy (t.gameObject);
 
         foreach (string d in chosenDeck.Split (new char[] { ';' }, System.StringSplitOptions.RemoveEmptyEntries))
-            SC_DeckBuilder.AddCard (Resources.Load<SC_BaseCard> (d));
+            if (int.TryParse (d, out int id))
+                SC_DeckBuilder.AddCard (SC_DeckBuilder.list[id]);
 
     }
 
