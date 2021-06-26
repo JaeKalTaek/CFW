@@ -9,21 +9,25 @@ using System;
 
 public class SC_DeckBuilder : MonoBehaviour {
 
+    public int deckSize;
+
     static List<RectTransform>[] deckCards;
 
-    static SC_DeckBuilder Instance;
+    public static SC_DeckBuilder Instance;
 
     public RectTransform deck, cards;
 
     public float searchCardSize;
     Vector2 size;
 
-    public TextMeshProUGUI resultsCount;
+    public TextMeshProUGUI resultsCount, deckCardsCount;
 
     public GameObject moreFiltersPanel;
     public TextMeshProUGUI moreFiltersButtonText;
 
     List<SC_BaseCard> list;
+
+    public SC_DecksManager deckManager;
 
     #region Filters
     [Serializable]
@@ -466,7 +470,9 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         }
 
-        r.SetSiblingIndex (index);        
+        r.SetSiblingIndex (index);
+
+        UpdateDeckCardsCount ();
 
     }
 
@@ -489,8 +495,19 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         }
 
-        if (removedIndex != null)
-            deckCards[c.matchHeat - 1].RemoveAt ((int)removedIndex);
+        DestroyImmediate (deckCards[c.matchHeat - 1][(int) removedIndex].gameObject);
+
+        deckCards[c.matchHeat - 1].RemoveAt ((int) removedIndex);
+
+        UpdateDeckCardsCount ();
+
+    }
+
+    public static void UpdateDeckCardsCount () {
+
+        Instance.deckCardsCount.text = Instance.deck.childCount.ToString ();
+
+        SC_DecksManager.UpdateCanSaveDeck ();
 
     }
     #endregion
