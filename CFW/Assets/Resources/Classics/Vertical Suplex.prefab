@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5fb47760003ce84bb662f79c13fbe5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 90
   matchHeat: 7
   types: 01000000
   commonRequirements: []

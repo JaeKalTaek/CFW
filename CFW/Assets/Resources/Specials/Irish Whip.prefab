@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d8f52d8aaf494468051f111305619f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 157
   matchHeat: 2
   types: 06000000
   commonRequirements: []
