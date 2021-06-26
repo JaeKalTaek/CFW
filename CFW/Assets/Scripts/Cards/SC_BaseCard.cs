@@ -1204,7 +1204,7 @@ namespace Card {
 
             List<SC_BaseCard>[] lists = new List<SC_BaseCard>[] { effectTarget.Deck.cards, effectTarget.Graveyard.Cards, (effectTarget == Caller ? Receiver : Caller).Graveyard.Cards };
 
-            Vector2 size = Resources.Load<RectTransform> ("Prefabs/P_Grab_Card").sizeDelta;
+            Vector2 size = Resources.Load<RectTransform> ("Prefabs/Cards/P_Grab_Card").sizeDelta;
 
             foreach (Transform t in UI.grabUI.container)
                 Destroy (t.gameObject);
@@ -1224,7 +1224,7 @@ namespace Card {
 
                             if (effectTarget.IsLocalPlayer) {
 
-                                SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
+                                SC_GrabCard g = Instantiate (Resources.Load<GameObject> ("Prefabs/Cards/P_Grab_Card"), UI.grabUI.container).GetComponentInChildren<SC_GrabCard> ();
 
                                 g.Setup (c, i);
 
@@ -1456,7 +1456,7 @@ namespace Card {
 
         public static SC_UI_Card Create (SC_BaseCard original, Transform parent) {
 
-            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/P_UI_Card"), parent);
+            SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/Cards/P_UI_Card"), parent);
 
             c.name = original.GetComponentInChildren<SC_BaseCard> ().Path;
 

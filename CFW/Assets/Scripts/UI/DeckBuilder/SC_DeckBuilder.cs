@@ -83,7 +83,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         cardsInDeck = new List<SC_BaseCard> ();
 
-        size = Resources.Load<RectTransform> ("Prefabs/P_UI_Card").sizeDelta * searchCardSize;
+        size = Resources.Load<RectTransform> ("Prefabs/Cards/P_UI_Card").sizeDelta * searchCardSize;
 
         list = new List<SC_BaseCard> (Resources.LoadAll<SC_BaseCard> (""));
 
@@ -400,7 +400,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
             if (c.matchHeat >= matchHeatFilter.Min && c.matchHeat <= matchHeatFilter.Max) {
 
-                RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/P_DeckBuilder_SearchCard"), cards);
+                RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_SearchCard"), cards);
 
                 r.sizeDelta = size;
 
@@ -436,7 +436,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         cardsInDeck.Add (c);
 
-        RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/P_DeckBuilder_DeckCard"), Instance.deck);
+        RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_DeckCard"), Instance.deck);
 
         r.anchorMin = new Vector2 ((c.matchHeat - 1) * 0.05f, 0);
 
