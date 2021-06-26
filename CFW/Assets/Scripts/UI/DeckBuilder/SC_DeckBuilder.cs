@@ -43,7 +43,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     public TMP_Dropdown mainType, firstSubType, secondSubType;
 
-    public TMP_Dropdown bodyPartTarget;
+    public TMP_InputField oracle;
 
     public TMP_Dropdown alignment;
 
@@ -62,6 +62,10 @@ public class SC_DeckBuilder : MonoBehaviour {
     public MinMaxFilter offensiveMoveHealthCost, offensiveMoveStaminaDamage, offensiveMoveHealthDamage;
     public MinMaxFilter submissionStaminaReduction, submissionBreakCost;
     #endregion
+
+    TMP_Dropdown[] dropdownFilters;
+
+    MinMaxFilter[] minMaxFilters;
     #endregion
 
     void Start () {
@@ -81,11 +85,13 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         list = new List<SC_BaseCard> (Resources.LoadAll<SC_BaseCard> (""));
 
-        #region Setup Min Max Filters
-        MinMaxFilter[] minMaxFilters = new MinMaxFilter[] { matchHeatFilter, attackCardStaminaCost, attackCardBodyPartsCostValue,
+        dropdownFilters = transform.GetComponentsInChildren<TMP_Dropdown> ();
+
+        minMaxFilters = new MinMaxFilter[] { matchHeatFilter, attackCardStaminaCost, attackCardBodyPartsCostValue,
             attackCardBodyPartsDamageValue, offensiveMoveHealthCost, offensiveMoveStaminaDamage, offensiveMoveHealthDamage,
                 submissionStaminaReduction, submissionBreakCost};
 
+        #region Setup Min Max Filters
         for (int i = 1; i < minMaxFilters.Length; i++) {
 
             minMaxFilters[i].min = 50;
@@ -204,6 +210,32 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     }
 
+    public void ResetFilters () {
+
+        foreach (TMP_Dropdown d in dropdownFilters) {            
+
+            d.value = 0;
+
+            d.RefreshShownValue ();
+
+        }
+
+        foreach (MinMaxFilter m in minMaxFilters) {
+
+            m.minInput.text = m.min.ToString ();
+            m.maxInput.text = m.max.ToString ();
+
+        }
+
+        foreach (Toggle t in commonEffects)
+            t.isOn = false;
+
+        matchHeat.isOn = false;
+
+        oracle.text = "";
+
+    }
+
     public void Filter () {
 
         if (moreFiltersPanel.activeSelf)
@@ -220,6 +252,11 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         foreach (SC_BaseCard c in list) {
 
+            #region Oracle filter
+            if (oracle.text != "" && !c.HasText (oracle.text) && !c.name.ToLower ().Contains (oracle.text.ToLower ()))
+                continue;
+            #endregion
+
             #region Types filters
             if (mainType.value == 1 && !c.GetType ().IsSubclassOf (typeof (SC_AttackCard)))
                 continue;
@@ -228,29 +265,6 @@ public class SC_DeckBuilder : MonoBehaviour {
 
             if (!CheckType (c, firstSubType) || !CheckType (c, secondSubType))
                 continue;
-            #endregion
-
-            #region Body part target filter
-            if (bodyPartTarget.value != 0) {
-
-                BodyPart b, b2 = b = BodyPart.None;
-
-                if (c as SC_AttackCard) {
-
-                    b = ((c as SC_OffensiveMove)?.effect.bodyPartDamage ?? (c as SC_Submission).effect.bodyPartDamage).bodyPart;
-                    b2 = ((c as SC_OffensiveMove)?.effect.bodyPartDamage ?? (c as SC_Submission).effect.bodyPartDamage).otherBodyPart;
-
-                }
-
-                if (bodyPartTarget.value == 6) {
-
-                    if ((c as SC_AttackCard) && (b != BodyPart.None || b2 != BodyPart.None))
-                        continue;
-
-                } else if ((bodyPartTarget.value != (int) b) && (bodyPartTarget.value != (int) b2))
-                    continue;
-                
-            }
             #endregion
 
             #region Aligment filter

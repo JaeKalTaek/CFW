@@ -1446,6 +1446,12 @@ namespace Card {
             return false;
 
         }
+
+        public bool HasText (string s) {
+
+            return cardText.ToLower ().Contains (s.ToLower ());
+
+        }
         #endregion
 
         public static SC_UI_Card Create (SC_BaseCard original, Transform parent) {
