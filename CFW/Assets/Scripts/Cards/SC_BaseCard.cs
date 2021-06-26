@@ -13,6 +13,8 @@ namespace Card {
     public class SC_BaseCard : MonoBehaviour {
 
         #region Variables, Properties, Structures
+        public int id;
+
         protected static SC_UI_Manager UI { get { return SC_UI_Manager.Instance; } }
 
         protected static SC_GameManager GM { get { return SC_GameManager.Instance; } }
