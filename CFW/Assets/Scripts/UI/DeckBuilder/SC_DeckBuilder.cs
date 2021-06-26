@@ -42,6 +42,8 @@ public class SC_DeckBuilder : MonoBehaviour {
     public MinMaxFilter matchHeatFilter;
 
     public TMP_Dropdown mainType, firstSubType, secondSubType;
+    public Toggle mainTypeToggle, firstSubTypeToggle, secondSubTypeToggle;
+    Toggle[] typeToggles;
 
     public TMP_InputField oracle;
 
@@ -175,6 +177,8 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         commonEffects = commonEffectsParent.GetComponentsInChildren<Toggle> ();
 
+        typeToggles = new Toggle[] { mainTypeToggle, firstSubTypeToggle, secondSubTypeToggle };
+
         //Filter ();
 
     }
@@ -211,6 +215,9 @@ public class SC_DeckBuilder : MonoBehaviour {
     }
 
     public void ResetFilters () {
+
+        foreach (Toggle t in typeToggles)
+            t.isOn = true;
 
         foreach (TMP_Dropdown d in dropdownFilters) {            
 
@@ -258,12 +265,12 @@ public class SC_DeckBuilder : MonoBehaviour {
             #endregion
 
             #region Types filters
-            if (mainType.value == 1 && !c.GetType ().IsSubclassOf (typeof (SC_AttackCard)))
+            if (mainType.value == 1 && (c.GetType ().IsSubclassOf (typeof (SC_AttackCard)) != mainTypeToggle.isOn))
                 continue;
-            else if ((mainType.value == 2 && !c.IsSpecial) || (mainType.value == 3 && !c.Is (CardType.Basic)))
+            else if ((mainType.value == 2 && (c.IsSpecial != mainTypeToggle.isOn)) || (mainType.value == 3 && (c.Is (CardType.Basic) != mainTypeToggle.isOn)))
                 continue;
 
-            if (!CheckType (c, firstSubType) || !CheckType (c, secondSubType))
+            if ((CheckType (c, firstSubType) != firstSubTypeToggle.isOn) || (CheckType (c, secondSubType) != secondSubTypeToggle.isOn))
                 continue;
             #endregion
 
