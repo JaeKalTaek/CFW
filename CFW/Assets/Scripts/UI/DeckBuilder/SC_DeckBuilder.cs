@@ -154,7 +154,7 @@ public class SC_DeckBuilder : MonoBehaviour {
             m.minInput.text = m.min.ToString ();
             m.maxInput.text = m.max.ToString ();
 
-            m.minInput.onValueChanged.AddListener ((s) => {
+            m.minInput.onEndEdit.AddListener ((s) => {
 
                 int clamped = Mathf.Clamp (m.Min, m.min, m.Max);
 
@@ -163,7 +163,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
             });
 
-            m.maxInput.onValueChanged.AddListener ((s) => {
+            m.maxInput.onEndEdit.AddListener ((s) => {
 
                 int clamped = Mathf.Clamp (m.Max, m.Min, m.max);
 
