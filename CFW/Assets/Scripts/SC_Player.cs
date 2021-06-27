@@ -126,17 +126,17 @@ public class SC_Player : NetworkBehaviour {
     }
 
     [ServerRpc]
-    void SetDeckServerRpc (string deckName) {
+    void SetDeckServerRpc (string deckCodeParam) {
 
-        SetDeckClientRpc (deckName);
+        SetDeckClientRpc (deckCodeParam);
 
     }
 
     [ClientRpc]
-    void SetDeckClientRpc (string deckName) {
+    void SetDeckClientRpc (string deckCodeParam) {
 
         Deck = Instantiate (Resources.Load<SC_Deck> ("Prefabs/P_Deck"), GM.background);
-        Deck.cards = CodeToCardsList (deckCode);
+        Deck.cards = CodeToCardsList (deckCodeParam);
 
     }
 
