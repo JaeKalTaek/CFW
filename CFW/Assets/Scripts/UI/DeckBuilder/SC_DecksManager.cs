@@ -45,9 +45,9 @@ public class SC_DecksManager : MonoBehaviour {
 
     }
 
-    public static void UpdateCanSaveDeck () {
+    public void UpdateCanSaveDeck () {
 
-        Instance.saveButton.interactable = Instance.deckName.text != "" && SC_DeckBuilder.Instance.deck.childCount == SC_DeckBuilder.Instance.deckSize;
+        saveButton.interactable = deckName.text != "" && SC_DeckBuilder.Instance.deck.childCount == SC_DeckBuilder.Instance.deckSize;
 
     }
 

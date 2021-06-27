@@ -503,7 +503,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         Instance.deckCardsCount.text = Instance.deck.childCount.ToString ();
 
-        SC_DecksManager.UpdateCanSaveDeck ();
+        Instance.deckManager.UpdateCanSaveDeck ();
 
     }
     #endregion
