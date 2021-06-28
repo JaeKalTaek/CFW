@@ -450,7 +450,7 @@ namespace Card {
 
             } else {
 
-                activeCard = null;
+                activeCard = originalCard = null;
 
                 NextTurn ();
 
