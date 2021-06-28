@@ -79,9 +79,13 @@ namespace Card {
 
                         foreach (Transform bg in t[i]) {
 
-                            if (i == t.Length - 1 && GetCost.bodyPartDamage.bodyPart == BodyPart.None && bp == BodyPart.None)
+                            if (i == t.Length - 1 && GetCost.bodyPartDamage.bodyPart == BodyPart.None && bp == BodyPart.None) {
+
                                 bg.gameObject.SetActive (false);
-                            else
+
+                                UICard.HideBodyPartsTexts ();
+
+                            } else
                                 bg.GetComponent<Image> ().color = (i % 2 != (t.Length % 2)) == (GetCost.bodyPartDamage.bodyPart != BodyPart.None || bp != BodyPart.None) ? UI.darkGrey : UI.lightGrey;
 
                         }

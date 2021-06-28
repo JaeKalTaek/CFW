@@ -116,6 +116,29 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     }
 
+    public void HideBodyPartsTexts () {        
+
+        if (Card as SC_OffensiveMove) {
+
+            HideBodyPartsTexts (offensiveMoveValues);
+            HideBodyPartsTexts (offensiveMoveBigValues);
+
+        } else if (Card as SC_Submission) {
+
+            HideBodyPartsTexts (submissionValues);
+            HideBodyPartsTexts (submissionBigValues);
+
+        }
+
+    }
+
+    void HideBodyPartsTexts (object o) {
+
+        (o.GetType ().GetField ("bodyPartsCost").GetValue (o) as TextMeshProUGUI).gameObject.SetActive (false);
+        (o.GetType ().GetField ("bodyPartsDamage").GetValue (o) as TextMeshProUGUI).gameObject.SetActive (false);
+
+    }
+
     void ShowAttackValues (bool show) {
 
         if (Card as SC_OffensiveMove) {
