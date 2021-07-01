@@ -2171,6 +2171,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7018338945207158492, guid: fd07bbe9cd9d71e49af968d74cba329b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd07bbe9cd9d71e49af968d74cba329b, type: 3}
 --- !u!224 &207144329 stripped
@@ -7355,6 +7360,11 @@ PrefabInstance:
     - target: {fileID: 224794659017061976, guid: fd07bbe9cd9d71e49af968d74cba329b,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7018338945207158492, guid: fd07bbe9cd9d71e49af968d74cba329b,
+        type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -15054,6 +15064,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7018338945207158492, guid: fd07bbe9cd9d71e49af968d74cba329b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd07bbe9cd9d71e49af968d74cba329b, type: 3}
 --- !u!224 &1735779584 stripped
@@ -15131,7 +15146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
