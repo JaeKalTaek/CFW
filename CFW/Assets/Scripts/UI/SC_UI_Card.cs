@@ -76,9 +76,13 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
 
-        if (Card)
-            SetImages (true);        
-        else
+        if (Card) {
+
+            Card = Instantiate (Card, transform);
+
+            SetImages (true);
+
+        } else
             BigRec.anchoredPosition += Vector2.up * GM.yOffset;
 
     }

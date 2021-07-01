@@ -391,7 +391,7 @@ public class SC_Player : NetworkBehaviour {
     [ClientRpc]
     void StartUsingBasicClientRpc (int id) {
 
-        CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponentInChildren<SC_BaseCard> ());
+        CopyAndStartUsing (UI.basicsPanel.transform.GetChild (id).GetComponent<SC_UI_Card> ().Card);
 
     }
 

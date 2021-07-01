@@ -1460,7 +1460,7 @@ namespace Card {
 
             SC_UI_Card c = Instantiate (Resources.Load<SC_UI_Card> ("Prefabs/Cards/P_UI_Card"), parent);
 
-            c.name = original.GetComponentInChildren<SC_BaseCard> ().Path;
+            c.name = original.Path;
 
             c.Card = Instantiate (Resources.Load<SC_BaseCard> (c.name), c.transform);
 
