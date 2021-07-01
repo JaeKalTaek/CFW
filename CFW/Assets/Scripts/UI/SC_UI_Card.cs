@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IDragHandler , IEndDragHandler {
 
-    public SC_BaseCard Card { get; set; }
+    public SC_BaseCard Card;
 
     static SC_GameManager GM { get { return SC_GameManager.Instance; } }
 
@@ -76,9 +76,9 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
         BigRec.sizeDelta = RecT.sizeDelta * GM.enlargeCardFactor;
 
-        Card = GetComponentInChildren<SC_BaseCard> ();
-
-        if (!Card)
+        if (Card)
+            SetImages (true);        
+        else
             BigRec.anchoredPosition += Vector2.up * GM.yOffset;
 
     }
