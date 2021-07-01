@@ -274,8 +274,6 @@ public class SC_UI_Card : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
 
     public void ShowBigCard (bool show) {
 
-        //image.gameObject.SetActive (!show);
-
         bigCard.transform.SetParent (show ? UI.hoveredParent : transform);
 
         bigCard.SetActive (show);
