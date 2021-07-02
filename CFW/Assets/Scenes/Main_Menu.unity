@@ -2790,7 +2790,7 @@ RectTransform:
   m_Children:
   - {fileID: 1566771775}
   m_Father: {fileID: 697717726}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0.1}
@@ -5902,7 +5902,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 697717726}
-  m_RootOrder: 2
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.1}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -6841,7 +6841,7 @@ RectTransform:
   m_Children:
   - {fileID: 160704062}
   m_Father: {fileID: 697717726}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0.1}
@@ -12810,7 +12810,7 @@ RectTransform:
   - {fileID: 1716865161}
   - {fileID: 497911034}
   m_Father: {fileID: 697717726}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.75, y: 0}
   m_AnchorMax: {x: 0.75, y: 0.1}
@@ -13192,12 +13192,12 @@ RectTransform:
   m_Children:
   - {fileID: 406440664}
   - {fileID: 638516097}
-  - {fileID: 271525244}
   - {fileID: 793511373}
   - {fileID: 1318754421}
   - {fileID: 112758445}
   - {fileID: 650489558}
   - {fileID: 340942146}
+  - {fileID: 271525244}
   m_Father: {fileID: 1976742765}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13260,6 +13260,7 @@ MonoBehaviour:
   deck: {fileID: 271525244}
   cards: {fileID: 1173225902}
   searchCardSize: 1.6
+  deckCardVerticalSpacing: 50
   resultsCount: {fileID: 1989316257}
   deckCardsCount: {fileID: 497911035}
   moreFiltersPanel: {fileID: 793511372}
@@ -14743,7 +14744,7 @@ RectTransform:
   - {fileID: 1439295044}
   - {fileID: 1829651562}
   m_Father: {fileID: 697717726}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.9}
@@ -24140,7 +24141,7 @@ RectTransform:
   - {fileID: 1989316259}
   - {fileID: 115969143}
   m_Father: {fileID: 697717726}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0.4, y: 0.1}

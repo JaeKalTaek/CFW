@@ -13,6 +13,8 @@ public class SC_DeckBuilder_SearchCard : MonoBehaviour, IPointerClickHandler {
 
     void Start () {
 
+        SC_DeckBuilder.filteredCards[Card] = this;
+
         selected = SC_DeckBuilder.cardsInDeck.Contains (Card);
 
         image.color = new Color (1, 1, 1, selected ? .5f : 1);

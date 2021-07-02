@@ -20,6 +20,8 @@ public class SC_DeckBuilder : MonoBehaviour {
     public float searchCardSize;
     Vector2 size;
 
+    public float deckCardVerticalSpacing;
+
     public TextMeshProUGUI resultsCount, deckCardsCount;
 
     public GameObject moreFiltersPanel;
@@ -72,7 +74,9 @@ public class SC_DeckBuilder : MonoBehaviour {
     MinMaxFilter[] minMaxFilters;
     #endregion
 
-    void Start () {
+    public static Dictionary<SC_BaseCard, SC_DeckBuilder_SearchCard> filteredCards;
+
+    void Start () {        
 
         moreFiltersPanel.SetActive (false);
 
@@ -183,6 +187,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     }
 
+    #region Filtering
     #region Types filter
     bool CheckType (SC_BaseCard c, TMP_Dropdown d) {
 
@@ -244,6 +249,8 @@ public class SC_DeckBuilder : MonoBehaviour {
     }
 
     public void Filter () {
+
+        filteredCards = new Dictionary<SC_BaseCard, SC_DeckBuilder_SearchCard> ();
 
         if (moreFiltersPanel.activeSelf)
             ToggleMoreFilters ();
@@ -428,9 +435,21 @@ public class SC_DeckBuilder : MonoBehaviour {
         cards.sizeDelta = new Vector2 (cards.sizeDelta.x, Mathf.Max (300, size.y * y + margin * (y - 1)));
 
     }
+    #endregion
 
     #region Deck building
     public static List<SC_BaseCard> cardsInDeck;
+
+    public static void TryAddRemove (SC_BaseCard c, bool add) {
+
+        if (filteredCards != null && filteredCards.ContainsKey (c))
+            filteredCards[c].OnPointerClick (null);
+        else if (add)
+            AddCard (c);
+        else
+            RemoveCard (c);
+
+    }
 
     public static void AddCard (SC_BaseCard c) {
 
@@ -438,15 +457,15 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_DeckCard"), Instance.deck);
 
-        r.anchorMin = new Vector2 ((c.matchHeat - 1) * 0.05f, 0);
+        r.GetComponent<SC_DeckBuilder_DeckCard> ().Card = c;
 
-        r.anchorMax = new Vector2 ((c.matchHeat + 1) * 0.05f, 1);
+        r.anchorMin = new Vector2 ((c.matchHeat - 1) * 0.05f, 1);
+
+        r.anchorMax = new Vector2 ((c.matchHeat + 1) * 0.05f, 1);        
 
         r.pivot = new Vector2 (.5f, 1);
 
-        r.anchoredPosition = Vector2.down * 20 * deckCards[c.matchHeat - 1].Count;
-
-        r.GetComponent<Image> ().sprite = Resources.Load<Sprite> (c.Path);
+        r.anchoredPosition = Vector2.down * Instance.deckCardVerticalSpacing * deckCards[c.matchHeat - 1].Count;        
 
         deckCards[c.matchHeat - 1].Add (r);
 
@@ -487,7 +506,7 @@ public class SC_DeckBuilder : MonoBehaviour {
                 Destroy (r.gameObject);
 
             } else if (removedIndex != null)
-                r.anchoredPosition += Vector2.up * 20;            
+                r.anchoredPosition += Vector2.up * Instance.deckCardVerticalSpacing;            
 
         }
 

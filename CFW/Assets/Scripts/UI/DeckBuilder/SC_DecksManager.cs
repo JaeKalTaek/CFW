@@ -76,11 +76,11 @@ public class SC_DecksManager : MonoBehaviour {
 
     public void Load () {
 
-        foreach (Transform t in SC_DeckBuilder.Instance.deck)
-            Destroy (t.gameObject);
+        for (int i = SC_DeckBuilder.Instance.deck.childCount; i > 0; i--)
+            SC_DeckBuilder.TryAddRemove (SC_DeckBuilder.Instance.deck.GetChild (0).GetComponent<SC_DeckBuilder_DeckCard> ().Card, false);
 
         foreach (SC_BaseCard c in SC_Global.CodeToCardsList (chosenDeck))
-            SC_DeckBuilder.AddCard (c);
+            SC_DeckBuilder.TryAddRemove (c, true);
 
     }
 
