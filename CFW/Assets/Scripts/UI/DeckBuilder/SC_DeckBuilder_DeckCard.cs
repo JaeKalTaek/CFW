@@ -27,8 +27,6 @@ public class SC_DeckBuilder_DeckCard : MonoBehaviour, IPointerEnterHandler, IPoi
 
         bigRec.anchoredPosition = Vector2.zero;
 
-        //print (RecT.anchorMax * 1920 + ", " + bigRec.rect.width);
-
         if (RecT.anchorMax.x * 1920 + bigRec.rect.width > 1920) {
 
             bigRec.anchorMin = new Vector2 (-bigSize, - .5f);
