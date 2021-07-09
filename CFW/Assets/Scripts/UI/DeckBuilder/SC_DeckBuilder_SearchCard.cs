@@ -15,7 +15,7 @@ public class SC_DeckBuilder_SearchCard : MonoBehaviour, IPointerClickHandler {
 
         SC_DeckBuilder.filteredCards[Card] = this;
 
-        selected = SC_DeckBuilder.cardsInDeck.Contains (Card);
+        selected = SC_DeckBuilder.deckCards.ContainsKey (Card);
 
         image.color = new Color (1, 1, 1, selected ? .5f : 1);
 
@@ -29,10 +29,7 @@ public class SC_DeckBuilder_SearchCard : MonoBehaviour, IPointerClickHandler {
 
             image.color = new Color (1, 1, 1, selected ? .5f : 1);
 
-            if (selected)
-                SC_DeckBuilder.AddCard (Card);
-            else
-                SC_DeckBuilder.RemoveCard (Card);
+            SC_DeckBuilder.Instance.AddRemoveCard (Card, selected);
 
         }
 

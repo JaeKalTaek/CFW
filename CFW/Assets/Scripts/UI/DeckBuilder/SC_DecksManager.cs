@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.UI;
 using Card;
 using System.Collections.Generic;
+using System.Linq;
 
 public class SC_DecksManager : MonoBehaviour {
 
@@ -47,13 +48,13 @@ public class SC_DecksManager : MonoBehaviour {
 
     public void UpdateCanSaveDeck () {
 
-        saveButton.interactable = deckName.text != "" && SC_DeckBuilder.Instance.deck.childCount == SC_DeckBuilder.Instance.deckSize;
+        saveButton.interactable = deckName.text != "" && SC_DeckBuilder.deckCards.Count == SC_DeckBuilder.Instance.deckSize;
 
     }
 
     public void Save () {
 
-        string deck = SC_Global.CardsListToCode (SC_DeckBuilder.cardsInDeck);
+        string deck = SC_Global.CardsListToCode (new List<SC_BaseCard> (SC_DeckBuilder.deckCards.Keys));
 
         if (loadedDecks.ContainsKey (deckName.text))
             loadedDecks[deckName.text].Setup (deckName.text, deck);
@@ -76,8 +77,8 @@ public class SC_DecksManager : MonoBehaviour {
 
     public void Load () {
 
-        for (int i = SC_DeckBuilder.Instance.deck.childCount; i > 0; i--)
-            SC_DeckBuilder.TryAddRemove (SC_DeckBuilder.Instance.deck.GetChild (0).GetComponent<SC_DeckBuilder_DeckCard> ().Card, false);
+        for (int i = SC_DeckBuilder.deckCards.Count; i > 0; i--)
+          SC_DeckBuilder.TryAddRemove (SC_DeckBuilder.deckCards.Keys.ElementAt (0), false);
 
         foreach (SC_BaseCard c in SC_Global.CodeToCardsList (chosenDeck))
             SC_DeckBuilder.TryAddRemove (c, true);

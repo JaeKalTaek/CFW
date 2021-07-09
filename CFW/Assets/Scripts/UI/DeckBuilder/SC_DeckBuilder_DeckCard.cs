@@ -1,4 +1,5 @@
 ﻿using Card;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,31 +10,25 @@ public class SC_DeckBuilder_DeckCard : MonoBehaviour, IPointerEnterHandler, IPoi
 
     public float bigSize;
 
-    public RectTransform bigRec;
+    public RectTransform RecT, bigRec;
 
-    RectTransform RecT { get { return transform as RectTransform; } }
+    public TextMeshProUGUI nameText;
+
+    public Image bigImage;
 
     void Start () {
 
-        GetComponent<Image> ().sprite = Resources.Load<Sprite> (Card.Path);
+        nameText.text = Card.name;
 
-        RecT.sizeDelta = new Vector2 (0, RecT.rect.width * (260f/190f));
+        bigImage.sprite = Resources.Load<Sprite> (Card.Path);
 
-        bigRec.GetComponent<Image> ().sprite = GetComponent<Image> ().sprite;
+        bigRec.sizeDelta = new Vector2 (bigSize, bigSize * (260f/190));
 
-        bigRec.anchorMin = new Vector2 (1, -.5f);
+        if ((bigRec.parent.parent as RectTransform).anchoredPosition.x + ((bigRec.parent.parent as RectTransform).sizeDelta.x / 2) + bigRec.rect.width > 1920) {
 
-        bigRec.anchorMax = new Vector2 (1 + bigSize, bigSize - .5f);
+            bigRec.anchorMin = bigRec.anchorMax = Vector2.up * .5f;
 
-        bigRec.anchoredPosition = Vector2.zero;
-
-        if (RecT.anchorMax.x * 1920 + bigRec.rect.width > 1920) {
-
-            bigRec.anchorMin = new Vector2 (-bigSize, - .5f);
-
-            bigRec.anchorMax = new Vector2 (0, bigSize - .5f);
-
-            bigRec.anchoredPosition = Vector2.zero;
+            bigRec.pivot = new Vector2 (1, .5f);
 
         }
 
@@ -41,8 +36,7 @@ public class SC_DeckBuilder_DeckCard : MonoBehaviour, IPointerEnterHandler, IPoi
 
     public void OnPointerEnter (PointerEventData eventData) {
 
-        bigRec.SetParent (transform.parent);
-        bigRec.SetAsLastSibling ();
+        bigRec.SetParent (SC_DeckBuilder.Instance.deckCardsPreviewParent);
         bigRec.gameObject.SetActive (true);
 
     }

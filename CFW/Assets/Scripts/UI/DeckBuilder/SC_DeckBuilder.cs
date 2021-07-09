@@ -9,25 +9,42 @@ using System;
 
 public class SC_DeckBuilder : MonoBehaviour {
 
-    public int deckSize;
-
-    static List<RectTransform>[] deckCards;
-
     public static SC_DeckBuilder Instance;
 
-    public RectTransform deck, cards;
+    [Header("General deck settings")]
+    public int deckSize;
+
+    [Header ("Cards filtering")]
+    public RectTransform searchCardsParent;
 
     public float searchCardSize;
-    Vector2 size;
-
-    public float deckCardVerticalSpacing;
-
-    public TextMeshProUGUI resultsCount, deckCardsCount;
+    Vector2 size;    
 
     public GameObject moreFiltersPanel;
     public TextMeshProUGUI moreFiltersButtonText;
 
+    public TextMeshProUGUI resultsCount;
+
+    public static Dictionary<SC_BaseCard, SC_DeckBuilder_SearchCard> filteredCards;
+
+    [Header ("Deck")]
+    public RectTransform[] deckCardsColumns;
+
+    public ScrollRect deckScrollRect;
+
+    public RectTransform deckContent;
+
+    public float deckCardHeight;
+
+    public TextMeshProUGUI[] deckMatchHeatRepartitions;
+
+    public TextMeshProUGUI deckCardsCount;    
+
     public SC_DecksManager deckManager;
+
+    public Transform deckCardsPreviewParent;
+
+    public static Dictionary<SC_BaseCard, SC_DeckBuilder_DeckCard> deckCards;
 
     #region Filters
     [Serializable]
@@ -43,6 +60,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     }
 
+    [Header ("Filters")]
     public MinMaxFilter matchHeatFilter;
 
     public TMP_Dropdown mainType, firstSubType, secondSubType;
@@ -72,9 +90,7 @@ public class SC_DeckBuilder : MonoBehaviour {
     TMP_Dropdown[] dropdownFilters;
 
     MinMaxFilter[] minMaxFilters;
-    #endregion
-
-    public static Dictionary<SC_BaseCard, SC_DeckBuilder_SearchCard> filteredCards;
+    #endregion    
 
     void Start () {        
 
@@ -82,12 +98,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         Instance = this;
 
-        deckCards = new List<RectTransform>[20];        
-
-        for (int i = 0; i < 20; i++)
-            deckCards[i] = new List<RectTransform> ();
-
-        cardsInDeck = new List<SC_BaseCard> ();
+        deckCards = new Dictionary<SC_BaseCard, SC_DeckBuilder_DeckCard> ();
 
         size = Resources.Load<RectTransform> ("Prefabs/Cards/P_UI_Card").sizeDelta * searchCardSize;
 
@@ -183,7 +194,11 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         typeToggles = new Toggle[] { mainTypeToggle, firstSubTypeToggle, secondSubTypeToggle };
 
-        //Filter ();
+    }
+
+    void Update () {
+
+        deckScrollRect.horizontalNormalizedPosition = Mathf.Clamp01 (deckScrollRect.horizontalNormalizedPosition + Input.GetAxis ("Mouse ScrollWheel") * Time.deltaTime * deckScrollRect.scrollSensitivity);
 
     }
 
@@ -255,12 +270,12 @@ public class SC_DeckBuilder : MonoBehaviour {
         if (moreFiltersPanel.activeSelf)
             ToggleMoreFilters ();
 
-        foreach (Transform t in cards)
+        foreach (Transform t in searchCardsParent)
             Destroy (t.gameObject);
 
-        float marginsNbr = (((int) cards.rect.width) / ((int) size.x)) - 1;
+        float marginsNbr = (((int) searchCardsParent.rect.width) / ((int) size.x)) - 1;
 
-        float margin = (cards.rect.width % size.x) / marginsNbr;
+        float margin = (searchCardsParent.rect.width % size.x) / marginsNbr;
 
         int i, x, y = x = i = 0;               
 
@@ -407,7 +422,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
             if (c.matchHeat >= matchHeatFilter.Min && c.matchHeat <= matchHeatFilter.Max) {
 
-                RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_SearchCard"), cards);
+                RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_SearchCard"), searchCardsParent);
 
                 r.sizeDelta = size;
 
@@ -417,7 +432,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
                 r.anchoredPosition = new Vector2 (x * (size.x + margin), -y * (size.y + margin));                
 
-                x = x == ((int) cards.rect.width) / ((int) size.x) - 1 ? 0 : x + 1;
+                x = x == ((int) searchCardsParent.rect.width) / ((int) size.x) - 1 ? 0 : x + 1;
 
                 y = x == 0 ? y + 1 : y;
 
@@ -432,60 +447,57 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         y += (x == 0 ? -1 : 0) + 1;        
 
-        cards.sizeDelta = new Vector2 (cards.sizeDelta.x, Mathf.Max (300, size.y * y + margin * (y - 1)));
+        searchCardsParent.sizeDelta = new Vector2 (searchCardsParent.sizeDelta.x, Mathf.Max (300, size.y * y + margin * (y - 1)));
 
     }
     #endregion
 
     #region Deck building
-    public static List<SC_BaseCard> cardsInDeck;
-
     public static void TryAddRemove (SC_BaseCard c, bool add) {
 
         if (filteredCards != null && filteredCards.ContainsKey (c))
             filteredCards[c].OnPointerClick (null);
-        else if (add)
+        else
+            Instance.AddRemoveCard (c, add);
+
+    }
+
+    public void AddRemoveCard (SC_BaseCard c, bool add) {
+
+        if (add)
             AddCard (c);
         else
             RemoveCard (c);
+
+        for (int i = 0; i < 7; i++)
+            deckMatchHeatRepartitions[i].text = "(" + Mathf.RoundToInt ((deckCardsColumns[i].childCount - 1) * 100f / deckCards.Count) + "%)";
+
+        float maxSize = 0;
+
+        foreach (RectTransform t in deckCardsColumns)
+            maxSize = Mathf.Max (maxSize, (t.childCount - 1) * deckCardHeight + 50);
+
+        deckContent.sizeDelta = new Vector2 (0, Mathf.Max (422, maxSize));
 
     }
 
     public static void AddCard (SC_BaseCard c) {
 
-        cardsInDeck.Add (c);
+        SC_DeckBuilder_DeckCard d = Instantiate (Resources.Load<SC_DeckBuilder_DeckCard> ("Prefabs/DeckBuilder/P_DeckBuilder_DeckCard"), Instance.deckCardsColumns[(c.matchHeat - 1) / 3]);
 
-        RectTransform r = Instantiate (Resources.Load<RectTransform> ("Prefabs/DeckBuilder/P_DeckBuilder_DeckCard"), Instance.deck);
+        deckCards[c] = d;
 
-        r.GetComponent<SC_DeckBuilder_DeckCard> ().Card = c;
+        d.Card = c;
 
-        r.anchorMin = new Vector2 ((c.matchHeat - 1) * 0.05f, 1);
+        d.RecT.sizeDelta = new Vector2 (d.RecT.sizeDelta.x, Instance.deckCardHeight);
 
-        r.anchorMax = new Vector2 ((c.matchHeat + 1) * 0.05f, 1);        
+        int index;
 
-        r.pivot = new Vector2 (.5f, 1);
+        for (index = 1; index < d.RecT.parent.childCount; index++)
+            if (d.RecT.parent.GetChild (index).GetComponent<SC_DeckBuilder_DeckCard> ().Card.matchHeat > c.matchHeat)
+                break;                
 
-        r.anchoredPosition = Vector2.down * Instance.deckCardVerticalSpacing * deckCards[c.matchHeat - 1].Count;        
-
-        deckCards[c.matchHeat - 1].Add (r);
-
-        int index = 0;
-
-        for (int i = 0; i < deckCards.Length; i++) {
-
-            if (i == c.matchHeat - 1) {
-
-                index += deckCards[i].Count - 1;
-
-                break;
-
-            }
-
-            index += deckCards[i].Count;
-
-        }
-
-        r.SetSiblingIndex (index);
+        d.RecT.SetSiblingIndex (index);
 
         UpdateDeckCardsCount ();
 
@@ -493,34 +505,17 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     public static void RemoveCard (SC_BaseCard c) {
 
-        cardsInDeck.Remove (c);
+        DestroyImmediate (deckCards[c].gameObject);
 
-        int? removedIndex = null;
-
-        foreach (RectTransform r in deckCards[c.matchHeat - 1]) {
-
-            if (c.Path.Contains (r.GetComponent<Image> ().sprite.name)) {
-
-                removedIndex = deckCards[c.matchHeat - 1].IndexOf (r);
-
-                Destroy (r.gameObject);
-
-            } else if (removedIndex != null)
-                r.anchoredPosition += Vector2.up * Instance.deckCardVerticalSpacing;            
-
-        }
-
-        DestroyImmediate (deckCards[c.matchHeat - 1][(int) removedIndex].gameObject);
-
-        deckCards[c.matchHeat - 1].RemoveAt ((int) removedIndex);
+        deckCards.Remove (c);
 
         UpdateDeckCardsCount ();
 
     }
 
-    public static void UpdateDeckCardsCount () {
+    public static void UpdateDeckCardsCount () {        
 
-        Instance.deckCardsCount.text = Instance.deck.childCount.ToString ();
+        Instance.deckCardsCount.text = deckCards.Count.ToString ();
 
         Instance.deckManager.UpdateCanSaveDeck ();
 
