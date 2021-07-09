@@ -470,14 +470,14 @@ public class SC_DeckBuilder : MonoBehaviour {
             RemoveCard (c);
 
         for (int i = 0; i < 7; i++)
-            deckMatchHeatRepartitions[i].text = "(" + Mathf.RoundToInt ((deckCardsColumns[i].childCount - 1) * 100f / deckCards.Count) + "%)";
+            deckMatchHeatRepartitions[i].text = "(" + Mathf.RoundToInt (deckCardsColumns[i].childCount * 100f / deckCards.Count) + "%)";
 
         float maxSize = 0;
 
         foreach (RectTransform t in deckCardsColumns)
-            maxSize = Mathf.Max (maxSize, (t.childCount - 1) * deckCardHeight + 50);
+            maxSize = Mathf.Max (maxSize, t.childCount * deckCardHeight);
 
-        deckContent.sizeDelta = new Vector2 (0, Mathf.Max (422, maxSize));
+        deckContent.sizeDelta = new Vector2 (0, Mathf.Max (372, maxSize));
 
     }
 
