@@ -442,7 +442,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
         }
 
-        resultsCount.text = i.ToString ();
+        resultsCount.text = i.ToString () + " matching card" + (i > 1 ? "s" : "");
         resultsCount.transform.parent.gameObject.SetActive (true);
 
         y += (x == 0 ? -1 : 0) + 1;        
@@ -515,7 +515,7 @@ public class SC_DeckBuilder : MonoBehaviour {
 
     public static void UpdateDeckCardsCount () {        
 
-        Instance.deckCardsCount.text = deckCards.Count.ToString ();
+        Instance.deckCardsCount.text = deckCards.Count.ToString () + " card" + (deckCards.Count > 1 ? "s" : "") + " in deck";
 
         Instance.deckManager.UpdateCanSaveDeck ();
 
