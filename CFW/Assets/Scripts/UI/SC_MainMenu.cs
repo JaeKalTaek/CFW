@@ -7,28 +7,28 @@ using MLAPI.Transports.PhotonRealtime;
 using System.Collections.Generic;
 using Card;
 using static SC_Global;
+using static SC_SavedDataManager;
 
 public class SC_MainMenu : MonoBehaviour {
 
     public GameObject deckBuilderPanel;
 
-    Dictionary<string, string> decks;
-
     void Start () {
 
         allCards = new List<SC_BaseCard> (Resources.LoadAll<SC_BaseCard> (""));
 
-        SC_SavedDataManager.LoadDecks ();
+        LoadSave ();
 
-        decks = new Dictionary<string, string> ();
+        if (savedData.firstLoad) {
 
-        foreach (SC_Deck d in Resources.LoadAll<SC_Deck> ("Decks/"))
-            decks[d.name.Replace (" Deck", "")] = CardsListToCode (d.cards);
+            savedData.firstLoad = true;
 
-        foreach (KeyValuePair<string, string> deck in SC_SavedDataManager.savedData.decks)
-            decks[deck.Key] = deck.Value;                
+            foreach (SC_Deck d in Resources.LoadAll<SC_Deck> ("Decks/"))
+                SaveDeck (d.name.Replace (" Deck", ""), CardsListToCode (d.cards));
 
-        foreach (KeyValuePair<string, string> deck in decks)
+        }
+
+        foreach (KeyValuePair<string, string> deck in savedData.decks)
             deckChoice.options.Add (new TMP_Dropdown.OptionData (deck.Key));
 
         deckChoice.RefreshShownValue ();
@@ -41,7 +41,7 @@ public class SC_MainMenu : MonoBehaviour {
 
     public void Host () {
 
-        SC_Player.deckCode = decks[deckChoice.options[deckChoice.value].text];
+        SC_Player.deckCode = savedData.decks[deckChoice.options[deckChoice.value].text];
 
         (NetworkManager.Singleton.NetworkConfig.NetworkTransport as PhotonRealtimeTransport).RoomName = "CFW_Room_" + matchCode.text;
         NetworkManager.Singleton.ConnectionApprovalCallback += ApprovalCheck;
@@ -58,7 +58,7 @@ public class SC_MainMenu : MonoBehaviour {
 
     public void Join () {
 
-        SC_Player.deckCode = decks[deckChoice.options[deckChoice.value].text];
+        SC_Player.deckCode = savedData.decks[deckChoice.options[deckChoice.value].text];
 
         (NetworkManager.Singleton.NetworkConfig.NetworkTransport as PhotonRealtimeTransport).RoomName = "CFW_Room_" + matchCode.text;
         NetworkManager.Singleton.StartClient ();

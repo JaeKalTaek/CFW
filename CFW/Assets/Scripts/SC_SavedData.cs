@@ -9,9 +9,13 @@ public class SC_SavedDataManager {
     [Serializable]
     public class SavedData {
 
+        public bool firstLoad;
+
         public Dictionary<string, string> decks;
 
         public SavedData () {
+
+            firstLoad = true;
 
             decks = new Dictionary<string, string> ();
 
@@ -33,7 +37,7 @@ public class SC_SavedDataManager {
 
     }    
 
-    public static void LoadDecks () {
+    public static void LoadSave () {
 
         if (File.Exists (Application.persistentDataPath + "/MySaveData.sav")) {            
 
