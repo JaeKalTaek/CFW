@@ -21,7 +21,7 @@ public class SC_MainMenu : MonoBehaviour {
 
         if (savedData.firstLoad) {
 
-            savedData.firstLoad = true;
+            savedData.firstLoad = false;
 
             foreach (SC_Deck d in Resources.LoadAll<SC_Deck> ("Decks/"))
                 SaveDeck (d.name.Replace (" Deck", ""), CardsListToCode (d.cards));
